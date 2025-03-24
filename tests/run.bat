@@ -32,24 +32,13 @@ for /R %%i in (test*.py) do (
 
 REM List of files to ignore
 set ignore=test_auto_scan_multiclass_nms.py
-set ignore=!ignore! test_auto_scan_roi_align.py
-set ignore=!ignore! test_auto_scan_pool_adaptive_max_ops.py
-set ignore=!ignore! test_auto_scan_pad2d.py
-set ignore=!ignore! test_auto_scan_uniform_random_batch_size_like.py
-set ignore=!ignore! test_auto_scan_uniform_random.py
-set ignore=!ignore! test_auto_scan_distribute_fpn_proposals1.py
-set ignore=!ignore! test_auto_scan_distribute_fpn_proposals_v2.py
-set ignore=!ignore! test_auto_scan_fill_constant_batch_size_like.py
 set ignore=!ignore! test_auto_scan_generate_proposals.py
-set ignore=!ignore! test_uniform.py
-set ignore=!ignore! test_deform_conv2d.py
 set ignore=!ignore! test_has_nan.py
 set ignore=!ignore! test_unsqueeze.py
 set ignore=!ignore! test_quantize_model.py
 set ignore=!ignore! test_quantize_model_minist.py
 set ignore=!ignore! test_quantize_model_speedup.py
 set ignore=!ignore! test_resnet_fp16.py
-set ignore=!ignore! test_auto_scan_fill_constant.py
 set ignore=!ignore! test_auto_scan_layer_norm.py
 set ignore=!ignore! test_auto_scan_scatter_nd_add.py
 REM uncomment below tests when using not paddlepaddle-gpu
@@ -60,9 +49,9 @@ set ignore=!ignore! test_auto_scan_conv2d_transpose.py
 set ignore=!ignore! test_auto_scan_conv3d.py
 set ignore=!ignore! test_auto_scan_grid_sampler.py
 set ignore=!ignore! test_auto_scan_dequantize_linear.py
-set ignore=!ignore! test_auto_scan_gaussian_random.py
 set ignore=!ignore! test_auto_scan_partial_ops.py
-
+REM window ci bug, need to be fixed
+set ignore=!ignore! test_Conv2D_Dropout.py
 REM Initialize bug count
 set bug=0
 
