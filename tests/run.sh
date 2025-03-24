@@ -31,8 +31,6 @@ ignore="test_auto_scan_multiclass_nms.py                        # input shuold b
         test_quantize_model_minist.py \
         test_auto_scan_partial_ops.py \                         # input shuold be xxx, but received Value
         test_dygraph2onnx.py \
-        test_auto_scan_dequantize_linear.py \                   # input shuold be xxx, but received Value
-        test_auto_scan_quantize_linear.py \                     # input shuold be xxx, but received Value
         test_quantize_model_speedup.py \
         test_resnet_fp16.py"
 bug=0

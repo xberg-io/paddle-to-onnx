@@ -48,7 +48,7 @@ set ignore=!ignore! test_auto_scan_conv2d.py
 set ignore=!ignore! test_auto_scan_conv2d_transpose.py
 set ignore=!ignore! test_auto_scan_conv3d.py
 set ignore=!ignore! test_auto_scan_grid_sampler.py
-set ignore=!ignore! test_auto_scan_dequantize_linear.py
+set ignore=!ignore! test_auto_scan_gaussian_random.py
 set ignore=!ignore! test_auto_scan_partial_ops.py
 REM window ci bug, need to be fixed
 set ignore=!ignore! test_Conv2D_Dropout.py
