@@ -514,7 +514,7 @@ class APIOnnx(object):
                     "",  # calibration_file
                     "",  # external_file
                     False,  # export_fp16_model
-                    False,  # enable polygraphy
+                    "None",  # optimize_tool
                 )
                 with open(
                     os.path.join(self.name, self.name + "_" + str(v) + ".onnx"), "wb"
