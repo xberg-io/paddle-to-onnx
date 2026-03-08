@@ -13,8 +13,7 @@
 # limitations under the License.
 
 import paddle
-from onnxbase import APIOnnx
-from onnxbase import randtool
+from onnxbase import APIOnnx, randtool
 
 
 class Net(paddle.nn.Layer):
@@ -23,14 +22,13 @@ class Net(paddle.nn.Layer):
     """
 
     def __init__(self):
-        super(Net, self).__init__()
+        super().__init__()
 
     def forward(self, inputs, _ver):
         """
         forward
         """
-        x = paddle.mv(inputs, _ver)
-        return x
+        return paddle.mv(inputs, _ver)
 
 
 def test_mv_9():

@@ -12,10 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from auto_scan_test import OPConvertAutoScanTest, BaseNet
-import hypothesis.strategies as st
 import unittest
+
+import hypothesis.strategies as st
 import paddle
+from auto_scan_test import BaseNet, OPConvertAutoScanTest
 
 
 class NetAvgPool1d(BaseNet):
@@ -28,8 +29,7 @@ class NetAvgPool1d(BaseNet):
         forward
         """
         output_size = self.config["output_size"]
-        x = paddle.nn.functional.adaptive_avg_pool1d(inputs, output_size=output_size)
-        return x
+        return paddle.nn.functional.adaptive_avg_pool1d(inputs, output_size=output_size)
 
 
 class TestAdaptiveAvgPool1dConvert(OPConvertAutoScanTest):
@@ -81,10 +81,9 @@ class NetAvgPool2d(BaseNet):
         else:
             output_size = self.config["output_size"]
         data_format = self.config["data_format"]
-        x = paddle.nn.functional.adaptive_avg_pool2d(
+        return paddle.nn.functional.adaptive_avg_pool2d(
             inputs, output_size=output_size, data_format=data_format
         )
-        return x
 
 
 class TestAdaptiveAvgPool2dConvert(OPConvertAutoScanTest):
@@ -145,10 +144,9 @@ class NetAvgPool3d(BaseNet):
         """
         output_size = self.config["output_size"]
         data_format = self.config["data_format"]
-        x = paddle.nn.functional.adaptive_avg_pool3d(
+        return paddle.nn.functional.adaptive_avg_pool3d(
             inputs, output_size=output_size, data_format=data_format
         )
-        return x
 
 
 class TestAdaptiveAvgPool3dConvert(OPConvertAutoScanTest):

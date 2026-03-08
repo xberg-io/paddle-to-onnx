@@ -12,12 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from auto_scan_test import OPConvertAutoScanTest, BaseNet
-import hypothesis.strategies as st
 import unittest
+
+import hypothesis.strategies as st
 import paddle
-from paddle import ParamAttr
+from auto_scan_test import BaseNet, OPConvertAutoScanTest
 from onnxbase import _test_with_pir
+from paddle import ParamAttr
 
 
 class Net(BaseNet):
@@ -26,7 +27,7 @@ class Net(BaseNet):
     """
 
     def __init__(self, config=None):
-        super(Net, self).__init__(config)
+        super().__init__(config)
         if self.config["data_format"] in ["NC", "NCL", "NCHW", "NCDHW", "NCHW"]:
             param_shape = [self.config["input_shape"][1]]
         else:
@@ -65,7 +66,7 @@ class Net(BaseNet):
         """
         forward
         """
-        x = paddle.nn.functional.batch_norm(
+        return paddle.nn.functional.batch_norm(
             inputs,
             running_mean=self.mean,
             running_var=self.variance,
@@ -76,7 +77,6 @@ class Net(BaseNet):
             data_format=self.config["data_format"],
             use_global_stats=self.config["use_global_stats"],
         )
-        return x
 
 
 class TestBatchNormConvert(OPConvertAutoScanTest):

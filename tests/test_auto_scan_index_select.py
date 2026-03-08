@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from auto_scan_test import OPConvertAutoScanTest, BaseNet
-import hypothesis.strategies as st
 import unittest
+
+import hypothesis.strategies as st
 import paddle
-from onnxbase import randtool
-from onnxbase import _test_with_pir
+from auto_scan_test import BaseNet, OPConvertAutoScanTest
+from onnxbase import _test_with_pir, randtool
 
 
 class Net(BaseNet):
@@ -29,8 +29,7 @@ class Net(BaseNet):
         """
         forward
         """
-        x = paddle.index_select(input, index=index, axis=self.config["axis"])
-        return x
+        return paddle.index_select(input, index=index, axis=self.config["axis"])
 
 
 class TestIndexselectConvert(OPConvertAutoScanTest):
@@ -53,8 +52,7 @@ class TestIndexselectConvert(OPConvertAutoScanTest):
 
             n = random.randint(1, len(input_shape))
             min_val = min(input_shape)
-            input_data = randtool("int", 0.0, min_val - 1, n)
-            return input_data
+            return randtool("int", 0.0, min_val - 1, n)
 
         config = {
             "op_names": ["index_select"],

@@ -12,11 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from auto_scan_test import OPConvertAutoScanTest, BaseNet
+import unittest
+
 import hypothesis.strategies as st
 import numpy as np
-import unittest
 import paddle
+from auto_scan_test import BaseNet, OPConvertAutoScanTest
 
 
 class Net(BaseNet):
@@ -28,14 +29,13 @@ class Net(BaseNet):
         """
         forward
         """
-        x = paddle.nn.functional.softmax_with_cross_entropy(
+        return paddle.nn.functional.softmax_with_cross_entropy(
             logits=logits,
             label=label,
             soft_label=self.config["soft_label"],
             return_softmax=self.config["return_softmax"],
             axis=self.config["axis"],
         )
-        return x
 
 
 class TestSoftmaxWithCrossEntropyConvert(OPConvertAutoScanTest):

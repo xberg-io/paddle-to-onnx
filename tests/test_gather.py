@@ -13,9 +13,7 @@
 # limitations under the License.
 
 import paddle
-from onnxbase import APIOnnx
-from onnxbase import randtool
-from onnxbase import _test_only_pir
+from onnxbase import APIOnnx, _test_only_pir, randtool
 
 
 class Net(paddle.nn.Layer):
@@ -24,18 +22,17 @@ class Net(paddle.nn.Layer):
     """
 
     def __init__(self):
-        super(Net, self).__init__()
+        super().__init__()
 
     def forward(self, inputs):
         """
         forward
         """
-        x = paddle.gather(
+        return paddle.gather(
             inputs,
             index=paddle.to_tensor([1, 2], dtype="int64"),
             axis=paddle.to_tensor([0]),
         )
-        return x
 
 
 @_test_only_pir
@@ -95,16 +92,15 @@ class Net2(paddle.nn.Layer):
     """
 
     def __init__(self):
-        super(Net2, self).__init__()
+        super().__init__()
 
     def forward(self, inputs):
         """
         forward
         """
-        x = paddle.gather(
+        return paddle.gather(
             inputs, index=paddle.to_tensor([[1], [2]], dtype="int64"), axis=1
         )
-        return x
 
 
 # Attention : GatherND don't have opset < 11 version, so we don't test it.
@@ -150,14 +146,15 @@ class Net3(paddle.nn.Layer):
     """
 
     def __init__(self):
-        super(Net3, self).__init__()
+        super().__init__()
 
     def forward(self, inputs):
         """
         forward
         """
-        x = paddle.gather(inputs, index=paddle.to_tensor([0, 1], dtype="int64"), axis=1)
-        return x
+        return paddle.gather(
+            inputs, index=paddle.to_tensor([0, 1], dtype="int64"), axis=1
+        )
 
 
 @_test_only_pir
@@ -175,9 +172,9 @@ def test_gather_7_3():
     print(data.shape)
     obj.set_input_data("input_data", data)
     obj.run()
-    assert len(obj.res_fict["7"][0].shape) == len(
-        data.shape
-    ), "The result of ONNX inference is not equal to Paddle inference!\n"
+    assert len(obj.res_fict["7"][0].shape) == len(data.shape), (
+        "The result of ONNX inference is not equal to Paddle inference!\n"
+    )
 
 
 @_test_only_pir
@@ -195,9 +192,9 @@ def test_gather_11_3():
     print(data.shape)
     obj.set_input_data("input_data", data)
     obj.run()
-    assert len(obj.res_fict["11"][0].shape) == len(
-        data.shape
-    ), "The result of ONNX inference is not equal to Paddle inference!\n"
+    assert len(obj.res_fict["11"][0].shape) == len(data.shape), (
+        "The result of ONNX inference is not equal to Paddle inference!\n"
+    )
 
 
 @_test_only_pir
@@ -216,9 +213,9 @@ def test_gather_13_3():
     obj.set_input_data("input_data", data)
 
     obj.run()
-    assert len(obj.res_fict["13"][0].shape) == len(
-        data.shape
-    ), "The result of ONNX inference is not equal to Paddle inference!\n"
+    assert len(obj.res_fict["13"][0].shape) == len(data.shape), (
+        "The result of ONNX inference is not equal to Paddle inference!\n"
+    )
 
 
 class Net4(paddle.nn.Layer):
@@ -227,16 +224,15 @@ class Net4(paddle.nn.Layer):
     """
 
     def __init__(self):
-        super(Net4, self).__init__()
+        super().__init__()
 
     def forward(self, inputs):
         """
         forward
         """
-        x = paddle.gather(
+        return paddle.gather(
             inputs, index=paddle.to_tensor([[0], [1]], dtype="int64"), axis=2
         )
-        return x
 
 
 @_test_only_pir
@@ -271,6 +267,6 @@ def test_gather_13_4():
     print(len(data.shape))
     obj.set_input_data("input_data", data)
     obj.run()
-    assert len(obj.res_fict["13"][0].shape) == len(
-        data.shape
-    ), "The result of ONNX inference is not equal to Paddle inference!\n"
+    assert len(obj.res_fict["13"][0].shape) == len(data.shape), (
+        "The result of ONNX inference is not equal to Paddle inference!\n"
+    )

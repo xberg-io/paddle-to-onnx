@@ -12,10 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from auto_scan_test import OPConvertAutoScanTest, BaseNet
-import hypothesis.strategies as st
 import unittest
+
+import hypothesis.strategies as st
 import paddle
+from auto_scan_test import BaseNet, OPConvertAutoScanTest
 from onnxbase import _test_only_pir
 
 
@@ -36,8 +37,7 @@ class Net(BaseNet):
                 )
             else:
                 axis = self.config["axis"]
-        x = paddle.cumsum(inputs, axis=axis, dtype=self.config["dtype"])
-        return x
+        return paddle.cumsum(inputs, axis=axis, dtype=self.config["dtype"])
 
 
 class TestCumsumConvert(OPConvertAutoScanTest):

@@ -13,9 +13,7 @@
 # limitations under the License.
 
 import paddle
-from onnxbase import APIOnnx
-from onnxbase import randtool
-from onnxbase import _test_with_pir
+from onnxbase import APIOnnx, _test_with_pir, randtool
 
 
 class Net(paddle.nn.Layer):
@@ -37,7 +35,7 @@ class Net(paddle.nn.Layer):
         bias_attr=None,
         data_format="NCL",
     ):
-        super(Net, self).__init__()
+        super().__init__()
         self._conv2d_t = paddle.nn.Conv1DTranspose(
             in_channels=in_channels,
             out_channels=out_channels,
@@ -56,8 +54,7 @@ class Net(paddle.nn.Layer):
         """
         forward
         """
-        x = self._conv2d_t(inputs)
-        return x
+        return self._conv2d_t(inputs)
 
 
 @_test_with_pir

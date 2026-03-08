@@ -12,10 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from auto_scan_test import OPConvertAutoScanTest, BaseNet
-import hypothesis.strategies as st
 import unittest
+
+import hypothesis.strategies as st
 import paddle
+from auto_scan_test import BaseNet, OPConvertAutoScanTest
 
 
 class Net(BaseNet):
@@ -27,10 +28,9 @@ class Net(BaseNet):
         """
         forward
         """
-        x = paddle.nn.functional.normalize(
+        return paddle.nn.functional.normalize(
             inputs, axis=self.config["axis"], epsilon=self.config["epsilon"]
         )
-        return x
 
 
 class TestNormConvert(OPConvertAutoScanTest):

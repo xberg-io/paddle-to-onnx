@@ -12,10 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from auto_scan_test import OPConvertAutoScanTest, BaseNet
-import hypothesis.strategies as st
 import unittest
+
+import hypothesis.strategies as st
 import paddle
+from auto_scan_test import BaseNet, OPConvertAutoScanTest
 from onnxbase import _test_with_pir
 
 
@@ -28,10 +29,9 @@ class Net(BaseNet):
         """
         forward
         """
-        x = paddle.nn.functional.hardsigmoid(
+        return paddle.nn.functional.hardsigmoid(
             inputs, slope=self.config["slope"], offset=self.config["offset"]
         )
-        return x
 
 
 class TestHardsigmoidConvert(OPConvertAutoScanTest):

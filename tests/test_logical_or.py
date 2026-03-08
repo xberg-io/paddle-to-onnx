@@ -13,8 +13,7 @@
 # limitations under the License.
 
 import paddle
-from onnxbase import APIOnnx
-from onnxbase import randtool
+from onnxbase import APIOnnx, randtool
 
 
 class Net(paddle.nn.Layer):
@@ -23,14 +22,13 @@ class Net(paddle.nn.Layer):
     """
 
     def __init__(self):
-        super(Net, self).__init__()
+        super().__init__()
 
     def forward(self, inputs, inputs_):
         """
         forward
         """
-        x = paddle.logical_or(inputs, inputs_)
-        return x
+        return paddle.logical_or(inputs, inputs_)
 
 
 def test_logical_or_7():

@@ -12,10 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from auto_scan_test import OPConvertAutoScanTest, BaseNet
-import hypothesis.strategies as st
 import unittest
+
+import hypothesis.strategies as st
 import paddle
+from auto_scan_test import BaseNet, OPConvertAutoScanTest
 
 
 class Net(BaseNet):
@@ -27,8 +28,7 @@ class Net(BaseNet):
         """
         forward
         """
-        x = paddle.unstack(inputs, axis=self.config["axis"], num=self.config["num"])
-        return x
+        return paddle.unstack(inputs, axis=self.config["axis"], num=self.config["num"])
 
 
 class TestUnstackConvert(OPConvertAutoScanTest):

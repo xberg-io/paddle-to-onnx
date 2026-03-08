@@ -13,9 +13,7 @@
 # limitations under the License.
 
 import paddle
-from onnxbase import APIOnnx
-from onnxbase import randtool
-from onnxbase import _test_with_pir
+from onnxbase import APIOnnx, _test_with_pir, randtool
 
 
 class Net(paddle.nn.Layer):
@@ -24,16 +22,14 @@ class Net(paddle.nn.Layer):
     """
 
     def __init__(self, axis=None):
-        super(Net, self).__init__()
+        super().__init__()
         self.axis = axis
 
     def forward(self, inputs):
         """
         forward
         """
-        x = paddle.unique(inputs, axis=self.axis)
-
-        return x
+        return paddle.unique(inputs, axis=self.axis)
 
 
 @_test_with_pir
@@ -95,7 +91,7 @@ class Net_mult_2(paddle.nn.Layer):
     def __init__(
         self, return_index=False, return_inverse=False, return_counts=False, axis=None
     ):
-        super(Net_mult_2, self).__init__()
+        super().__init__()
         self.return_index = return_index
         self.return_inverse = return_inverse
         self.return_counts = return_counts
@@ -175,7 +171,7 @@ class Net_mult_3(paddle.nn.Layer):
     def __init__(
         self, return_index=False, return_inverse=False, return_counts=False, axis=None
     ):
-        super(Net_mult_3, self).__init__()
+        super().__init__()
         self.return_index = return_index
         self.return_inverse = return_inverse
         self.return_counts = return_counts
@@ -253,7 +249,7 @@ class Net_mult_all(paddle.nn.Layer):
     """
 
     def __init__(self, axis=None):
-        super(Net_mult_all, self).__init__()
+        super().__init__()
         self.axis = axis
 
     def forward(self, inputs):

@@ -22,14 +22,13 @@ class Net(paddle.nn.Layer):
     """
 
     def __init__(self):
-        super(Net, self).__init__()
+        super().__init__()
 
     def forward(self, inputs, _inputs):
         """
         forward
         """
-        x = paddle.floor_mod(inputs, _inputs)
-        return x
+        return paddle.floor_mod(inputs, _inputs)
 
 
 def test_floor_mod_10():

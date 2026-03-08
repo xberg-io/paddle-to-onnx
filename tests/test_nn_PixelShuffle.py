@@ -22,7 +22,7 @@ class Net(paddle.nn.Layer):
     """
 
     def __init__(self):
-        super(Net, self).__init__()
+        super().__init__()
         self.shuffle = paddle.nn.PixelShuffle(
             upscale_factor=3, data_format="NCHW", name=None
         )
@@ -31,8 +31,7 @@ class Net(paddle.nn.Layer):
         """
         forward
         """
-        x = self.shuffle(inputs)
-        return x
+        return self.shuffle(inputs)
 
 
 def test_PixelShuffle_base():

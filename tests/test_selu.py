@@ -13,8 +13,7 @@
 # limitations under the License.
 
 import paddle
-from onnxbase import APIOnnx
-from onnxbase import randtool
+from onnxbase import APIOnnx, randtool
 
 
 class Net(paddle.nn.Layer):
@@ -27,7 +26,7 @@ class Net(paddle.nn.Layer):
         alpha=1.6732632423543772848170429916717,
         scale=1.0507009873554804934193349852946,
     ):
-        super(Net, self).__init__()
+        super().__init__()
         self.alpha = alpha
         self.scale = scale
 
@@ -35,8 +34,7 @@ class Net(paddle.nn.Layer):
         """
         forward
         """
-        x = paddle.nn.functional.selu(inputs, alpha=self.alpha, scale=self.scale)
-        return x
+        return paddle.nn.functional.selu(inputs, alpha=self.alpha, scale=self.scale)
 
 
 def test_nn_functional_selu_10():

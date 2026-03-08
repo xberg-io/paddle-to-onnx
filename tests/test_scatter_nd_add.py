@@ -22,14 +22,13 @@ class Net(paddle.nn.Layer):
     """
 
     def __init__(self):
-        super(Net, self).__init__()
+        super().__init__()
 
     def forward(self, inputs, _index, _updates):
         """
         forward
         """
-        x = paddle.scatter_nd_add(inputs, _index, _updates)
-        return x
+        return paddle.scatter_nd_add(inputs, _index, _updates)
 
 
 @_test_with_pir

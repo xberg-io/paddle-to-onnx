@@ -13,9 +13,7 @@
 # limitations under the License.
 
 import paddle
-from onnxbase import APIOnnx
-from onnxbase import randtool
-from onnxbase import _test_with_pir
+from onnxbase import APIOnnx, _test_with_pir, randtool
 
 
 class Net(paddle.nn.Layer):
@@ -24,7 +22,7 @@ class Net(paddle.nn.Layer):
     """
 
     def __init__(self):
-        super(Net, self).__init__()
+        super().__init__()
         self.weight_attr = paddle.framework.ParamAttr(
             name="linear_weight",
             initializer=paddle.nn.initializer.Uniform(low=-0.5, high=0.5),
@@ -41,8 +39,7 @@ class Net(paddle.nn.Layer):
         """
         forward
         """
-        x = self._linear(inputs)
-        return x
+        return self._linear(inputs)
 
 
 @_test_with_pir

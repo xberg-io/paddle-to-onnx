@@ -13,13 +13,12 @@
 # limitations under the License.
 
 import paddle
-from onnxbase import APIOnnx
-from onnxbase import _test_only_pir
+from onnxbase import APIOnnx, _test_only_pir
 
 
 class BaseNet(paddle.nn.Layer):
     def __init__(self, config):
-        super(BaseNet, self).__init__()
+        super().__init__()
         self.score_threshold = config["score_threshold"]
         self.nms_top_k = config["nms_top_k"]
         self.keep_top_k = config["keep_top_k"]

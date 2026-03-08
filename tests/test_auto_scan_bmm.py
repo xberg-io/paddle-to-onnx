@@ -12,10 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from auto_scan_test import OPConvertAutoScanTest, BaseNet
-import hypothesis.strategies as st
 import unittest
+
+import hypothesis.strategies as st
 import paddle
+from auto_scan_test import BaseNet, OPConvertAutoScanTest
 from onnxbase import _test_with_pir
 
 
@@ -28,8 +29,7 @@ class Net(BaseNet):
         """
         forward
         """
-        x = paddle.bmm(inputs1, inputs2)
-        return x
+        return paddle.bmm(inputs1, inputs2)
 
 
 class TestBmmConvert(OPConvertAutoScanTest):

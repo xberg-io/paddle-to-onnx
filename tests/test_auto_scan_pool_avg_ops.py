@@ -12,11 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from auto_scan_test import OPConvertAutoScanTest, BaseNet
+import unittest
+
 import hypothesis.strategies as st
 import numpy as np
-import unittest
 import paddle
+from auto_scan_test import BaseNet, OPConvertAutoScanTest
 
 
 class NetAvgpool1d(BaseNet):
@@ -32,7 +33,7 @@ class NetAvgpool1d(BaseNet):
         stride = self.config["stride"]
         padding = self.config["padding"]
         ceil_mode = self.config["ceil_mode"]
-        x = paddle.nn.functional.avg_pool1d(
+        return paddle.nn.functional.avg_pool1d(
             inputs,
             kernel_size,
             stride=stride,
@@ -40,7 +41,6 @@ class NetAvgpool1d(BaseNet):
             exclusive=True,
             ceil_mode=ceil_mode,
         )
-        return x
 
 
 class TestAvgpool1dConvert(OPConvertAutoScanTest):
@@ -122,7 +122,7 @@ class NetAvgpool2d(BaseNet):
         padding = self.config["padding"]
         ceil_mode = self.config["ceil_mode"]
         data_format = self.config["data_format"]
-        x = paddle.nn.functional.avg_pool2d(
+        return paddle.nn.functional.avg_pool2d(
             inputs,
             kernel_size,
             stride=stride,
@@ -132,8 +132,6 @@ class NetAvgpool2d(BaseNet):
             divisor_override=None,
             data_format=data_format,
         )
-
-        return x
 
 
 class TestAvgpool2dConvert(OPConvertAutoScanTest):
@@ -211,9 +209,9 @@ class TestAvgpool2dConvert(OPConvertAutoScanTest):
                 axis=0,
             ).tolist()
             if data_format == "NCHW":
-                padding = [[0, 0]] + [[0, 0]] + padding1 + padding2
+                padding = [[0, 0], [0, 0], *padding1, *padding2]
             else:
-                padding = [[0, 0]] + padding1 + padding2 + [[0, 0]]
+                padding = [[0, 0], *padding1, *padding2, [0, 0]]
         else:
             padding = 0
 
@@ -260,7 +258,7 @@ class NetAvgpool3d(BaseNet):
         padding = self.config["padding"]
         ceil_mode = self.config["ceil_mode"]
         data_format = self.config["data_format"]
-        x = paddle.nn.functional.avg_pool3d(
+        return paddle.nn.functional.avg_pool3d(
             inputs,
             kernel_size,
             stride=stride,
@@ -270,7 +268,6 @@ class NetAvgpool3d(BaseNet):
             divisor_override=None,
             data_format=data_format,
         )
-        return x
 
 
 class TestAvgpool3dConvert(OPConvertAutoScanTest):
@@ -360,9 +357,9 @@ class TestAvgpool3dConvert(OPConvertAutoScanTest):
                 axis=0,
             ).tolist()
             if data_format == "NCDHW":
-                padding = [[0, 0]] + [[0, 0]] + padding1 + padding2 + padding3
+                padding = [[0, 0], [0, 0], *padding1, *padding2, *padding3]
             else:
-                padding = [[0, 0]] + padding1 + padding2 + padding3 + [[0, 0]]
+                padding = [[0, 0], *padding1, *padding2, *padding3, [0, 0]]
         else:
             padding = 0
 

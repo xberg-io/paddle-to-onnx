@@ -22,16 +22,14 @@ class Net(paddle.nn.Layer):
     """
 
     def __init__(self):
-        super(Net, self).__init__()
+        super().__init__()
 
     def forward(self, shape):
         """
         forward
         """
         x = paddle.empty(shape, dtype=paddle.int64)
-        x = paddle.zeros_like(x)
-
-        return x
+        return paddle.zeros_like(x)
 
 
 @_test_with_pir

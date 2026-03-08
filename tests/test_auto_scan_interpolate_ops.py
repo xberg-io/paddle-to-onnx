@@ -12,11 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from auto_scan_test import OPConvertAutoScanTest, BaseNet
+import unittest
+
 import hypothesis.strategies as st
 import numpy as np
-import unittest
 import paddle
+from auto_scan_test import BaseNet, OPConvertAutoScanTest
 from onnxbase import _test_only_pir
 
 op_api_map = {
@@ -69,7 +70,7 @@ class Net(BaseNet):
         # align_corners True is only set with the interpolating modes: linear | bilinear | bicubic | trilinear
         if mode == "nearest":
             align_corners = False
-        x = paddle.nn.functional.interpolate(
+        return paddle.nn.functional.interpolate(
             x=inputs,
             size=size,
             scale_factor=scale_factor,
@@ -78,7 +79,6 @@ class Net(BaseNet):
             align_mode=align_mode,
             data_format=data_format,
         )
-        return x
 
 
 class TestInterpolateConvert(OPConvertAutoScanTest):
@@ -204,7 +204,7 @@ class Net1(BaseNet):
         # align_corners True is only set with the interpolating modes: linear | bilinear | bicubic | trilinear
         if mode == "nearest":
             align_corners = False
-        x = paddle.nn.functional.interpolate(
+        return paddle.nn.functional.interpolate(
             x=inputs,
             size=size,
             scale_factor=scale_factor,
@@ -213,7 +213,6 @@ class Net1(BaseNet):
             align_mode=align_mode,
             data_format=data_format,
         )
-        return x
 
 
 class TestInterpolateConvert1(OPConvertAutoScanTest):

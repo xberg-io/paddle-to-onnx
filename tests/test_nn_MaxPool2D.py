@@ -13,9 +13,7 @@
 # limitations under the License.
 
 import paddle
-from onnxbase import APIOnnx
-from onnxbase import randtool
-from onnxbase import _test_with_pir
+from onnxbase import APIOnnx, _test_with_pir, randtool
 
 
 class Net(paddle.nn.Layer):
@@ -33,7 +31,7 @@ class Net(paddle.nn.Layer):
         data_format="NCHW",
         name=None,
     ):
-        super(Net, self).__init__()
+        super().__init__()
         self._max_pool = paddle.nn.MaxPool2D(
             kernel_size=kernel_size,
             stride=stride,
@@ -48,8 +46,7 @@ class Net(paddle.nn.Layer):
         """
         forward
         """
-        x = self._max_pool(inputs)
-        return x
+        return self._max_pool(inputs)
 
 
 @_test_with_pir

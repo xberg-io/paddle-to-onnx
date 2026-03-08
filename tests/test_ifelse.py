@@ -18,13 +18,12 @@ from onnxbase import APIOnnx
 
 class BaseNet1(paddle.nn.Layer):
     def __init__(self):
-        super(BaseNet1, self).__init__()
+        super().__init__()
 
     def forward(self, inputs):
         if inputs == 1:
             return inputs * 1
-        else:
-            return inputs * 3
+        return inputs * 3
 
 
 def test_ifelse_1_true():
@@ -45,13 +44,12 @@ def test_ifelse_1_false():
 
 class BaseNet2(paddle.nn.Layer):
     def __init__(self):
-        super(BaseNet2, self).__init__()
+        super().__init__()
 
     def forward(self, cond, inputs):
         if cond == 1:
             return inputs * 1, inputs * 2
-        else:
-            return inputs * 3, inputs * 4
+        return inputs * 3, inputs * 4
 
 
 def test_ifelse_2_true():
@@ -72,13 +70,12 @@ def test_ifelse_2_false():
 
 class BaseNet3(paddle.nn.Layer):
     def __init__(self):
-        super(BaseNet3, self).__init__()
+        super().__init__()
 
     def forward(self, inputs):
         if inputs == 1:
             return 1
-        else:
-            return 2
+        return 2
 
 
 def test_ifelse_3_true():
@@ -99,13 +96,12 @@ def test_ifelse_3_false():
 
 class BaseNet4(paddle.nn.Layer):
     def __init__(self):
-        super(BaseNet4, self).__init__()
+        super().__init__()
 
     def forward(self, inputs):
         if inputs == 1:
             return inputs + 1
-        else:
-            return 2
+        return 2
 
 
 def test_ifelse_4_true():
@@ -126,13 +122,12 @@ def test_ifelse_4_false():
 
 class BaseNet5(paddle.nn.Layer):
     def __init__(self):
-        super(BaseNet5, self).__init__()
+        super().__init__()
 
     def forward(self, inputs):
         if inputs == 1:
             return 1, 2
-        else:
-            return 2, 3
+        return 2, 3
 
 
 def test_ifelse_5_true():

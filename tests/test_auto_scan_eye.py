@@ -12,10 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from auto_scan_test import OPConvertAutoScanTest, BaseNet
-import hypothesis.strategies as st
 import unittest
+
+import hypothesis.strategies as st
 import paddle
+from auto_scan_test import BaseNet, OPConvertAutoScanTest
 from onnxbase import _test_only_pir
 
 
@@ -35,8 +36,7 @@ class Net(BaseNet):
             if self.config["num_columns"] is not None:
                 num_columns = paddle.assign(self.config["num_columns"])
         dtype = self.config["dtype"]
-        x = paddle.eye(num_rows, num_columns=num_columns, dtype=dtype)
-        return x
+        return paddle.eye(num_rows, num_columns=num_columns, dtype=dtype)
 
 
 class TestEyeConvert(OPConvertAutoScanTest):

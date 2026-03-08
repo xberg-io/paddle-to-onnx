@@ -14,8 +14,7 @@
 
 import paddle
 import paddle.nn as nn
-from onnxbase import APIOnnx
-from onnxbase import randtool
+from onnxbase import APIOnnx, randtool
 
 
 class Net(paddle.nn.Layer):
@@ -24,15 +23,14 @@ class Net(paddle.nn.Layer):
     """
 
     def __init__(self, threshold=1):
-        super(Net, self).__init__()
+        super().__init__()
         self.threshold = threshold
 
     def forward(self, inputs):
         """
         forward
         """
-        x = nn.functional.thresholded_relu(inputs, threshold=self.threshold)
-        return x
+        return nn.functional.thresholded_relu(inputs, threshold=self.threshold)
 
 
 def test_nn_functional_thresholded_relu_10():
