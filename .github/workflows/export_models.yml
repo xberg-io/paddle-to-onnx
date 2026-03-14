@@ -38,7 +38,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           PIP_EXTRA_INDEX_URL="https://www.paddlepaddle.org.cn/packages/nightly/cpu/" python -m pip install paddlepaddle
-          python -m pip install paddle2onnx huggingface-hub onnx onnxruntime numpy
+          python -m pip install paddle2onnx huggingface-hub onnx onnxruntime numpy --only-binary=onnx
 
       - name: Dry run
         if: inputs.dry_run == true
