@@ -36,10 +36,10 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get install -y protobuf-compiler libprotobuf-dev libgoogle-glog-dev
           python -m pip install --upgrade pip
-          python -m pip install build wheel cmake pybind11
+          python -m pip install build wheel cmake pybind11 setuptools setuptools-scm
           PIP_EXTRA_INDEX_URL="https://www.paddlepaddle.org.cn/packages/nightly/cpu/" python -m pip install paddlepaddle
-          export pybind11_DIR=$(python -c "import pybind11; print(pybind11.get_cmake_dir())")
-          python -m pip install -e .
+          PYBIND11_DIR=$(python -c "import pybind11; print(pybind11.get_cmake_dir())")
+          CMAKE_ARGS="-Dpybind11_DIR=$PYBIND11_DIR" python -m pip install -e . --no-build-isolation
           python -m pip install huggingface-hub onnx onnxruntime numpy --only-binary=onnx
 
       - name: Dry run
