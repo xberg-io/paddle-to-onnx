@@ -34,7 +34,7 @@ jobs:
       - name: Install dependencies and build paddle2onnx
         if: inputs.dry_run != true
         run: |
-          sudo apt-get update && sudo apt-get install -y protobuf-compiler libprotobuf-dev
+          sudo apt-get update && sudo apt-get install -y protobuf-compiler libprotobuf-dev libgoogle-glog-dev
           python -m pip install --upgrade pip
           python -m pip install build wheel cmake pybind11
           PIP_EXTRA_INDEX_URL="https://www.paddlepaddle.org.cn/packages/nightly/cpu/" python -m pip install paddlepaddle
