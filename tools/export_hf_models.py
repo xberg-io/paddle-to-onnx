@@ -62,21 +62,74 @@ class ModelConfig:
     model_filename: str = "inference.json"
     params_filename: str = "inference.pdiparams"
     opset_version: int = 17
-    input_shape: tuple[int, ...] = (1, 3, 488, 488)
-    input_dtype: str = "float32"
+    # Map of input_name -> (shape, dtype). If None, auto-detected from the model.
+    inputs: dict[str, tuple[tuple[int, ...], str]] | None = None
 
 
 # Models to export — add new models here
 MODELS: dict[str, ModelConfig] = {
+    # --- Text Detection (v5 latest) ---
+    "PP-OCRv5_server_det": ModelConfig(
+        hf_repo="PaddlePaddle/PP-OCRv5_server_det",
+    ),
+    "PP-OCRv5_mobile_det": ModelConfig(
+        hf_repo="PaddlePaddle/PP-OCRv5_mobile_det",
+    ),
+    # --- Text Recognition (v5 latest) ---
+    "PP-OCRv5_server_rec": ModelConfig(
+        hf_repo="PaddlePaddle/PP-OCRv5_server_rec",
+    ),
+    "PP-OCRv5_mobile_rec": ModelConfig(
+        hf_repo="PaddlePaddle/PP-OCRv5_mobile_rec",
+    ),
+    "en_PP-OCRv5_mobile_rec": ModelConfig(
+        hf_repo="PaddlePaddle/en_PP-OCRv5_mobile_rec",
+    ),
+    # --- Document Layout Analysis ---
+    "PP-DocLayoutV3": ModelConfig(
+        hf_repo="PaddlePaddle/PP-DocLayoutV3",
+        inputs={
+            "im_shape": ((1, 2), "float32"),
+            "image": ((1, 3, 800, 800), "float32"),
+            "scale_factor": ((1, 2), "float32"),
+        },
+    ),
+    # --- Table Structure Recognition ---
     "SLANet_plus": ModelConfig(
         hf_repo="PaddlePaddle/SLANet_plus",
-        opset_version=17,
-        input_shape=(1, 3, 488, 488),
     ),
-    "SLANet": ModelConfig(
-        hf_repo="PaddlePaddle/SLANet",
-        opset_version=17,
-        input_shape=(1, 3, 488, 488),
+    "SLANeXt_wired": ModelConfig(
+        hf_repo="PaddlePaddle/SLANeXt_wired",
+    ),
+    "SLANeXt_wireless": ModelConfig(
+        hf_repo="PaddlePaddle/SLANeXt_wireless",
+    ),
+    # --- Table Cell Detection ---
+    "RT-DETR-L_wired_table_cell_det": ModelConfig(
+        hf_repo="PaddlePaddle/RT-DETR-L_wired_table_cell_det",
+        inputs={
+            "im_shape": ((1, 2), "float32"),
+            "image": ((1, 3, 640, 640), "float32"),
+            "scale_factor": ((1, 2), "float32"),
+        },
+    ),
+    "RT-DETR-L_wireless_table_cell_det": ModelConfig(
+        hf_repo="PaddlePaddle/RT-DETR-L_wireless_table_cell_det",
+        inputs={
+            "im_shape": ((1, 2), "float32"),
+            "image": ((1, 3, 640, 640), "float32"),
+            "scale_factor": ((1, 2), "float32"),
+        },
+    ),
+    # --- Document Orientation / Classification ---
+    "PP-LCNet_x1_0_doc_ori": ModelConfig(
+        hf_repo="PaddlePaddle/PP-LCNet_x1_0_doc_ori",
+    ),
+    "PP-LCNet_x1_0_textline_ori": ModelConfig(
+        hf_repo="PaddlePaddle/PP-LCNet_x1_0_textline_ori",
+    ),
+    "PP-LCNet_x1_0_table_cls": ModelConfig(
+        hf_repo="PaddlePaddle/PP-LCNet_x1_0_table_cls",
     ),
 }
 
@@ -172,6 +225,41 @@ def fix_ort_compatibility(model_path: Path) -> None:
         onnx.save(model, str(model_path))
 
 
+ONNX_DTYPE_TO_NP = {
+    1: "float32",
+    2: "uint8",
+    3: "int8",
+    5: "int16",
+    6: "int32",
+    7: "int64",
+    10: "float16",
+    11: "float64",
+}
+
+
+def _build_dummy_inputs(
+    config: ModelConfig, session: ort.InferenceSession
+) -> dict[str, np.ndarray]:
+    """Build dummy input tensors for validation, using config overrides or model metadata."""
+    input_feed = {}
+    for inp in session.get_inputs():
+        if config.inputs and inp.name in config.inputs:
+            shape, dtype = config.inputs[inp.name]
+        else:
+            # Auto-detect from model: replace dynamic dims with reasonable defaults
+            shape = tuple(d if isinstance(d, int) and d > 0 else 1 for d in inp.shape)
+            dtype = inp.type.replace("tensor(", "").replace(")", "")
+        # Map ORT type strings to numpy dtypes (np.float was removed in numpy 2.0)
+        np_dtype = {
+            "float": np.float32,
+            "double": np.float64,
+            "int64": np.int64,
+            "int32": np.int32,
+        }.get(dtype, getattr(np, dtype, np.float32))
+        input_feed[inp.name] = np.random.randn(*shape).astype(np_dtype)
+    return input_feed
+
+
 def validate_onnx(config: ModelConfig, model_path: Path) -> dict:
     """Validate ONNX model with checker and ORT inference."""
     # ONNX checker
@@ -182,9 +270,8 @@ def validate_onnx(config: ModelConfig, model_path: Path) -> dict:
     # ORT inference
     session = ort.InferenceSession(str(model_path), providers=["CPUExecutionProvider"])
 
-    inp = session.get_inputs()[0]
-    dummy = np.random.randn(*config.input_shape).astype(getattr(np, config.input_dtype))
-    results = session.run(None, {inp.name: dummy})
+    input_feed = _build_dummy_inputs(config, session)
+    results = session.run(None, input_feed)
 
     outputs = []
     for i, r in enumerate(results):
