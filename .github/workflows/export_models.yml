@@ -7,6 +7,10 @@ on:
         description: 'Model to export (e.g. SLANet_plus), or "all"'
         required: true
         default: 'all'
+      dry_run:
+        description: 'Dry run (list models without exporting)'
+        type: boolean
+        default: false
   release:
     types: [created]
 
@@ -26,9 +30,11 @@ jobs:
           python-version: '3.13'
 
       - name: Install system dependencies
+        if: inputs.dry_run != true
         run: sudo apt-get update && sudo apt-get install -y protobuf-compiler libprotobuf-dev libglog-dev pybind11-dev
 
       - name: Install Python dependencies
+        if: inputs.dry_run != true
         run: |
           python -m pip install --upgrade pip
           python -m pip install build wheel
@@ -36,7 +42,15 @@ jobs:
           python -m pip install -e .
           python -m pip install huggingface-hub onnx onnxruntime numpy
 
+      - name: Dry run
+        if: inputs.dry_run == true
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install huggingface-hub
+          python tools/export_hf_models.py --all --output-dir ./exports --dry-run
+
       - name: Export models
+        if: inputs.dry_run != true
         run: |
           MODEL="${{ github.event.inputs.model || 'all' }}"
           if [ "$MODEL" = "all" ] || [ "${{ github.event_name }}" = "release" ]; then
@@ -46,6 +60,7 @@ jobs:
           fi
 
       - name: Upload artifacts
+        if: inputs.dry_run != true
         uses: actions/upload-artifact@v4
         with:
           name: onnx-models

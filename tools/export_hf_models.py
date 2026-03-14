@@ -360,6 +360,11 @@ def main():
         default=None,
         help="Path to write JSON manifest of exported models",
     )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="List models that would be exported without actually exporting",
+    )
     args = parser.parse_args()
 
     output_dir = Path(args.output_dir)
@@ -377,6 +382,14 @@ def main():
             )
             sys.exit(1)
         models_to_export = {model_key: MODELS[model_key]}
+
+    if args.dry_run:
+        logger.info("Dry run — would export %d models:", len(models_to_export))
+        for name, config in models_to_export.items():
+            logger.info(
+                "  %s (%s, opset %d)", name, config.hf_repo, config.opset_version
+            )
+        return
 
     manifest = {}
     failed = []
