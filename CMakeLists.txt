@@ -36,8 +36,11 @@ configure_file(${PROJECT_SOURCE_DIR}/paddle2onnx/mappers_registry.h.in
 
 # --- Dependencies ---
 
-# Protobuf (system-installed, CONFIG mode for proper targets)
-find_package(Protobuf REQUIRED CONFIG)
+# Protobuf (try CONFIG mode first, fall back to module mode)
+find_package(Protobuf CONFIG)
+if(NOT Protobuf_FOUND)
+  find_package(Protobuf REQUIRED)
+endif()
 
 include(FetchContent)
 
