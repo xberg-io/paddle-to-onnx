@@ -1,0 +1,58 @@
+name: Export PaddlePaddle Models to ONNX
+
+on:
+  workflow_dispatch:
+    inputs:
+      model:
+        description: 'Model to export (e.g. SLANet_plus), or "all"'
+        required: true
+        default: 'all'
+  schedule:
+    # Weekly on Monday at 06:00 UTC
+    - cron: '0 6 * * 1'
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.13']
+    steps:
+      - name: Checkout Paddle2ONNX
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install system dependencies
+        run: sudo apt-get update && sudo apt-get install -y protobuf-compiler libprotobuf-dev libglog-dev pybind11-dev
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install build wheel
+          PIP_EXTRA_INDEX_URL="https://www.paddlepaddle.org.cn/packages/nightly/cpu/" python -m pip install paddlepaddle
+          python -m pip install -e .
+          python -m pip install huggingface-hub onnx onnxruntime numpy
+
+      - name: Export models
+        run: |
+          if [ "${{ github.event.inputs.model || 'all' }}" = "all" ]; then
+            python tools/export_hf_models.py --all --output-dir ./exports
+          else
+            python tools/export_hf_models.py --model "${{ github.event.inputs.model }}" --output-dir ./exports
+          fi
+
+      - name: Upload ONNX models as artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: onnx-models
+          path: |
+            exports/*.onnx
+            exports/manifest.json
+          retention-days: 90
