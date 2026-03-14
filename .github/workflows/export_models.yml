@@ -38,6 +38,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install build wheel cmake pybind11
           PIP_EXTRA_INDEX_URL="https://www.paddlepaddle.org.cn/packages/nightly/cpu/" python -m pip install paddlepaddle
+          export pybind11_DIR=$(python -c "import pybind11; print(pybind11.get_cmake_dir())")
           python -m pip install -e .
           python -m pip install huggingface-hub onnx onnxruntime numpy --only-binary=onnx
 
