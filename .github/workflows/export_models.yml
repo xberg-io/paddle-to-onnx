@@ -7,27 +7,23 @@ on:
         description: 'Model to export (e.g. SLANet_plus), or "all"'
         required: true
         default: 'all'
-  schedule:
-    # Weekly on Monday at 06:00 UTC
-    - cron: '0 6 * * 1'
+  release:
+    types: [created]
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   export:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ['3.13']
     steps:
-      - name: Checkout Paddle2ONNX
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: '3.13'
 
       - name: Install system dependencies
         run: sudo apt-get update && sudo apt-get install -y protobuf-compiler libprotobuf-dev libglog-dev pybind11-dev
@@ -42,13 +38,14 @@ jobs:
 
       - name: Export models
         run: |
-          if [ "${{ github.event.inputs.model || 'all' }}" = "all" ]; then
+          MODEL="${{ github.event.inputs.model || 'all' }}"
+          if [ "$MODEL" = "all" ] || [ "${{ github.event_name }}" = "release" ]; then
             python tools/export_hf_models.py --all --output-dir ./exports
           else
-            python tools/export_hf_models.py --model "${{ github.event.inputs.model }}" --output-dir ./exports
+            python tools/export_hf_models.py --model "$MODEL" --output-dir ./exports
           fi
 
-      - name: Upload ONNX models as artifacts
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: onnx-models
@@ -56,3 +53,12 @@ jobs:
             exports/*.onnx
             exports/manifest.json
           retention-days: 90
+
+      - name: Upload to release
+        if: github.event_name == 'release'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for f in exports/*.onnx exports/manifest.json; do
+            gh release upload "${{ github.event.release.tag_name }}" "$f" --clobber
+          done
