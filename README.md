@@ -1,6 +1,6 @@
 # Paddle2ONNX — ONNX Model Export Pipeline
 
-This is a fork of [PaddlePaddle/Paddle2ONNX](https://github.com/PaddlePaddle/Paddle2ONNX), maintained by [kreuzberg-dev](https://github.com/kreuzberg-dev) to provide automated ONNX model exports of PaddleOCR inference models for use with ONNX Runtime.
+This is a detached fork of [PaddlePaddle/Paddle2ONNX](https://github.com/PaddlePaddle/Paddle2ONNX), maintained by [kreuzberg-dev](https://github.com/kreuzberg-dev) to provide automated ONNX model exports of PaddleOCR inference models for use with ONNX Runtime.
 
 ## Purpose
 
