@@ -23,28 +23,28 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
 
-      - name: Install system dependencies
-        if: inputs.dry_run != true
-        run: sudo apt-get update && sudo apt-get install -y protobuf-compiler libprotobuf-dev
-
-      - name: Install Python dependencies
+      - name: Install dependencies and build paddle2onnx
         if: inputs.dry_run != true
         run: |
+          sudo apt-get update && sudo apt-get install -y protobuf-compiler libprotobuf-dev
           python -m pip install --upgrade pip
+          python -m pip install build wheel cmake pybind11
           PIP_EXTRA_INDEX_URL="https://www.paddlepaddle.org.cn/packages/nightly/cpu/" python -m pip install paddlepaddle
-          python -m pip install paddle2onnx huggingface-hub onnx onnxruntime numpy --only-binary=onnx
+          python -m pip install -e .
+          python -m pip install huggingface-hub onnx onnxruntime numpy --only-binary=onnx
 
       - name: Dry run
         if: inputs.dry_run == true
         run: |
-          python -m pip install --upgrade pip
-          python -m pip install huggingface-hub
+          python -m pip install --upgrade pip huggingface-hub
           python tools/export_hf_models.py --all --output-dir ./exports --dry-run
 
       - name: Export models
