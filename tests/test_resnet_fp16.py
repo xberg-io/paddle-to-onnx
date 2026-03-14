@@ -16,10 +16,10 @@ import os
 
 import numpy as np
 import onnxruntime
-import paddle
-from paddle.inference import PlaceType, PrecisionType, convert_to_mixed_precision
 
+import paddle
 import paddle2onnx
+from paddle.inference import PlaceType, PrecisionType, convert_to_mixed_precision
 
 
 def test_resnet_fp16_convert():

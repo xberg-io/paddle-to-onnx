@@ -15,8 +15,9 @@
 import unittest
 
 import hypothesis.strategies as st
-import paddle
 from auto_scan_test import BaseNet, OPConvertAutoScanTest
+
+import paddle
 
 op_api_map = {
     "fill_any_like": paddle.ones_like,

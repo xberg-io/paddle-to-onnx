@@ -16,8 +16,9 @@ import random
 import unittest
 
 import hypothesis.strategies as st
-import paddle
 from auto_scan_test import BaseNet, OPConvertAutoScanTest
+
+import paddle
 
 
 class Net(BaseNet):

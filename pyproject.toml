@@ -75,6 +75,7 @@ lint.ignore = [
   "PERF401", # manual list comprehension - often less readable
   "RET504",  # unnecessary assignment before return - often clearer with assignment
   "SIM108",  # ternary operator - often less readable
+  "SIM112",  # capitalized env vars - PaddlePaddle uses lowercase FLAGS_* convention
   "SIM115",  # open context manager - not always applicable
 ]
 

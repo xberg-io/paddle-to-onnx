@@ -136,7 +136,6 @@ class cmake_build(setuptools.Command):
                     cmake_args.extend(["-A", "x64", "-T", "host=x64"])
                 else:
                     cmake_args.extend(["-A", "Win32", "-T", "host=x86"])
-                cmake_args.extend(["-G", "Visual Studio 16 2019"])
             else:
                 cmake_args.append(
                     f"-DPYTHON_LIBRARY={sysconfig.get_python_lib(standard_lib=True)}"

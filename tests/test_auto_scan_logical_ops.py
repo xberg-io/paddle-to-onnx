@@ -15,8 +15,9 @@
 import unittest
 
 import hypothesis.strategies as st
-import paddle
 from auto_scan_test import BaseNet, OPConvertAutoScanTest
+
+import paddle
 
 op_api_map = {
     "greater_equal": paddle.greater_equal,

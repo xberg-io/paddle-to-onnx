@@ -15,8 +15,9 @@
 import unittest
 
 import hypothesis.strategies as st
-import paddle
 from auto_scan_test import BaseNet, OPConvertAutoScanTest
+
+import paddle
 
 op_api_map = {
     "hard_shrink": paddle.nn.functional.hardshrink,

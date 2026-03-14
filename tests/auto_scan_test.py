@@ -22,9 +22,10 @@ from itertools import product
 
 import hypothesis.strategies as st
 import numpy as np
-import paddle
 from hypothesis import HealthCheck, given, settings
 from onnxbase import APIOnnx, randtool
+
+import paddle
 
 paddle.set_device("cpu")
 
@@ -74,7 +75,6 @@ class OPConvertAutoScanTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         np.random.seed(1024)
-        paddle.enable_static()
         self.num_ran_models = 0
 
     # @_test_with_pir

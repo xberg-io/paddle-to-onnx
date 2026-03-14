@@ -20,11 +20,12 @@ import time
 import unittest
 
 import numpy as np
+from PIL import Image
+
 import paddle
 from paddle.dataset.common import download
 from paddle.static.io import load_inference_model
 from paddle.static.quantization import PostTrainingQuantization
-from PIL import Image
 
 if platform.system() == "Windows":
     os.system("set no_proxy=bcebos.com")
