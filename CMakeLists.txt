@@ -231,7 +231,8 @@ if(BUILD_PADDLE2ONNX_PYTHON)
     PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
             $<INSTALL_INTERFACE:include>
             ${PYTHON_INCLUDE_DIR}
-            ${PADDLE_INCLUDE_DIR})
+            ${PADDLE_INCLUDE_DIR}
+            ${pybind11_INCLUDE_DIRS})
 
   if(APPLE)
     set_target_properties(paddle2onnx_cpp2py_export
