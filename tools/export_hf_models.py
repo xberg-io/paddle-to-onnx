@@ -39,7 +39,7 @@ import numpy as np
 import onnx
 import onnxruntime as ort
 from huggingface_hub import hf_hub_download
-from onnx import TensorProto, helper
+from onnx import helper
 
 import paddle2onnx
 
@@ -171,13 +171,28 @@ def export_to_onnx(config: ModelConfig, model_dir: Path, output_path: Path) -> N
     logger.info("Exported to %s", output_path)
 
 
+def _promote_scalar_to_1d(shape_proto, dtype: int) -> bool:
+    """Change a scalar shape declaration to [1]. Returns True if changed."""
+    dims = [d.dim_value or d.dim_param for d in shape_proto.dim]
+    if dims == []:
+        shape_proto.CopyFrom(
+            helper.make_tensor_type_proto(dtype, [1]).tensor_type.shape
+        )
+        return True
+    return False
+
+
 def fix_ort_compatibility(model_path: Path) -> None:
     """Apply post-export fixes for ORT compatibility.
 
-    Paddle2ONNX exports Loop nodes with scalar ([]) condition declarations,
-    but ORT's shape inference computes them as [1]-shaped. This mismatch
-    causes ORT to reject the model. We fix it by updating the declarations
-    to match what ORT expects.
+    Paddle2ONNX exports Loop nodes where the ONNX Loop spec mandates the
+    iteration counter as a [1]-shaped tensor, but scalar ([]) shapes are used
+    for loop-carried state, conditions, and If branch outputs. ORT's shape
+    inference propagates [1] from the iteration counter through comparison and
+    logical ops, then rejects the model when it hits a [] declaration.
+
+    The fix: promote ALL scalar shapes to [1] in the Loop body, its If
+    sub-branches, and the graph-level Constants that feed into the Loop.
     """
     model = onnx.load(str(model_path))
     fixed = False
@@ -185,43 +200,79 @@ def fix_ort_compatibility(model_path: Path) -> None:
     for node in model.graph.node:
         if node.op_type != "Loop":
             continue
+
+        loop_inputs = set(node.input)
+
+        # Fix graph-level Constant nodes that feed scalar values into the Loop
+        for gnode in model.graph.node:
+            if gnode.op_type == "Constant" and any(
+                o in loop_inputs for o in gnode.output
+            ):
+                for a in gnode.attribute:
+                    if a.name == "value" and list(a.t.dims) == []:
+                        a.t.dims[:] = [1]
+                        fixed = True
+
+        # Fix graph-level initializers that feed into the Loop
+        for init in model.graph.initializer:
+            if init.name in loop_inputs and list(init.dims) == []:
+                init.dims[:] = [1]
+                fixed = True
+
         for attr in node.attribute:
             if attr.name != "body":
                 continue
             body = attr.g
 
-            # Fix body outputs: logical_and condition should be [1] not []
-            for out in body.output:
-                if "logical_and" in out.name:
-                    dims = [d.dim_value for d in out.type.tensor_type.shape.dim]
-                    if dims == []:
-                        out.type.tensor_type.shape.CopyFrom(
-                            helper.make_tensor_type_proto(
-                                TensorProto.BOOL, [1]
-                            ).tensor_type.shape
-                        )
-                        fixed = True
-
-            # Fix body inputs to match
+            # Fix all scalar body inputs, outputs, value_info
             for inp in body.input:
-                if "logical_and" in inp.name:
-                    dims = [d.dim_value for d in inp.type.tensor_type.shape.dim]
-                    if dims == []:
-                        inp.type.tensor_type.shape.CopyFrom(
-                            helper.make_tensor_type_proto(
-                                TensorProto.BOOL, [1]
-                            ).tensor_type.shape
-                        )
-                        fixed = True
+                fixed |= _promote_scalar_to_1d(
+                    inp.type.tensor_type.shape, inp.type.tensor_type.elem_type
+                )
+            for out in body.output:
+                fixed |= _promote_scalar_to_1d(
+                    out.type.tensor_type.shape, out.type.tensor_type.elem_type
+                )
+            for vi in body.value_info:
+                fixed |= _promote_scalar_to_1d(
+                    vi.type.tensor_type.shape, vi.type.tensor_type.elem_type
+                )
 
-    # Fix corresponding initializers
-    for init in model.graph.initializer:
-        if "logical_and" in init.name and list(init.dims) == []:
-            init.dims[:] = [1]
-            fixed = True
+            # Fix scalar initializers and Constant nodes in body
+            for init in body.initializer:
+                if list(init.dims) == []:
+                    init.dims[:] = [1]
+                    fixed = True
+            for n in body.node:
+                if n.op_type == "Constant":
+                    for a in n.attribute:
+                        if a.name == "value" and list(a.t.dims) == []:
+                            a.t.dims[:] = [1]
+                            fixed = True
+
+                # Fix If sub-branches inside the Loop body
+                if n.op_type == "If":
+                    for if_attr in n.attribute:
+                        if if_attr.name in ("then_branch", "else_branch"):
+                            branch = if_attr.g
+                            for out in branch.output:
+                                fixed |= _promote_scalar_to_1d(
+                                    out.type.tensor_type.shape,
+                                    out.type.tensor_type.elem_type,
+                                )
+                            for bn in branch.node:
+                                if bn.op_type == "Constant":
+                                    for a in bn.attribute:
+                                        if a.name == "value" and list(a.t.dims) == []:
+                                            a.t.dims[:] = [1]
+                                            fixed = True
+                            for init in branch.initializer:
+                                if list(init.dims) == []:
+                                    init.dims[:] = [1]
+                                    fixed = True
 
     if fixed:
-        logger.info("Applied ORT Loop condition shape fix")
+        logger.info("Applied ORT Loop/If scalar-to-[1] shape fix")
         onnx.save(model, str(model_path))
 
 
