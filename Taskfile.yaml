@@ -1,0 +1,62 @@
+version: "3"
+
+vars:
+  EXPORT_DIR: /tmp/paddle-to-onnx-exports
+
+tasks:
+  setup:
+    desc: "Install dependencies and build the C++ extension"
+    cmds:
+      - uv sync
+      - uv pip install -e .
+    sources:
+      - pyproject.toml
+      - uv.lock
+      - CMakeLists.txt
+      - setup.py
+
+  build:
+    desc: "Build the C++ extension (setuptools cmake build)"
+    cmds:
+      - uv pip install -e .
+
+  export:slanet:
+    desc: "Export SLANet_plus to ONNX with ORT compatibility fix"
+    deps: [build]
+    cmds:
+      - mkdir -p "{{.EXPORT_DIR}}"
+      - uv run python tools/export_hf_models.py --model SLANet_plus --output-dir "{{.EXPORT_DIR}}"
+
+  export:all:
+    desc: "Export all configured models to ONNX"
+    deps: [build]
+    cmds:
+      - mkdir -p "{{.EXPORT_DIR}}"
+      - uv run python tools/export_hf_models.py --all --output-dir "{{.EXPORT_DIR}}"
+
+  export:
+    desc: "Export a specific model (usage: task export -- ModelName)"
+    deps: [build]
+    cmds:
+      - mkdir -p "{{.EXPORT_DIR}}"
+      - uv run python tools/export_hf_models.py --model "{{.CLI_ARGS}}" --output-dir "{{.EXPORT_DIR}}"
+
+  lint:
+    desc: "Run ruff linter"
+    cmds:
+      - uv run ruff check .
+
+  format:
+    desc: "Run ruff formatter"
+    cmds:
+      - uv run ruff format .
+
+  test:
+    desc: "Run tests"
+    cmds:
+      - uv run pytest tests/
+
+  clean:
+    desc: "Clean build artifacts"
+    cmds:
+      - rm -rf .setuptools-cmake-build build dist *.egg-info
