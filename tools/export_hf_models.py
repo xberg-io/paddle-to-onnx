@@ -140,6 +140,12 @@ def download_model(config: ModelConfig, target_dir: Path) -> Path:
     for fname in [config.model_filename, config.params_filename]:
         hf_hub_download(config.hf_repo, fname, local_dir=str(target_dir))
         logger.info("Downloaded %s/%s", config.hf_repo, fname)
+    # Download config.json if available (contains character dict, preprocessing info)
+    try:
+        hf_hub_download(config.hf_repo, "config.json", local_dir=str(target_dir))
+        logger.info("Downloaded %s/config.json", config.hf_repo)
+    except Exception:
+        pass  # Not all models have config.json (e.g. PP-DocLayoutV3)
     return target_dir
 
 
@@ -260,6 +266,62 @@ def fix_ort_compatibility(model_path: Path) -> None:
         onnx.save(model, str(model_path))
 
 
+def make_inputs_dynamic(model_path: Path) -> None:
+    """Make batch, height, and width dimensions dynamic for 4D image inputs.
+
+    Applies to all 4D (NCHW) inputs in the graph. Non-image inputs like
+    im_shape (1,2) and scale_factor (1,2) are naturally skipped since they
+    are not 4D. Dimensions that are already dynamic are left unchanged.
+    """
+    model = onnx.load(str(model_path))
+    changed = False
+
+    for inp in model.graph.input:
+        shape = inp.type.tensor_type.shape
+        dims = list(shape.dim)
+        # Only process 4D inputs (NCHW image tensors)
+        if len(dims) != 4:
+            continue
+
+        # dim 0 = batch, dim 2 = height, dim 3 = width
+        for idx, name in [(0, "None"), (2, "?"), (3, "?")]:
+            if not dims[idx].dim_param:  # skip already-dynamic dims
+                dims[idx].dim_param = name
+                changed = True
+
+    if changed:
+        onnx.save(model, str(model_path))
+        logger.info("Made image inputs dynamic (batch, height, width)")
+
+
+def embed_character_dict(model_dir: Path, onnx_path: Path) -> None:
+    """Embed character dictionary from config.json into ONNX model metadata.
+
+    Reads PostProcess.character_dict from config.json (a JSON list of characters)
+    and stores it as newline-separated text in the ONNX model's metadata under
+    the key "character", matching the RapidOCR convention.
+    """
+    config_path = model_dir / "config.json"
+    if not config_path.exists():
+        return
+
+    with open(config_path) as f:
+        config_data = json.load(f)
+
+    char_dict = config_data.get("PostProcess", {}).get("character_dict")
+    if not char_dict:
+        return
+
+    model = onnx.load(str(onnx_path))
+    meta = model.metadata_props.add()
+    meta.key = "character"
+    meta.value = "\n".join(char_dict)
+    onnx.save(model, str(onnx_path))
+    logger.info(
+        "Embedded character dictionary (%d chars) into ONNX metadata", len(char_dict)
+    )
+
+
 ONNX_DTYPE_TO_NP = {
     1: "float32",
     2: "uint8",
@@ -353,7 +415,9 @@ def export_model(name: str, config: ModelConfig, output_dir: Path) -> dict | Non
         onnx_path = output_dir / f"{name}.onnx"
         export_to_onnx(config, model_dir, onnx_path)
 
-    fix_ort_compatibility(onnx_path)
+        fix_ort_compatibility(onnx_path)
+        make_inputs_dynamic(onnx_path)
+        embed_character_dict(model_dir, onnx_path)
 
     info = validate_onnx(config, onnx_path)
     logger.info("SHA256: %s", info["sha256"])
