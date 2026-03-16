@@ -191,8 +191,11 @@ def fix_ort_compatibility(model_path: Path) -> None:
     inference propagates [1] from the iteration counter through comparison and
     logical ops, then rejects the model when it hits a [] declaration.
 
-    The fix: promote ALL scalar shapes to [1] in the Loop body, its If
-    sub-branches, and the graph-level Constants that feed into the Loop.
+    Strategy: selectively promote scalar shapes to [1] ONLY at the Loop/If
+    boundary (inputs, outputs, graph-level feeds). Do NOT promote body-internal
+    Constants, initializers, or value_info — those feed the If condition and
+    other internal logic. Promoting them changes Reshape target shapes, breaking
+    the autoregressive decoder (garbled token sequences).
     """
     model = onnx.load(str(model_path))
     fixed = False
@@ -224,7 +227,8 @@ def fix_ort_compatibility(model_path: Path) -> None:
                 continue
             body = attr.g
 
-            # Fix all scalar body inputs, outputs, value_info
+            # Fix Loop body inputs and outputs ONLY (carried state boundary).
+            # These must match [1] shapes for ORT's Loop shape inference.
             for inp in body.input:
                 fixed |= _promote_scalar_to_1d(
                     inp.type.tensor_type.shape, inp.type.tensor_type.elem_type
@@ -233,24 +237,14 @@ def fix_ort_compatibility(model_path: Path) -> None:
                 fixed |= _promote_scalar_to_1d(
                     out.type.tensor_type.shape, out.type.tensor_type.elem_type
                 )
-            for vi in body.value_info:
-                fixed |= _promote_scalar_to_1d(
-                    vi.type.tensor_type.shape, vi.type.tensor_type.elem_type
-                )
 
-            # Fix scalar initializers and Constant nodes in body
-            for init in body.initializer:
-                if list(init.dims) == []:
-                    init.dims[:] = [1]
-                    fixed = True
+            # Do NOT promote body.value_info, body Constants, or body
+            # initializers — these feed internal computation (If conditions,
+            # Reshape targets) and promoting them breaks autoregressive logic.
+
+            # Fix If sub-branch outputs ONLY (not internal Constants/initializers).
+            # Branch outputs must match Loop body output shapes.
             for n in body.node:
-                if n.op_type == "Constant":
-                    for a in n.attribute:
-                        if a.name == "value" and list(a.t.dims) == []:
-                            a.t.dims[:] = [1]
-                            fixed = True
-
-                # Fix If sub-branches inside the Loop body
                 if n.op_type == "If":
                     for if_attr in n.attribute:
                         if if_attr.name in ("then_branch", "else_branch"):
@@ -260,19 +254,9 @@ def fix_ort_compatibility(model_path: Path) -> None:
                                     out.type.tensor_type.shape,
                                     out.type.tensor_type.elem_type,
                                 )
-                            for bn in branch.node:
-                                if bn.op_type == "Constant":
-                                    for a in bn.attribute:
-                                        if a.name == "value" and list(a.t.dims) == []:
-                                            a.t.dims[:] = [1]
-                                            fixed = True
-                            for init in branch.initializer:
-                                if list(init.dims) == []:
-                                    init.dims[:] = [1]
-                                    fixed = True
 
     if fixed:
-        logger.info("Applied ORT Loop/If scalar-to-[1] shape fix")
+        logger.info("Applied ORT Loop/If selective scalar-to-[1] shape fix")
         onnx.save(model, str(model_path))
 
 
