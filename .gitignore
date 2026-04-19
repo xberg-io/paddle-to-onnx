@@ -46,3 +46,6 @@ tools/onnx/__pycache__*
 CLAUDE.md
 GEMINI.md
 AGENTS.md
+
+# AI Rules generated files
+.mcp.json
