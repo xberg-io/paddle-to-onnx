@@ -49,3 +49,10 @@ AGENTS.md
 
 # AI Rules generated files
 .mcp.json
+
+# AI Rules generated files
+.github/copilot-instructions.md
+
+# AI Rules generated files
+.agents/
+.cursor/
