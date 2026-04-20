@@ -39,20 +39,29 @@ tests/*/__pycache_*
 tests/*/*.info
 tools/onnx/__pycache__*
 
-# AI Rules generated files
+# BEGIN ai-rulez (DO NOT EDIT - managed by ai-rulez)
+.agents/
 .claude/
-.gemini/
 .codex/
+.cursor/
+.github/agents/code-reviewer.agent.md
+.github/agents/docs-writer.agent.md
+.github/agents/ffi-engineer.agent.md
+.github/agents/performance-engineer.agent.md
+.github/agents/polyglot-architect.agent.md
+.github/agents/rust-core-engineer.agent.md
+.github/agents/security-auditor.agent.md
+.github/copilot-instructions.md
+.github/skills/common-task-commands/SKILL.md
+.github/skills/quick-start/SKILL.md
+.mcp.json
+AGENTS.md
 CLAUDE.md
 GEMINI.md
-AGENTS.md
+# END ai-rulez
 
-# AI Rules generated files
-.mcp.json
-
-# AI Rules generated files
-.github/copilot-instructions.md
-
-# AI Rules generated files
-.agents/
-.cursor/
+# Additional generated artifacts
+.remote-cache/
+.alef/
+.gemini/
+GEMINI.md
