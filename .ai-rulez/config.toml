@@ -1,0 +1,18 @@
+# AI-Rulez Configuration (migrated to V4 TOML format)
+# Documentation: https://github.com/Goldziher/ai-rulez
+
+version = '4.0'
+name = 'Paddle2ONNX'
+description = 'Convert PaddlePaddle models to ONNX format'
+gitignore = true
+presets = ['claude', 'copilot', 'cursor', 'antigravity', 'codex']
+builtins = ['python', 'security', 'git-workflow', 'code-quality', 'testing', 'token-efficiency', 'default-commands']
+
+[header]
+style = 'minimal'
+
+[[includes]]
+name = 'kreuzberg-core'
+source = 'https://github.com/kreuzberg-dev/ai-rulez.git'
+path = 'modules/core'
+merge_strategy = 'local-override'
