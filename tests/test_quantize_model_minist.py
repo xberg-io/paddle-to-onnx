@@ -18,6 +18,7 @@ import time
 import unittest
 
 import numpy as np
+
 import paddle
 from paddle.static.quantization import PostTrainingQuantization
 

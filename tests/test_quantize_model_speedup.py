@@ -18,8 +18,9 @@ import time
 import unittest
 
 import numpy as np
-import paddle
 from fake_quant import _HAS_IR_GRAPH, post_quant_fake
+
+import paddle
 
 paddle.enable_static()
 
