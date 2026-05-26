@@ -1,56 +1,46 @@
 default_install_hook_types:
-  - pre-commit
-  - commit-msg
+- pre-commit
+- commit-msg
+default_stages:
+- pre-commit
 exclude: ^third_party/|vendor/|node_modules/|dist/|\.setuptools-cmake-build/|patches/
-
 repos:
-  # Commit message linting
-  - repo: https://github.com/Goldziher/gitfluff
-    rev: v0.8.0
-    hooks:
-      - id: gitfluff-lint
-        args: ["--write"]
-        stages: [commit-msg]
-
-  # AI-Rulez: auto-generate AI assistant configuration files
-  - repo: https://github.com/Goldziher/ai-rulez
-    rev: v4.1.6
-    hooks:
-      - id: ai-rulez-generate
-
-  # General file checks
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v6.0.0
-    hooks:
-      - id: trailing-whitespace
-      - id: end-of-file-fixer
-      - id: check-merge-conflict
-      - id: check-added-large-files
-      - id: detect-private-key
-      - id: check-json
-      - id: check-yaml
-        args: ["--allow-multiple-documents", "--unsafe"]
-      - id: check-toml
-      - id: check-case-conflict
-
-  # TOML formatting
-  - repo: https://github.com/tox-dev/pyproject-fmt
-    rev: "v2.21.2"
-    hooks:
-      - id: pyproject-fmt
-
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.12
-    hooks:
-      - id: ruff
-        args: [--fix]
-      - id: ruff-format
-  - repo: https://github.com/kreuzberg-dev/pre-commit-hooks
-    rev: v1.0.0
-    hooks:
-      - id: oxfmt
-
-  - repo: https://github.com/Goldziher/gh-actions-updater
-    rev: v0.1.1
-    hooks:
-      - id: gh-actions-updater
+- repo: https://github.com/Goldziher/gitfluff
+  rev: v0.8.0
+  hooks:
+  - id: gitfluff-lint
+    args:
+    - --write
+    stages:
+    - commit-msg
+- repo: https://github.com/kreuzberg-dev/pre-commit-hooks
+  rev: v1.2.0
+  hooks:
+  - id: ai-rulez-generate
+  - id: trailing-whitespace
+  - id: end-of-file-fixer
+  - id: check-merge-conflict
+  - id: check-added-large-files
+  - id: detect-private-key
+  - id: check-json
+  - id: check-yaml
+    args:
+    - --allow-multiple-documents
+    - --unsafe
+  - id: check-toml
+  - id: check-case-conflict
+  - id: pyproject-fmt
+  - id: ruff
+  - id: ruff-format
+  - id: oxfmt
+  - id: mypy
+  - id: clang-format
+  - id: cppcheck
+  - id: shfmt
+    args:
+    - -w
+    - -i
+    - '2'
+  - id: shellcheck
+  - id: rumdl-fmt
+  - id: gh-actions-updater
