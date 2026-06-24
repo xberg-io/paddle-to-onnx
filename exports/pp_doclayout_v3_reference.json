@@ -1,0 +1,1178 @@
+[
+  {
+    "image": "/Users/naamanhirschfeld/workspace/kreuzberg-dev/worktrees/kzb-gaps/test_documents/pdf/code_and_formula.pdf",
+    "page_index": 0,
+    "name": "code_and_formula",
+    "width": 2550,
+    "height": 3300,
+    "detections": [
+      {
+        "class_id": 22,
+        "class_name": "text",
+        "score": 0.9639,
+        "bbox": [
+          541.56,
+          615.27,
+          1999.11,
+          1212.85
+        ]
+      },
+      {
+        "class_id": 22,
+        "class_name": "text",
+        "score": 0.962,
+        "bbox": [
+          542.01,
+          1739.45,
+          1998.72,
+          2336.08
+        ]
+      },
+      {
+        "class_id": 22,
+        "class_name": "text",
+        "score": 0.9421,
+        "bbox": [
+          541.96,
+          2337.45,
+          1999.52,
+          2539.64
+        ]
+      },
+      {
+        "class_id": 22,
+        "class_name": "text",
+        "score": 0.9399,
+        "bbox": [
+          544.19,
+          1214.52,
+          1999.19,
+          1415.81
+        ]
+      },
+      {
+        "class_id": 1,
+        "class_name": "algorithm",
+        "score": 0.8878,
+        "bbox": [
+          546.22,
+          1510.11,
+          1096.87,
+          1707.62
+        ]
+      },
+      {
+        "class_id": 17,
+        "class_name": "paragraph_title",
+        "score": 0.8764,
+        "bbox": [
+          547.49,
+          511.87,
+          1324.52,
+          579.22
+        ]
+      },
+      {
+        "class_id": 17,
+        "class_name": "paragraph_title",
+        "score": 0.6786,
+        "bbox": [
+          923.81,
+          1449.83,
+          1621.08,
+          1501.01
+        ]
+      },
+      {
+        "class_id": 16,
+        "class_name": "number",
+        "score": 0.6609,
+        "bbox": [
+          1257.74,
+          2895.21,
+          1287.18,
+          2933.94
+        ]
+      }
+    ]
+  },
+  {
+    "image": "/Users/naamanhirschfeld/workspace/kreuzberg-dev/worktrees/kzb-gaps/test_documents/charts/chart_bar.pdf",
+    "page_index": 0,
+    "name": "chart_bar",
+    "width": 2550,
+    "height": 3300,
+    "detections": [
+      {
+        "class_id": 8,
+        "class_name": "footer",
+        "score": 0.6816,
+        "bbox": [
+          2076.69,
+          3130.09,
+          2258.96,
+          3186.47
+        ]
+      },
+      {
+        "class_id": 16,
+        "class_name": "number",
+        "score": 0.6053,
+        "bbox": [
+          2303.97,
+          968.4,
+          2365.68,
+          1018.62
+        ]
+      }
+    ]
+  },
+  {
+    "image": "/Users/naamanhirschfeld/workspace/kreuzberg-dev/worktrees/kzb-gaps/test_documents/charts/chart_line.pdf",
+    "page_index": 0,
+    "name": "chart_line",
+    "width": 2550,
+    "height": 3300,
+    "detections": [
+      {
+        "class_id": 8,
+        "class_name": "footer",
+        "score": 0.7167,
+        "bbox": [
+          2078.54,
+          3129.71,
+          2225.82,
+          3186.11
+        ]
+      },
+      {
+        "class_id": 14,
+        "class_name": "image",
+        "score": 0.692,
+        "bbox": [
+          415.85,
+          1826.22,
+          1513.08,
+          2666.12
+        ]
+      },
+      {
+        "class_id": 16,
+        "class_name": "number",
+        "score": 0.536,
+        "bbox": [
+          1931.33,
+          887.36,
+          1989.94,
+          934.82
+        ]
+      }
+    ]
+  },
+  {
+    "image": "/Users/naamanhirschfeld/workspace/kreuzberg-dev/worktrees/kzb-gaps/test_documents/vendored/docling/pdf/2206.01062.pdf",
+    "page_index": 0,
+    "name": "academic_2206.01062_p1",
+    "width": 2550,
+    "height": 3300,
+    "detections": [
+      {
+        "class_id": 0,
+        "class_name": "abstract",
+        "score": 0.9809,
+        "bbox": [
+          209.2,
+          1084.66,
+          1237.41,
+          2232.15
+        ]
+      },
+      {
+        "class_id": 14,
+        "class_name": "image",
+        "score": 0.9461,
+        "bbox": [
+          1340.07,
+          1036.39,
+          2314.86,
+          2184.44
+        ]
+      },
+      {
+        "class_id": 22,
+        "class_name": "text",
+        "score": 0.9406,
+        "bbox": [
+          1312.13,
+          2699.45,
+          2337.55,
+          2951.76
+        ]
+      },
+      {
+        "class_id": 6,
+        "class_name": "doc_title",
+        "score": 0.9376,
+        "bbox": [
+          437.94,
+          334.67,
+          2107.57,
+          496.5
+        ]
+      },
+      {
+        "class_id": 22,
+        "class_name": "text",
+        "score": 0.9176,
+        "bbox": [
+          1054.62,
+          550.42,
+          1500.25,
+          754.41
+        ]
+      },
+      {
+        "class_id": 22,
+        "class_name": "text",
+        "score": 0.9162,
+        "bbox": [
+          370.67,
+          549.23,
+          816.28,
+          757.15
+        ]
+      },
+      {
+        "class_id": 22,
+        "class_name": "text",
+        "score": 0.9155,
+        "bbox": [
+          1739.62,
+          548.9,
+          2182.67,
+          755.11
+        ]
+      },
+      {
+        "class_id": 22,
+        "class_name": "text",
+        "score": 0.915,
+        "bbox": [
+          711.69,
+          791.5,
+          1154.98,
+          998.79
+        ]
+      },
+      {
+        "class_id": 22,
+        "class_name": "text",
+        "score": 0.9139,
+        "bbox": [
+          212.35,
+          2350.93,
+          1244.14,
+          2493.12
+        ]
+      },
+      {
+        "class_id": 22,
+        "class_name": "text",
+        "score": 0.9094,
+        "bbox": [
+          1393.77,
+          794.29,
+          1839.66,
+          998.92
+        ]
+      },
+      {
+        "class_id": 2,
+        "class_name": "aside_text",
+        "score": 0.8999,
+        "bbox": [
+          57.99,
+          895.39,
+          147.04,
+          2309.45
+        ]
+      },
+      {
+        "class_id": 7,
+        "class_name": "figure_title",
+        "score": 0.8897,
+        "bbox": [
+          1313.31,
+          2241.36,
+          2335.06,
+          2336.46
+        ]
+      },
+      {
+        "class_id": 22,
+        "class_name": "text",
+        "score": 0.8798,
+        "bbox": [
+          1312.41,
+          2523.86,
+          2334.27,
+          2617.5
+        ]
+      },
+      {
+        "class_id": 17,
+        "class_name": "paragraph_title",
+        "score": 0.8549,
+        "bbox": [
+          214.6,
+          2287.25,
+          568.71,
+          2337.09
+        ]
+      },
+      {
+        "class_id": 17,
+        "class_name": "paragraph_title",
+        "score": 0.8346,
+        "bbox": [
+          215.59,
+          1022.83,
+          475.49,
+          1073.45
+        ]
+      },
+      {
+        "class_id": 17,
+        "class_name": "paragraph_title",
+        "score": 0.8022,
+        "bbox": [
+          1315.65,
+          2658.99,
+          1692.66,
+          2700.46
+        ]
+      },
+      {
+        "class_id": 17,
+        "class_name": "paragraph_title",
+        "score": 0.7852,
+        "bbox": [
+          1316.12,
+          2460.35,
+          1589.03,
+          2510.0
+        ]
+      },
+      {
+        "class_id": 10,
+        "class_name": "footnote",
+        "score": 0.5853,
+        "bbox": [
+          209.12,
+          2633.28,
+          1235.59,
+          2949.24
+        ]
+      }
+    ]
+  },
+  {
+    "image": "/Users/naamanhirschfeld/workspace/kreuzberg-dev/worktrees/kzb-gaps/test_documents/pdf/nougat_040.pdf",
+    "page_index": 0,
+    "name": "formula_nougat_040",
+    "width": 2550,
+    "height": 3300,
+    "detections": [
+      {
+        "class_id": 22,
+        "class_name": "text",
+        "score": 0.9335,
+        "bbox": [
+          217.82,
+          1284.08,
+          1216.7,
+          1438.01
+        ]
+      },
+      {
+        "class_id": 22,
+        "class_name": "text",
+        "score": 0.9286,
+        "bbox": [
+          215.58,
+          2116.68,
+          1215.36,
+          2363.98
+        ]
+      },
+      {
+        "class_id": 22,
+        "class_name": "text",
+        "score": 0.9279,
+        "bbox": [
+          219.54,
+          1086.89,
+          1210.44,
+          1246.85
+        ]
+      },
+      {
+        "class_id": 5,
+        "class_name": "display_formula",
+        "score": 0.923,
+        "bbox": [
+          1268.92,
+          2222.5,
+          2298.85,
+          2645.41
+        ]
+      },
+      {
+        "class_id": 5,
+        "class_name": "display_formula",
+        "score": 0.9207,
+        "bbox": [
+          1269.89,
+          1722.38,
+          2270.56,
+          2058.51
+        ]
+      },
+      {
+        "class_id": 22,
+        "class_name": "text",
+        "score": 0.9122,
+        "bbox": [
+          216.83,
+          920.45,
+          1208.55,
+          1069.91
+        ]
+      },
+      {
+        "class_id": 22,
+        "class_name": "text",
+        "score": 0.9115,
+        "bbox": [
+          1264.71,
+          783.74,
+          2263.59,
+          936.83
+        ]
+      },
+      {
+        "class_id": 22,
+        "class_name": "text",
+        "score": 0.9097,
+        "bbox": [
+          216.72,
+          1847.48,
+          1217.43,
+          2092.26
+        ]
+      },
+      {
+        "class_id": 5,
+        "class_name": "display_formula",
+        "score": 0.9014,
+        "bbox": [
+          333.61,
+          2395.67,
+          1102.57,
+          2506.45
+        ]
+      },
+      {
+        "class_id": 10,
+        "class_name": "footnote",
+        "score": 0.8984,
+        "bbox": [
+          216.5,
+          2860.03,
+          1214.17,
+          2991.82
+        ]
+      },
+      {
+        "class_id": 22,
+        "class_name": "text",
+        "score": 0.8968,
+        "bbox": [
+          1266.93,
+          1154.95,
+          2264.57,
+          1306.65
+        ]
+      },
+      {
+        "class_id": 22,
+        "class_name": "text",
+        "score": 0.895,
+        "bbox": [
+          1266.19,
+          1339.85,
+          2262.95,
+          1439.22
+        ]
+      },
+      {
+        "class_id": 22,
+        "class_name": "text",
+        "score": 0.8887,
+        "bbox": [
+          1267.84,
+          1447.65,
+          2266.05,
+          1605.96
+        ]
+      },
+      {
+        "class_id": 22,
+        "class_name": "text",
+        "score": 0.8832,
+        "bbox": [
+          1267.2,
+          2667.22,
+          2273.11,
+          2818.71
+        ]
+      },
+      {
+        "class_id": 22,
+        "class_name": "text",
+        "score": 0.8817,
+        "bbox": [
+          327.05,
+          585.2,
+          2146.98,
+          690.16
+        ]
+      },
+      {
+        "class_id": 5,
+        "class_name": "display_formula",
+        "score": 0.877,
+        "bbox": [
+          1390.14,
+          2839.47,
+          2139.98,
+          2921.49
+        ]
+      },
+      {
+        "class_id": 6,
+        "class_name": "doc_title",
+        "score": 0.876,
+        "bbox": [
+          483.45,
+          366.25,
+          2000.34,
+          438.99
+        ]
+      },
+      {
+        "class_id": 17,
+        "class_name": "paragraph_title",
+        "score": 0.8619,
+        "bbox": [
+          219.62,
+          778.39,
+          1199.48,
+          893.97
+        ]
+      },
+      {
+        "class_id": 15,
+        "class_name": "inline_formula",
+        "score": 0.8405,
+        "bbox": [
+          1273.83,
+          2717.34,
+          2061.62,
+          2771.21
+        ]
+      },
+      {
+        "class_id": 22,
+        "class_name": "text",
+        "score": 0.8356,
+        "bbox": [
+          217.1,
+          2539.8,
+          1077.56,
+          2589.53
+        ]
+      },
+      {
+        "class_id": 22,
+        "class_name": "text",
+        "score": 0.8333,
+        "bbox": [
+          216.38,
+          1778.72,
+          1125.41,
+          1829.71
+        ]
+      },
+      {
+        "class_id": 15,
+        "class_name": "inline_formula",
+        "score": 0.8291,
+        "bbox": [
+          1423.11,
+          2668.89,
+          1979.98,
+          2716.37
+        ]
+      },
+      {
+        "class_id": 22,
+        "class_name": "text",
+        "score": 0.8269,
+        "bbox": [
+          1269.35,
+          2150.05,
+          1847.81,
+          2202.65
+        ]
+      },
+      {
+        "class_id": 10,
+        "class_name": "footnote",
+        "score": 0.8125,
+        "bbox": [
+          216.37,
+          2609.85,
+          1217.72,
+          2826.51
+        ]
+      },
+      {
+        "class_id": 22,
+        "class_name": "text",
+        "score": 0.8091,
+        "bbox": [
+          1269.98,
+          1649.34,
+          1819.53,
+          1703.02
+        ]
+      },
+      {
+        "class_id": 15,
+        "class_name": "inline_formula",
+        "score": 0.7884,
+        "bbox": [
+          881.64,
+          2259.64,
+          1161.92,
+          2307.93
+        ]
+      },
+      {
+        "class_id": 15,
+        "class_name": "inline_formula",
+        "score": 0.7852,
+        "bbox": [
+          1348.97,
+          1549.66,
+          1559.44,
+          1600.44
+        ]
+      },
+      {
+        "class_id": 15,
+        "class_name": "inline_formula",
+        "score": 0.7852,
+        "bbox": [
+          535.68,
+          1140.5,
+          1015.88,
+          1192.81
+        ]
+      },
+      {
+        "class_id": 15,
+        "class_name": "inline_formula",
+        "score": 0.7806,
+        "bbox": [
+          962.75,
+          1995.24,
+          1204.47,
+          2043.55
+        ]
+      },
+      {
+        "class_id": 15,
+        "class_name": "inline_formula",
+        "score": 0.7796,
+        "bbox": [
+          225.97,
+          1996.06,
+          634.32,
+          2045.37
+        ]
+      },
+      {
+        "class_id": 15,
+        "class_name": "inline_formula",
+        "score": 0.7654,
+        "bbox": [
+          535.16,
+          2160.72,
+          810.9,
+          2208.25
+        ]
+      },
+      {
+        "class_id": 15,
+        "class_name": "inline_formula",
+        "score": 0.7631,
+        "bbox": [
+          226.93,
+          971.9,
+          417.2,
+          1018.35
+        ]
+      },
+      {
+        "class_id": 15,
+        "class_name": "inline_formula",
+        "score": 0.758,
+        "bbox": [
+          2133.35,
+          837.09,
+          2254.7,
+          884.42
+        ]
+      },
+      {
+        "class_id": 5,
+        "class_name": "display_formula",
+        "score": 0.7569,
+        "bbox": [
+          219.49,
+          1594.37,
+          1208.41,
+          1720.68
+        ]
+      },
+      {
+        "class_id": 15,
+        "class_name": "inline_formula",
+        "score": 0.7542,
+        "bbox": [
+          437.34,
+          2262.56,
+          780.83,
+          2310.35
+        ]
+      },
+      {
+        "class_id": 15,
+        "class_name": "inline_formula",
+        "score": 0.7463,
+        "bbox": [
+          877.65,
+          2046.72,
+          1109.05,
+          2094.27
+        ]
+      },
+      {
+        "class_id": 15,
+        "class_name": "inline_formula",
+        "score": 0.7454,
+        "bbox": [
+          1653.99,
+          1550.08,
+          1877.56,
+          1599.91
+        ]
+      },
+      {
+        "class_id": 15,
+        "class_name": "inline_formula",
+        "score": 0.7431,
+        "bbox": [
+          1678.83,
+          1651.27,
+          1806.69,
+          1699.78
+        ]
+      },
+      {
+        "class_id": 15,
+        "class_name": "inline_formula",
+        "score": 0.7352,
+        "bbox": [
+          527.23,
+          1894.73,
+          745.8,
+          1941.75
+        ]
+      },
+      {
+        "class_id": 15,
+        "class_name": "inline_formula",
+        "score": 0.7281,
+        "bbox": [
+          575.06,
+          1093.23,
+          683.98,
+          1137.39
+        ]
+      },
+      {
+        "class_id": 5,
+        "class_name": "display_formula",
+        "score": 0.7276,
+        "bbox": [
+          218.06,
+          1469.73,
+          1101.83,
+          1580.78
+        ]
+      },
+      {
+        "class_id": 15,
+        "class_name": "inline_formula",
+        "score": 0.7211,
+        "bbox": [
+          1156.31,
+          2164.9,
+          1211.41,
+          2209.67
+        ]
+      },
+      {
+        "class_id": 15,
+        "class_name": "inline_formula",
+        "score": 0.718,
+        "bbox": [
+          809.25,
+          2209.75,
+          963.37,
+          2259.19
+        ]
+      },
+      {
+        "class_id": 5,
+        "class_name": "display_formula",
+        "score": 0.7147,
+        "bbox": [
+          1296.11,
+          1053.89,
+          2040.61,
+          1112.45
+        ]
+      },
+      {
+        "class_id": 15,
+        "class_name": "inline_formula",
+        "score": 0.7082,
+        "bbox": [
+          1050.15,
+          1090.98,
+          1202.96,
+          1135.05
+        ]
+      },
+      {
+        "class_id": 15,
+        "class_name": "inline_formula",
+        "score": 0.7076,
+        "bbox": [
+          412.79,
+          2213.97,
+          470.58,
+          2257.62
+        ]
+      },
+      {
+        "class_id": 15,
+        "class_name": "inline_formula",
+        "score": 0.6973,
+        "bbox": [
+          1061.45,
+          1945.06,
+          1207.14,
+          1993.05
+        ]
+      },
+      {
+        "class_id": 15,
+        "class_name": "inline_formula",
+        "score": 0.6932,
+        "bbox": [
+          224.62,
+          1134.14,
+          282.98,
+          1181.17
+        ]
+      },
+      {
+        "class_id": 15,
+        "class_name": "inline_formula",
+        "score": 0.69,
+        "bbox": [
+          1672.39,
+          1205.25,
+          1841.21,
+          1253.53
+        ]
+      },
+      {
+        "class_id": 5,
+        "class_name": "display_formula",
+        "score": 0.6733,
+        "bbox": [
+          1298.95,
+          977.45,
+          2102.9,
+          1034.15
+        ]
+      },
+      {
+        "class_id": 15,
+        "class_name": "inline_formula",
+        "score": 0.655,
+        "bbox": [
+          1987.41,
+          1497.28,
+          2256.19,
+          1547.94
+        ]
+      },
+      {
+        "class_id": 15,
+        "class_name": "inline_formula",
+        "score": 0.6473,
+        "bbox": [
+          325.21,
+          1948.39,
+          378.99,
+          1992.93
+        ]
+      },
+      {
+        "class_id": 15,
+        "class_name": "inline_formula",
+        "score": 0.6036,
+        "bbox": [
+          1061.38,
+          1900.03,
+          1102.42,
+          1942.22
+        ]
+      },
+      {
+        "class_id": 15,
+        "class_name": "inline_formula",
+        "score": 0.5988,
+        "bbox": [
+          1060.96,
+          972.62,
+          1199.13,
+          1017.56
+        ]
+      },
+      {
+        "class_id": 15,
+        "class_name": "inline_formula",
+        "score": 0.5498,
+        "bbox": [
+          968.15,
+          1196.53,
+          1073.1,
+          1240.1
+        ]
+      },
+      {
+        "class_id": 15,
+        "class_name": "inline_formula",
+        "score": 0.5254,
+        "bbox": [
+          529.74,
+          2859.97,
+          608.83,
+          2904.9
+        ]
+      },
+      {
+        "class_id": 15,
+        "class_name": "inline_formula",
+        "score": 0.5216,
+        "bbox": [
+          1525.24,
+          884.45,
+          1650.58,
+          930.83
+        ]
+      }
+    ]
+  },
+  {
+    "image": "/Users/naamanhirschfeld/workspace/kreuzberg-dev/worktrees/kzb-gaps/test_documents/vendored/docling/pdf/2206.01062.pdf",
+    "page_index": 2,
+    "name": "chart_2206.01062_p3",
+    "width": 2550,
+    "height": 3300,
+    "detections": [
+      {
+        "class_id": 22,
+        "class_name": "text",
+        "score": 0.9739,
+        "bbox": [
+          1309.84,
+          1134.36,
+          2339.92,
+          2460.6
+        ]
+      },
+      {
+        "class_id": 22,
+        "class_name": "text",
+        "score": 0.9659,
+        "bbox": [
+          210.48,
+          1533.66,
+          1235.65,
+          2126.55
+        ]
+      },
+      {
+        "class_id": 22,
+        "class_name": "text",
+        "score": 0.9652,
+        "bbox": [
+          1311.96,
+          355.57,
+          2336.14,
+          675.55
+        ]
+      },
+      {
+        "class_id": 22,
+        "class_name": "text",
+        "score": 0.9643,
+        "bbox": [
+          1310.53,
+          677.61,
+          2334.85,
+          1134.1
+        ]
+      },
+      {
+        "class_id": 22,
+        "class_name": "text",
+        "score": 0.9598,
+        "bbox": [
+          211.35,
+          2125.88,
+          1235.79,
+          2536.2
+        ]
+      },
+      {
+        "class_id": 22,
+        "class_name": "text",
+        "score": 0.9565,
+        "bbox": [
+          210.63,
+          1167.43,
+          1234.28,
+          1533.64
+        ]
+      },
+      {
+        "class_id": 22,
+        "class_name": "text",
+        "score": 0.956,
+        "bbox": [
+          1309.57,
+          2625.99,
+          2340.53,
+          2950.93
+        ]
+      },
+      {
+        "class_id": 22,
+        "class_name": "text",
+        "score": 0.9478,
+        "bbox": [
+          209.76,
+          2536.51,
+          1235.26,
+          2862.85
+        ]
+      },
+      {
+        "class_id": 3,
+        "class_name": "chart",
+        "score": 0.9002,
+        "bbox": [
+          353.1,
+          380.48,
+          1105.32,
+          923.81
+        ]
+      },
+      {
+        "class_id": 7,
+        "class_name": "figure_title",
+        "score": 0.8848,
+        "bbox": [
+          214.04,
+          976.61,
+          1231.59,
+          1071.37
+        ]
+      },
+      {
+        "class_id": 12,
+        "class_name": "header",
+        "score": 0.8617,
+        "bbox": [
+          219.0,
+          243.48,
+          1453.51,
+          291.04
+        ]
+      },
+      {
+        "class_id": 12,
+        "class_name": "header",
+        "score": 0.8475,
+        "bbox": [
+          1516.16,
+          243.52,
+          2332.02,
+          289.7
+        ]
+      },
+      {
+        "class_id": 17,
+        "class_name": "paragraph_title",
+        "score": 0.8236,
+        "bbox": [
+          1314.68,
+          2522.49,
+          1964.98,
+          2571.1
+        ]
+      },
+      {
+        "class_id": 10,
+        "class_name": "footnote",
+        "score": 0.7881,
+        "bbox": [
+          214.93,
+          2913.48,
+          823.18,
+          2958.44
+        ]
+      }
+    ]
+  }
+]
