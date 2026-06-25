@@ -12,7 +12,7 @@ builtins = ['python', 'default-commands']
 style = 'minimal'
 
 [[includes]]
-name = 'kreuzberg-core'
+name = 'xberg-core'
 source = 'https://github.com/xberg-io/ai-rulez.git'
 path = 'modules/core'
 merge_strategy = 'local-override'
