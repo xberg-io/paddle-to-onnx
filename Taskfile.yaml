@@ -9,6 +9,7 @@ tasks:
     cmds:
       - uv sync
       - uv pip install -e .
+      - poly hooks install
     sources:
       - pyproject.toml
       - uv.lock
