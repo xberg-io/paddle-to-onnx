@@ -22,7 +22,7 @@ PY_VERSION=$1
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/lib
 
 # Map Python version to manylinux path
-declare -A python_map=( ["3.10"]="cp310-cp310" ["3.11"]="cp311-cp311" ["3.12"]="cp312-cp312" ["3.13"]="cp313-cp313" ["3.14"]="cp314-cp314")
+declare -A python_map=(["3.10"]="cp310-cp310" ["3.11"]="cp311-cp311" ["3.12"]="cp312-cp312" ["3.13"]="cp313-cp313" ["3.14"]="cp314-cp314")
 PY_VER=${python_map[$PY_VERSION]}
 PIP_INSTALL_COMMAND="/opt/python/${PY_VER}/bin/pip install --no-cache-dir -q"
 PYTHON_COMMAND="/opt/python/${PY_VER}/bin/python"
@@ -33,26 +33,29 @@ $PIP_INSTALL_COMMAND cmake setuptools wheel build pybind11
 
 # Install system protobuf (CONFIG mode compatible)
 yum install -y protobuf-devel protobuf-compiler glog-devel 2>/dev/null || {
-    # Fallback: build protobuf from source if yum packages unavailable
-    original_dir=$(pwd)
-    git clone --depth 1 --branch v28.3 https://github.com/protocolbuffers/protobuf.git /tmp/protobuf
-    cd /tmp/protobuf
-    git submodule update --init --recursive
-    mkdir build && cd build
-    cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local \
-        -Dprotobuf_BUILD_SHARED_LIBS=OFF \
-        -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-        -Dprotobuf_BUILD_TESTS=OFF \
-        -DCMAKE_BUILD_TYPE=Release \
-        -Dprotobuf_ABSL_PROVIDER=module
-    cmake --build . --target install -j$(nproc)
-    cd $original_dir
+	# Fallback: build protobuf from source if yum packages unavailable
+	original_dir=$(pwd)
+	git clone --depth 1 --branch v28.3 https://github.com/protocolbuffers/protobuf.git /tmp/protobuf
+	cd /tmp/protobuf
+	git submodule update --init --recursive
+	mkdir build && cd build
+	cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local \
+		-Dprotobuf_BUILD_SHARED_LIBS=OFF \
+		-DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+		-Dprotobuf_BUILD_TESTS=OFF \
+		-DCMAKE_BUILD_TYPE=Release \
+		-Dprotobuf_ABSL_PROVIDER=module
+	cmake --build . --target install -j$(nproc)
+	cd $original_dir
 }
 
 export PIP_EXTRA_INDEX_URL="https://www.paddlepaddle.org.cn/packages/nightly/cpu/"
 
 # Build Paddle2ONNX wheels
-$PYTHON_COMMAND -m build --wheel || { echo "Building wheels failed."; exit 1; }
+$PYTHON_COMMAND -m build --wheel || {
+	echo "Building wheels failed."
+	exit 1
+}
 
 # Bundle external shared libraries into the wheels
 failed_wheels=$PWD/failed-wheels
@@ -60,9 +63,9 @@ rm -f "$failed_wheels"
 find . -type f -iname "*-linux*.whl" -exec sh -c "auditwheel repair '{}' -w \$(dirname '{}') --exclude libpaddle.so || { echo 'Repairing wheels failed.'; auditwheel show '{}' >> '$failed_wheels'; }" \;
 
 if [[ -f "$failed_wheels" ]]; then
-    echo "Repairing wheels failed:"
-    cat failed-wheels
-    exit 1
+	echo "Repairing wheels failed:"
+	cat failed-wheels
+	exit 1
 fi
 
 # Remove useless *-linux*.whl; only keep manylinux*.whl

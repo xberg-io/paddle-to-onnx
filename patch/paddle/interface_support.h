@@ -24,9 +24,9 @@ namespace detail {
 
 template <typename ConcreteT, typename... Args>
 class ConstructInterfacesOrTraits {
- public:
+public:
   /// Construct method for interfaces.
-  static void interface(InterfaceSet &interface_set) {  // NOLINT
+  static void interface(InterfaceSet &interface_set) { // NOLINT
     (void)std::initializer_list<int>{
         0, (ConstructInterface<Args>(interface_set), 0)...};
   }
@@ -38,16 +38,15 @@ class ConstructInterfacesOrTraits {
     return p_trait;
   }
 
- private:
+private:
   /// Placement new interface.
   template <typename T>
-  static void ConstructInterface(InterfaceSet &interface_set) {  // NOLINT
+  static void ConstructInterface(InterfaceSet &interface_set) { // NOLINT
     InterfaceValue val =
         InterfaceValue::Get<T, typename T::template Model<ConcreteT>>();
     auto success = interface_set.insert(std::move(val)).second;
     PADDLE_ENFORCE_EQ(
-        success,
-        true,
+        success, true,
         common::errors::PreconditionNotMet(
             "Interface: id[%u] is already registered. inset failed",
             TypeId::get<T>()));
@@ -55,7 +54,7 @@ class ConstructInterfacesOrTraits {
 
   /// Placement new trait.
   template <typename T>
-  static void PlacementConstructTrait(pir::TypeId *&p_trait) {  // NOLINT
+  static void PlacementConstructTrait(pir::TypeId *&p_trait) { // NOLINT
     *p_trait = TypeId::get<T>();
     ++p_trait;
   }
@@ -63,10 +62,10 @@ class ConstructInterfacesOrTraits {
 
 /// Specialized for tuple type.
 template <typename ConcreteT, typename... Args>
-class ConstructInterfacesOrTraits<ConcreteT, std::tuple<Args...>> {  // NOLINT
- public:
+class ConstructInterfacesOrTraits<ConcreteT, std::tuple<Args...>> { // NOLINT
+public:
   /// Construct method for interfaces.
-  static void interface(InterfaceSet &interface_set) {  // NOLINT
+  static void interface(InterfaceSet &interface_set) { // NOLINT
     ConstructInterfacesOrTraits<ConcreteT, Args...>::interface(interface_set);
   }
 
@@ -93,6 +92,6 @@ std::vector<TypeId> GetTraitSet() {
   return trait_set;
 }
 
-}  // namespace detail
+} // namespace detail
 
-}  // namespace pir
+} // namespace pir

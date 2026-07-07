@@ -2,9 +2,9 @@ name: Build and Test
 
 on:
   push:
-    branches: [ "develop" ]
+    branches: ["develop"]
   pull_request:
-    branches: [ "develop" ]
+    branches: ["develop"]
 
 permissions:
   contents: read
@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [ '3.13' ]
+        python-version: ["3.13"]
     steps:
       - name: Checkout Paddle2ONNX
         uses: actions/checkout@v4
@@ -51,8 +51,8 @@ jobs:
     runs-on: windows-2022
     strategy:
       matrix:
-        python-version: [ '3.13' ]
-        architecture: [ 'x64' ]
+        python-version: ["3.13"]
+        architecture: ["x64"]
     steps:
       - name: Checkout Paddle2ONNX
         uses: actions/checkout@v4
@@ -98,7 +98,7 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        python-version: [ '3.13' ]
+        python-version: ["3.13"]
     steps:
       - name: Checkout Paddle2ONNX
         uses: actions/checkout@v4

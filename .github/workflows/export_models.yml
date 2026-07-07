@@ -6,9 +6,9 @@ on:
       model:
         description: 'Model to export (e.g. SLANet_plus), or "all"'
         required: true
-        default: 'all'
+        default: "all"
       dry_run:
-        description: 'Dry run (list models without exporting)'
+        description: "Dry run (list models without exporting)"
         type: boolean
         default: false
   release:
@@ -29,7 +29,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.13'
+          python-version: "3.13"
 
       - name: Install dependencies and build paddle2onnx
         if: inputs.dry_run != true

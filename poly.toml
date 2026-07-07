@@ -20,6 +20,9 @@ exclude = [
     "patches/**",
     "third_party/**",
     "vendor/**",
+    "docs/**",
+    ".github/ISSUE_TEMPLATE/**",
+    "debug/**",
 ]
 
 [lint.python.ruff]
@@ -30,7 +33,7 @@ ignore = ["E501", "E721", "PERF401", "RET504", "SIM108", "SIM112", "SIM115"]
 stages = ["pre-commit"]
 
 [hooks.builtin]
-polylint = { exclude = [
+lint = { exclude = [
     "**/*.lock",
     "**/Cargo.lock",
     "**/go.sum",
@@ -43,8 +46,11 @@ polylint = { exclude = [
     "patches/**",
     "third_party/**",
     "vendor/**",
+    "docs/**",
+    ".github/ISSUE_TEMPLATE/**",
+    "debug/**",
 ] }
-polyfmt = { exclude = [
+fmt = { exclude = [
     "**/*.lock",
     "**/Cargo.lock",
     "**/go.sum",
@@ -57,6 +63,9 @@ polyfmt = { exclude = [
     "patches/**",
     "third_party/**",
     "vendor/**",
+    "docs/**",
+    ".github/ISSUE_TEMPLATE/**",
+    "debug/**",
 ] }
 commit = { stages = ["commit-msg"] }
 file_safety = { exclude = [
@@ -72,6 +81,9 @@ file_safety = { exclude = [
     "patches/**",
     "third_party/**",
     "vendor/**",
+    "docs/**",
+    ".github/ISSUE_TEMPLATE/**",
+    "debug/**",
 ] }
 
 # --- catalog tools (standalone binaries, PATH-probed) ---

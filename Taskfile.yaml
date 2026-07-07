@@ -9,6 +9,7 @@ tasks:
     cmds:
       - uv sync
       - uv pip install -e .
+      - command -v poly >/dev/null 2>&1 || brew install goldziher/tap/poly
       - poly hooks install
     sources:
       - pyproject.toml

@@ -12,14 +12,13 @@ assignees: ''
 **Describe the bug**
 A clear and concise description of what the bug is.
 
-
 **Informations (please complete the following information):**
- - Inference engine for deployment:
- - Why convert to onnx：
- - Paddle2ONNX Version:
- - Email/Wechat/Phone:
+
+- Inference engine for deployment:
+- Why convert to onnx：
+- Paddle2ONNX Version:
+- Email/Wechat/Phone:
 
 **Screenshots**
-
 
 **Additional context**
