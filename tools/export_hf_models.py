@@ -38,6 +38,7 @@ from pathlib import Path
 import numpy as np
 import onnx
 import onnxruntime as ort
+import yaml
 from huggingface_hub import hf_hub_download
 from onnx import helper
 
@@ -62,6 +63,9 @@ class ModelConfig:
     opset_version: int = 17
     # Map of input_name -> (shape, dtype). If None, auto-detected from the model.
     inputs: dict[str, tuple[tuple[int, ...], str]] | None = None
+    # Path under the distribution HF repo where model.onnx (and dict.txt for
+    # recognition models) is published, e.g. "v6/det/medium". None → not uploaded.
+    upload_path: str | None = None
 
 
 # Models to export — add new models here
@@ -82,6 +86,33 @@ MODELS: dict[str, ModelConfig] = {
     ),
     "en_PP-OCRv5_mobile_rec": ModelConfig(
         hf_repo="PaddlePaddle/en_PP-OCRv5_mobile_rec",
+    ),
+    # --- PP-OCRv6 (medium/small/tiny tiers; unified multilingual rec) ---
+    # v6 base repos ship the char dict in inference.yml (no config.json) and use
+    # medium/small/tiny tiers rather than v5's server/mobile. Rec is unified.
+    "PP-OCRv6_medium_det": ModelConfig(
+        hf_repo="PaddlePaddle/PP-OCRv6_medium_det",
+        upload_path="v6/det/medium",
+    ),
+    "PP-OCRv6_small_det": ModelConfig(
+        hf_repo="PaddlePaddle/PP-OCRv6_small_det",
+        upload_path="v6/det/small",
+    ),
+    "PP-OCRv6_tiny_det": ModelConfig(
+        hf_repo="PaddlePaddle/PP-OCRv6_tiny_det",
+        upload_path="v6/det/tiny",
+    ),
+    "PP-OCRv6_medium_rec": ModelConfig(
+        hf_repo="PaddlePaddle/PP-OCRv6_medium_rec",
+        upload_path="v6/rec/medium",
+    ),
+    "PP-OCRv6_small_rec": ModelConfig(
+        hf_repo="PaddlePaddle/PP-OCRv6_small_rec",
+        upload_path="v6/rec/small",
+    ),
+    "PP-OCRv6_tiny_rec": ModelConfig(
+        hf_repo="PaddlePaddle/PP-OCRv6_tiny_rec",
+        upload_path="v6/rec/tiny",
     ),
     # --- Document Layout Analysis ---
     "PP-DocLayoutV3": ModelConfig(
@@ -132,18 +163,27 @@ MODELS: dict[str, ModelConfig] = {
 }
 
 
+def _download_optional(repo: str, fname: str, target_dir: Path) -> None:
+    """Download a best-effort file; a missing file is logged, not raised."""
+    try:
+        hf_hub_download(repo, fname, local_dir=str(target_dir))
+        logger.info("Downloaded %s/%s", repo, fname)
+    except Exception:
+        logger.debug("No %s in %s", fname, repo)
+
+
 def download_model(config: ModelConfig, target_dir: Path) -> Path:
     """Download model files from HuggingFace."""
     target_dir.mkdir(parents=True, exist_ok=True)
     for fname in [config.model_filename, config.params_filename]:
         hf_hub_download(config.hf_repo, fname, local_dir=str(target_dir))
         logger.info("Downloaded %s/%s", config.hf_repo, fname)
-    # Download config.json if available (contains character dict, preprocessing info)
-    try:
-        hf_hub_download(config.hf_repo, "config.json", local_dir=str(target_dir))
-        logger.info("Downloaded %s/config.json", config.hf_repo)
-    except Exception:
-        pass  # Not all models have config.json (e.g. PP-DocLayoutV3)
+    # Best-effort metadata files carrying the recognition character dict and
+    # preprocessing info: config.json (PP-OCRv5) and inference.yml (PP-OCRv6 base
+    # repos have no config.json). Non-OCR models (e.g. PP-DocLayoutV3) may lack a
+    # character dict entirely, so a missing file is not an error.
+    for optional in ("config.json", "inference.yml"):
+        _download_optional(config.hf_repo, optional, target_dir)
     return target_dir
 
 
@@ -282,21 +322,39 @@ def make_inputs_dynamic(model_path: Path) -> None:
         logger.info("Made image inputs dynamic (batch, height, width)")
 
 
-def embed_character_dict(model_dir: Path, onnx_path: Path) -> None:
-    """Embed character dictionary from config.json into ONNX model metadata.
+def load_character_dict(model_dir: Path) -> list[str] | None:
+    """Load the recognition character dict from config.json or inference.yml.
 
-    Reads PostProcess.character_dict from config.json (a JSON list of characters)
-    and stores it as newline-separated text in the ONNX model's metadata under
-    the key "character", matching the RapidOCR convention.
+    PP-OCRv5 ships the dict in config.json under PostProcess.character_dict.
+    PP-OCRv6 base repos have no config.json and carry the same key in
+    inference.yml. config.json takes precedence when present so existing v5
+    output stays byte-identical. Returns None for models with no character dict.
     """
     config_path = model_dir / "config.json"
-    if not config_path.exists():
-        return
+    if config_path.exists():
+        with open(config_path) as f:
+            char_dict = json.load(f).get("PostProcess", {}).get("character_dict")
+        if char_dict:
+            return char_dict
 
-    with open(config_path) as f:
-        config_data = json.load(f)
+    yml_path = model_dir / "inference.yml"
+    if yml_path.exists():
+        with open(yml_path) as f:
+            char_dict = yaml.safe_load(f).get("PostProcess", {}).get("character_dict")
+        if char_dict:
+            return char_dict
 
-    char_dict = config_data.get("PostProcess", {}).get("character_dict")
+    return None
+
+
+def embed_character_dict(model_dir: Path, onnx_path: Path) -> None:
+    """Embed the recognition character dictionary into ONNX model metadata.
+
+    Reads the dict (config.json for v5, inference.yml for v6) and stores it as
+    newline-separated text under the metadata key "character", matching the
+    RapidOCR convention that downstream consumers read the dict from.
+    """
+    char_dict = load_character_dict(model_dir)
     if not char_dict:
         return
 
@@ -425,6 +483,11 @@ def main():
         type=str,
         help="Model name (e.g. SLANet_plus) or HF repo (e.g. PaddlePaddle/SLANet_plus)",
     )
+    group.add_argument(
+        "--models",
+        type=str,
+        help="Comma-separated model names to export in one run (shared manifest)",
+    )
     group.add_argument("--all", action="store_true", help="Export all configured models")
     parser.add_argument("--output-dir", type=str, required=True, help="Output directory for ONNX files")
     parser.add_argument(
@@ -446,6 +509,14 @@ def main():
     models_to_export: dict[str, ModelConfig] = {}
     if args.all:
         models_to_export = MODELS
+    elif args.models:
+        # Support both "SLANet_plus" and "PaddlePaddle/SLANet_plus" per entry.
+        keys = [name.split("/")[-1] for name in args.models.split(",") if name.strip()]
+        unknown = [key for key in keys if key not in MODELS]
+        if unknown:
+            logger.error("Unknown models: %s. Available: %s", unknown, list(MODELS.keys()))
+            sys.exit(1)
+        models_to_export = {key: MODELS[key] for key in keys}
     else:
         # Support both "SLANet_plus" and "PaddlePaddle/SLANet_plus"
         model_key = args.model.split("/")[-1] if "/" in args.model else args.model

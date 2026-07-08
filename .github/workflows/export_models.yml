@@ -40,7 +40,7 @@ jobs:
           PIP_EXTRA_INDEX_URL="https://www.paddlepaddle.org.cn/packages/nightly/cpu/" python -m pip install paddlepaddle
           PYBIND11_DIR=$(python -c "import pybind11; print(pybind11.get_cmake_dir())")
           CMAKE_ARGS="-Dpybind11_DIR=$PYBIND11_DIR" python -m pip install -e . --no-build-isolation
-          python -m pip install huggingface-hub onnx onnxruntime numpy --only-binary=onnx
+          python -m pip install huggingface-hub onnx onnxruntime numpy pyyaml --only-binary=onnx
 
       - name: Dry run
         if: inputs.dry_run == true
@@ -67,6 +67,17 @@ jobs:
             exports/*.onnx
             exports/manifest.json
           retention-days: 90
+
+      - name: Upload to HuggingFace Hub
+        if: inputs.dry_run != true
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          if [ -z "$HF_TOKEN" ]; then
+            echo "HF_TOKEN secret not set — skipping HuggingFace upload"
+            exit 0
+          fi
+          python tools/upload_hf_models.py --export-dir ./exports
 
       - name: Upload to release
         if: github.event_name == 'release'
