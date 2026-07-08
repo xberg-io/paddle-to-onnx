@@ -61,7 +61,7 @@ tasks:
   test:
     desc: "Run tests"
     cmds:
-      - uv run pytest tests/
+      - uv run --group test pytest tests/
 
   clean:
     desc: "Clean build artifacts"

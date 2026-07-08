@@ -25,6 +25,13 @@ exclude = [
     "debug/**",
 ]
 
+# Inherited PaddlePaddle upstream source carries pre-existing misspellings not
+# worth rewriting. Note the level-of-detail tensor term is legitimate Paddle
+# terminology, so these trees are excluded from spell-checking rather than
+# autocorrected (autocorrect would wrongly rewrite it).
+[lint.typos]
+extend_exclude = ["paddle2onnx/**", "tools/**", "tests/**", "cmake/**", "setup.py"]
+
 [lint.python.ruff]
 select = ["B", "C4", "E", "F", "FURB", "I", "PERF", "PIE", "RET", "RUF", "SIM", "TCH", "UP", "W"]
 ignore = ["E501", "E721", "PERF401", "RET504", "SIM108", "SIM112", "SIM115"]
@@ -88,7 +95,7 @@ file_safety = { exclude = [
 
 [hooks.pre-commit.commands.pyrefly]
 run = "pyrefly check paddle2onnx setup.py"
-files = "**/*.py"
+files = "{paddle2onnx/**/*.py,setup.py}"
 
 # --- catalog tools (standalone binaries, PATH-probed) ---
 [tools.clang-format]

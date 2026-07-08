@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # Copyright (c) 2025 PaddlePaddle Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,4 +32,4 @@ if ! [[ $version == *"$VERSION"* ]]; then
 	pip install clang-format==13.0.0
 fi
 
-clang-format $@
+clang-format "$@"

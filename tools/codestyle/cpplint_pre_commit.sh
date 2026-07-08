@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # Copyright (c) 2025 PaddlePaddle Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,4 +22,4 @@ if ! [[ $version == *"$VERSION"* ]]; then
 	pip install cpplint==1.6.0
 fi
 
-cpplint $@
+cpplint "$@"
