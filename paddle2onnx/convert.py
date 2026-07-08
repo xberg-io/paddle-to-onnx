@@ -90,7 +90,7 @@ def decompose_program(model_filename):
     )
     model = paddle.jit.load(model_file_path)
     new_program = model.program().clone()
-    with decomp.prim_guard():
+    with decomp.prim_guard():  # pyrefly: ignore[bad-context-manager]  # untyped paddle context manager
         decomp.decompose_dist_program(new_program)
 
     if compare_programs(model.program(), new_program):
@@ -166,6 +166,7 @@ def export(
                 if verbose:
                     logging.info("The original inference program is:\n")
                     logging.info(f"{inference_program}\n\n")
+                # pyrefly: ignore[missing-attribute]  # untyped paddle load_inference_model return
                 program = paddle.pir.translate_to_pir(inference_program.desc)
                 # TODO(wangmingkai02): Do we need to call load_parameter(program) here?
                 load_parameter(program)
@@ -173,7 +174,7 @@ def export(
                 params_filename = new_params_file_name
                 if not os.path.exists(new_params_file_name):
                     raise RuntimeError(
-                        f"Program Tranlator failed due to params file {new_params_file_name} does not exist."
+                        f"Program Translator failed due to params file {new_params_file_name} does not exist."
                     )
             else:
                 with paddle.pir_utils.OldIrGuard():
@@ -182,7 +183,7 @@ def export(
                 with paddle.pir_utils.IrGuard():
                     paddle.save(pir_program, new_model_file_name)
             if not os.path.exists(new_model_file_name):
-                raise RuntimeError(f"Program Tranlator failed due to json file {new_model_file_name} does not exist.")
+                raise RuntimeError(f"Program Translator failed due to json file {new_model_file_name} does not exist.")
             model_filename = new_model_file_name
             if verbose:
                 logging.info("Complete the conversion from .pdmodel to json file.")
@@ -234,6 +235,7 @@ def export(
     except Exception as error:
         logging.error(f"Failed to convert PaddlePaddle model: {error}.")
         logging.error(traceback.print_exc())
+        raise
     finally:
         if (
             os.environ.get("P2O_KEEP_TEMP_MODEL", "0").lower()
@@ -305,7 +307,9 @@ def export(
                 import io
 
                 import onnx
-                from polygraphy.backend.onnx import fold_constants
+
+                # polygraphy ships no type stubs
+                from polygraphy.backend.onnx import fold_constants  # pyrefly: ignore[missing-module-attribute]
 
                 model_stream = io.BytesIO(onnx_model_str)
                 onnx_model = onnx.load_model(model_stream)

@@ -44,14 +44,19 @@ tasks:
       - uv run python tools/export_hf_models.py --model "{{.CLI_ARGS}}" --output-dir "{{.EXPORT_DIR}}"
 
   lint:
-    desc: "Run ruff linter"
+    desc: "Run all linters via poly"
     cmds:
-      - uv run ruff check .
+      - poly lint .
 
   format:
-    desc: "Run ruff formatter"
+    desc: "Format all code via poly"
     cmds:
-      - uv run ruff format .
+      - poly fmt --fix .
+
+  typecheck:
+    desc: "Run pyrefly type checker"
+    cmds:
+      - pyrefly check paddle2onnx setup.py
 
   test:
     desc: "Run tests"

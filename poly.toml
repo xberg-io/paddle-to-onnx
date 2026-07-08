@@ -86,10 +86,11 @@ file_safety = { exclude = [
     "debug/**",
 ] }
 
-# --- catalog tools (standalone binaries, PATH-probed) ---
-[tools.pyrefly]
-enabled = true
+[hooks.pre-commit.commands.pyrefly]
+run = "pyrefly check paddle2onnx setup.py"
+files = "**/*.py"
 
+# --- catalog tools (standalone binaries, PATH-probed) ---
 [tools.clang-format]
 enabled = true
 

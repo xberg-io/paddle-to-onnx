@@ -36,6 +36,7 @@ try:
         if pv.parse(paddle_version) < pv.parse(min_version):
             raise ValueError(f"The paddlepaddle version should not be less than {min_version}. {err_msg}")
 except ImportError as exc:
+    # pyrefly: ignore[unbound-name]  # err_msg is assigned before the guarded import
     raise ImportError(f"Failed to import paddle. Please ensure paddle is installed. {err_msg}") from exc
 
 from .convert import (
