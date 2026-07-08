@@ -15,6 +15,7 @@
 from multiprocessing import Process, Queue
 
 import numpy as np
+import pytest
 from detection_ops.nms import multiclass_nms
 
 
@@ -163,6 +164,7 @@ def gen_onnx_export(q):
         q.put(True)
 
 
+@pytest.mark.skip(reason="uses removed static-graph helper.append_op API, incompatible with PIR")
 def test_nms():
     for _i in range(100):
         q0 = Queue()

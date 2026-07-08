@@ -13,8 +13,9 @@
 # limitations under the License.
 
 import numpy as np
-import paddle
 from onnxbase import APIOnnx, _test_with_pir
+
+import paddle
 
 
 class Net(paddle.nn.Layer):

@@ -15,7 +15,10 @@
 import unittest
 
 import hypothesis.strategies as st
+import pytest
 from auto_scan_test import BaseNet, OPConvertAutoScanTest
+
+pytestmark = pytest.mark.skip(reason="partial_sum/partial_concat removed static-graph API, incompatible with PIR")
 
 try:
     from paddle.incubate.layers import partial_concat, partial_sum

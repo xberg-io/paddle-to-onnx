@@ -21,10 +21,10 @@ from inspect import isfunction
 
 import numpy as np
 import onnx
-import paddle
-import paddle.static as static
 from onnxruntime import InferenceSession
 
+import paddle
+import paddle.static as static
 import paddle2onnx
 from paddle2onnx.convert import dygraph2onnx
 
@@ -32,8 +32,10 @@ from paddle2onnx.convert import dygraph2onnx
 def _test_with_pir(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        with paddle.pir_utils.DygraphOldIrGuard():
-            func(*args, **kwargs)
+        # PaddlePaddle 3.x (the version this project targets) has removed the
+        # old (Variable-based) IR: tracing under DygraphOldIrGuard now raises
+        # "argument must be Value, but got Variable" because the op kernels
+        # dispatch to PIR regardless of the guard. Only the PIR path is valid.
         with paddle.pir_utils.DygraphPirGuard():
             func(*args, **kwargs)
 

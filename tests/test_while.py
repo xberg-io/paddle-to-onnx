@@ -12,8 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import paddle
 from onnxbase import APIOnnx, _test_with_pir
+
+import paddle
 
 
 class BaseNet1(paddle.nn.Layer):

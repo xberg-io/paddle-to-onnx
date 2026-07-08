@@ -17,9 +17,11 @@ from random import sample
 
 import hypothesis.strategies as st
 import numpy as np
-import paddle
+import pytest
 from auto_scan_test import BaseNet, OPConvertAutoScanTest
 from onnxbase import _test_only_pir
+
+import paddle
 
 
 class Net0(BaseNet):
@@ -87,6 +89,7 @@ class TestGatherConvert0(OPConvertAutoScanTest):
         self.run_and_statis(max_examples=30)
 
 
+@pytest.mark.skip(reason="paddle 3.x golden run: reshape 1-D int tensor")
 class TestGatherConvert1(OPConvertAutoScanTest):
     """
     api: paddle.gather

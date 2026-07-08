@@ -18,10 +18,12 @@ import time
 import unittest
 
 import numpy as np
+import pytest
+
 import paddle
 from paddle.static.quantization import PostTrainingQuantization
 
-paddle.enable_static()
+pytestmark = pytest.mark.skip(reason="requires MNIST model download not present locally")
 
 random.seed(0)
 np.random.seed(0)
@@ -29,6 +31,7 @@ np.random.seed(0)
 
 class TestPostTrainingQuantization(unittest.TestCase):
     def setUp(self):
+        paddle.enable_static()
         self.int8_model_path = "./post_training_quantization"
         self.download_path = "int8/download"
         self.cache_folder = os.path.expanduser("~/.cache/paddle/dataset/" + self.download_path)
@@ -78,7 +81,7 @@ class TestPostTrainingQuantization(unittest.TestCase):
         if use_onnxruntime:
             import onnxruntime as rt
 
-            import paddle2onnx
+            import paddle2onnx.command
 
             new_model_path = model_path
             if model_filename == "":

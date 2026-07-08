@@ -16,13 +16,16 @@ import os
 
 import numpy as np
 import onnxruntime
+import pytest
+
 import paddle
+import paddle2onnx
 from paddle.inference import PlaceType, PrecisionType, convert_to_mixed_precision
 
-import paddle2onnx
 
-
+@pytest.mark.skip(reason="requires ResNet50 model download and a GPU (CPU-only build)")
 def test_resnet_fp16_convert():
+    paddle.enable_static()
     # download resnet model
     if not os.path.exists("ResNet50_infer"):
         os.system(

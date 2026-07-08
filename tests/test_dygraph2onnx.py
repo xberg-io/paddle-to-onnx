@@ -15,7 +15,6 @@
 import unittest
 
 import paddle
-
 import paddle2onnx
 
 

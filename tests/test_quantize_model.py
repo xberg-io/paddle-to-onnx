@@ -20,18 +20,20 @@ import time
 import unittest
 
 import numpy as np
+import pytest
+from PIL import Image
+
 import paddle
 from paddle.dataset.common import download
 from paddle.static.io import load_inference_model
 from paddle.static.quantization import PostTrainingQuantization
-from PIL import Image
+
+pytestmark = pytest.mark.skip(reason="requires ImageNet inference models not present locally")
 
 if platform.system() == "Windows":
     os.system("set no_proxy=bcebos.com")
 else:
     os.system("export no_proxy=bcebos.com")
-
-paddle.enable_static()
 
 random.seed(0)
 np.random.seed(0)
@@ -106,6 +108,7 @@ def val(data_dir=DATA_DIR):
 
 class TestPostTrainingQuantization(unittest.TestCase):
     def setUp(self):
+        paddle.enable_static()
         self.int8_download = "int8/download"
         self.cache_folder = os.path.expanduser("~/.cache/paddle/dataset/" + self.int8_download)
         self.data_cache_folder = ""
@@ -189,7 +192,7 @@ class TestPostTrainingQuantization(unittest.TestCase):
         if run_onnxruntime:
             import onnxruntime as rt
 
-            import paddle2onnx
+            import paddle2onnx.command
 
             onnx_model = paddle2onnx.command.c_paddle_to_onnx(
                 model_file=model_path + model_filename,
