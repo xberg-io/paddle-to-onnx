@@ -17,14 +17,19 @@
 
 #include <iostream>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 
 namespace paddle2onnx {
 
+// A failed assertion must not abort the host process: paddle2onnx runs inside a
+// Python interpreter, so a hard std::abort() takes the whole process down (e.g.
+// crashing a pytest run) instead of surfacing a recoverable error. Throw
+// instead — pybind11 translates std::exception into a Python RuntimeError.
 inline void Assert(bool condition, const std::string &message) {
   if (!condition) {
     fprintf(stderr, "[ERROR][Paddle2ONNX] %s\n", message.c_str());
-    std::abort();
+    throw std::runtime_error("[Paddle2ONNX] " + message);
   }
 }
 

@@ -229,7 +229,7 @@ void PaddlePirParser::GetOpArgNameMappings() {
     _op_arg_name_mappings[op_name] = arg_name_mapping;
   }
 
-  // mutable attibute name mappings
+  // mutable attribute name mappings
   for (auto &item : op_mutable_attribute_infos) {
     std::string op_name =
         pir_op_name_prefix + (op_name_mappings.count(item.first)
@@ -447,7 +447,7 @@ bool PaddlePirParser::LoadParams(const std::string &path) {
       is.read(weight.buffer.data(), numel * PaddleDataTypeSize(data_type));
       auto index = params.size();
       if (index >= var_names.size()) {
-        P2OLogger() << "[ERROR] Unexcepted situation happend while reading "
+        P2OLogger() << "[ERROR] Unexpected situation happened while reading "
                        "parameters of PaddlePaddle pir model."
                     << std::endl;
         return false;
@@ -676,10 +676,22 @@ void PaddlePirParser::GetOpAttr(const pir::Operation *op,
   for (auto &pair : op->attributes()) {
     if (pair.first == name) {
       found = true;
+      // Paddle may store a float-valued attribute as Float, Double, or an
+      // integer attribute depending on the op and version. Accept each and
+      // narrow to float so callers always get the value.
       if (pair.second.isa<pir::FloatAttribute>()) {
         *res = pair.second.dyn_cast<::pir::FloatAttribute>().data();
-        break;
+      } else if (pair.second.isa<pir::DoubleAttribute>()) {
+        *res = static_cast<float>(
+            pair.second.dyn_cast<::pir::DoubleAttribute>().data());
+      } else if (pair.second.isa<pir::Int32Attribute>()) {
+        *res = static_cast<float>(
+            pair.second.dyn_cast<::pir::Int32Attribute>().data());
+      } else if (pair.second.isa<pir::Int64Attribute>()) {
+        *res = static_cast<float>(
+            pair.second.dyn_cast<::pir::Int64Attribute>().data());
       }
+      break;
     }
   }
   PADDLE_ENFORCE_EQ(
@@ -694,10 +706,18 @@ void PaddlePirParser::GetOpAttr(const pir::Operation *op,
   for (auto &pair : op->attributes()) {
     if (pair.first == name) {
       found = true;
+      // Accept Double, Float, or integer attributes and widen to double so a
+      // float-typed attribute is still readable through the double overload.
       if (pair.second.isa<pir::DoubleAttribute>()) {
         *res = pair.second.dyn_cast<::pir::DoubleAttribute>().data();
-        break;
+      } else if (pair.second.isa<pir::FloatAttribute>()) {
+        *res = pair.second.dyn_cast<::pir::FloatAttribute>().data();
+      } else if (pair.second.isa<pir::Int32Attribute>()) {
+        *res = pair.second.dyn_cast<::pir::Int32Attribute>().data();
+      } else if (pair.second.isa<pir::Int64Attribute>()) {
+        *res = pair.second.dyn_cast<::pir::Int64Attribute>().data();
       }
+      break;
     }
   }
   PADDLE_ENFORCE_EQ(
@@ -795,17 +815,24 @@ void PaddlePirParser::GetOpAttr(const pir::Operation *op,
       if (pair.second.isa<pir::ArrayAttribute>()) {
         auto array_list =
             pair.second.dyn_cast<::pir::ArrayAttribute>().AsVector();
-        if (array_list.size() > 0) {
-          PADDLE_ENFORCE_EQ(
-              array_list[0].isa<::pir::FloatAttribute>(), true,
-              ::common::errors::Unimplemented("the 0th elementwise MUST be "
-                                              "ir::FloatAttribute"));
-          for (size_t i = 0; i < array_list.size(); ++i) {
+        // Array elements may be Float, Double, or integer attributes depending
+        // on the op and paddle version (e.g. interpolate `scale` is stored as
+        // Double). Accept each and narrow to float.
+        for (size_t i = 0; i < array_list.size(); ++i) {
+          if (array_list[i].isa<::pir::FloatAttribute>()) {
             res->push_back(
                 array_list[i].dyn_cast<::pir::FloatAttribute>().data());
+          } else if (array_list[i].isa<::pir::DoubleAttribute>()) {
+            res->push_back(static_cast<float>(
+                array_list[i].dyn_cast<::pir::DoubleAttribute>().data()));
+          } else if (array_list[i].isa<::pir::Int32Attribute>()) {
+            res->push_back(static_cast<float>(
+                array_list[i].dyn_cast<::pir::Int32Attribute>().data()));
+          } else if (array_list[i].isa<::pir::Int64Attribute>()) {
+            res->push_back(static_cast<float>(
+                array_list[i].dyn_cast<::pir::Int64Attribute>().data()));
           }
         }
-
         break;
       }
     }

@@ -3,6 +3,17 @@ project(paddle2onnx C CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
+# PaddlePaddle's headers specialize std::is_floating_point / std::is_signed for
+# their custom float8/bfloat16 dtypes. Recent libc++ marks those traits
+# [[clang::no_specializations]], turning the specialization into a hard error
+# under -Winvalid-specialization. Demote it where the compiler supports the
+# flag so the extension builds against current Xcode/libc++.
+include(CheckCXXCompilerFlag)
+check_cxx_compiler_flag("-Wno-invalid-specialization" HAS_WNO_INVALID_SPECIALIZATION)
+if(HAS_WNO_INVALID_SPECIALIZATION)
+  add_compile_options(-Wno-invalid-specialization)
+endif()
 link_libraries(
   "$<$<AND:$<CXX_COMPILER_ID:GNU>,$<VERSION_LESS:$<CXX_COMPILER_VERSION>,9.0>>:-lstdc++fs>"
 )
