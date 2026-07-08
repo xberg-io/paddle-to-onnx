@@ -14,18 +14,15 @@
 
 import sys
 
-import paddle.fluid as fluid
-
 import paddle
+import paddle.fluid as fluid
 
 paddle.enable_static()
 
 model_dir = sys.argv[1]
 new_model_dir = sys.argv[2]
 exe = fluid.Executor(fluid.CPUPlace())
-[inference_program, feed_target_names, fetch_targets] = fluid.io.load_inference_model(
-    dirname=model_dir, executor=exe
-)
+[inference_program, feed_target_names, fetch_targets] = fluid.io.load_inference_model(dirname=model_dir, executor=exe)
 
 print(feed_target_names)
 fluid.io.save_inference_model(

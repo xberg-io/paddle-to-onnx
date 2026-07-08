@@ -15,10 +15,9 @@
 import unittest
 
 import hypothesis.strategies as st
+import paddle
 from auto_scan_test import BaseNet, OPConvertAutoScanTest
 from onnxbase import randtool
-
-import paddle
 
 
 class Net(BaseNet):
@@ -55,9 +54,7 @@ class TestYoloBoxConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=10, max_value=30), min_size=4, max_size=4)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=10, max_value=30), min_size=4, max_size=4))
         input_shape[0] = 1
         input_shape[2] = input_shape[3]
         img_size = [input_shape[0], 2]

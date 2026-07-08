@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "paddle2onnx/mapper/onnx_helper.h"
 #include "paddle2onnx/mapper/tensor/tensor_array.h"
 #include <iostream>
 #include <string>
 #include <vector>
-#include "paddle2onnx/mapper/onnx_helper.h"
 
 namespace paddle2onnx {
 REGISTER_PIR_MAPPER(create_array, CreateArrayMapper)
@@ -68,8 +68,8 @@ void ArrayReadMapper::Opset11() {
   auto output_info = GetOutput(0);
   auto squeeze_node = helper_->MakeNode("Squeeze", {index_info[0].name});
   std::string arr_name = GetTensorArrayName();
-  helper_->MakeNode(
-      "SequenceAt", {arr_name, squeeze_node->output(0)}, {output_info[0].name});
+  helper_->MakeNode("SequenceAt", {arr_name, squeeze_node->output(0)},
+                    {output_info[0].name});
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

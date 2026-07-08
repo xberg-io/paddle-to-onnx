@@ -12,9 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from onnxbase import APIOnnx
-
 import paddle
+from onnxbase import APIOnnx
 
 
 class Net(paddle.nn.Layer):
@@ -41,9 +40,7 @@ def test_mod_10():
     op.eval()
     # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "mod", [10])
-    obj.set_input_data(
-        "input_data", paddle.to_tensor([2, 3, 8, 7]), paddle.to_tensor([1, 5, 3, 3])
-    )
+    obj.set_input_data("input_data", paddle.to_tensor([2, 3, 8, 7]), paddle.to_tensor([1, 5, 3, 3]))
     obj.run()
 
 
@@ -56,9 +53,7 @@ def test_mod_11():
     op.eval()
     # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "mod", [11])
-    obj.set_input_data(
-        "input_data", paddle.to_tensor([2, 3, 8, 7]), paddle.to_tensor([1, 5, 3, 3])
-    )
+    obj.set_input_data("input_data", paddle.to_tensor([2, 3, 8, 7]), paddle.to_tensor([1, 5, 3, 3]))
     obj.run()
 
 
@@ -71,7 +66,5 @@ def test_mod_12():
     op.eval()
     # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "mod", [12])
-    obj.set_input_data(
-        "input_data", paddle.to_tensor([2, 3, 8, 7]), paddle.to_tensor([1, 5, 3, 3])
-    )
+    obj.set_input_data("input_data", paddle.to_tensor([2, 3, 8, 7]), paddle.to_tensor([1, 5, 3, 3]))
     obj.run()

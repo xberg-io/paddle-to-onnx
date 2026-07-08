@@ -15,9 +15,8 @@
 import unittest
 
 import hypothesis.strategies as st
-from auto_scan_test import BaseNet, OPConvertAutoScanTest
-
 import paddle
+from auto_scan_test import BaseNet, OPConvertAutoScanTest
 
 
 class Net(BaseNet):
@@ -43,9 +42,7 @@ class TestTemporal_shiftConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=10, max_value=30), min_size=4, max_size=4)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=10, max_value=30), min_size=4, max_size=4))
 
         seg_num = draw(st.integers(min_value=1, max_value=10))
 

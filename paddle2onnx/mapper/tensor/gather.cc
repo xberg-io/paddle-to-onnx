@@ -68,8 +68,8 @@ void GatherMapper::Opset7() {
   Assert(index_info[0].shape.size() == 1,
          "Paddle2ONNX: While rank of index > 1, opset must >= 11 for operator: "
          "gather.");
-  auto node = helper_->MakeNode(
-      "Gather", {x_info[0].name, index_info[0].name}, {out_info[0].name});
+  auto node = helper_->MakeNode("Gather", {x_info[0].name, index_info[0].name},
+                                {out_info[0].name});
   AddAttribute(node, "axis", axis);
 }
 
@@ -100,8 +100,8 @@ void GatherMapper::Opset11() {
     index_name = helper_->Squeeze(index_info[0].name, {1});
   }
   // Normal
-  auto node = helper_->MakeNode(
-      "Gather", {x_info[0].name, index_name}, {out_info[0].name});
+  auto node = helper_->MakeNode("Gather", {x_info[0].name, index_name},
+                                {out_info[0].name});
   AddAttribute(node, "axis", axis);
 }
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

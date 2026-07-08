@@ -194,8 +194,7 @@ def check_clang_apply_replacements_binary(args):
         subprocess.check_call([args.clang_apply_replacements_binary, "--version"])
     except Exception:
         print(
-            "Unable to run clang-apply-replacements. Is clang-apply-replacements "
-            "binary correctly specified?",
+            "Unable to run clang-apply-replacements. Is clang-apply-replacements binary correctly specified?",
             file=sys.stderr,
         )
         traceback.print_exc()
@@ -230,9 +229,7 @@ def run_tidy(args, tmpdir, build_path, queue, lock, failed_files):
             args.config,
         )
 
-        proc = subprocess.Popen(
-            invocation, stdout=subprocess.PIPE, stderr=subprocess.PIPE
-        )
+        proc = subprocess.Popen(invocation, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         output, err = proc.communicate()
         if proc.returncode != 0:
             failed_files.append(name)
@@ -293,8 +290,7 @@ def main():
             "-export-fixes",
             metavar="filename",
             dest="export_fixes",
-            help="Create a yaml file to store suggested fixes in, "
-            "which can be applied with clang-apply-replacements.",
+            help="Create a yaml file to store suggested fixes in, which can be applied with clang-apply-replacements.",
         )
     parser.add_argument(
         "-j",
@@ -338,9 +334,7 @@ def main():
         default=[],
         help="Additional argument to prepend to the compiler command line.",
     )
-    parser.add_argument(
-        "-quiet", action="store_true", help="Run clang-tidy in quiet mode"
-    )
+    parser.add_argument("-quiet", action="store_true", help="Run clang-tidy in quiet mode")
     args = parser.parse_args()
 
     db_path = "compile_commands.json"
@@ -348,9 +342,7 @@ def main():
     if args.build_path is not None:
         build_path = args.build_path
         if not os.path.isfile(os.path.join(build_path, db_path)):
-            print(
-                f"Warning: could not find compilation database in {build_path}, skip clang-tidy check."
-            )
+            print(f"Warning: could not find compilation database in {build_path}, skip clang-tidy check.")
             build_path = None
     else:
         # Find our database
@@ -471,12 +463,8 @@ if __name__ == "__main__":
                 f"clang-tidy version == {target_version} not found, attempting auto-install...",
                 file=sys.stderr,
             )
-            subprocess.check_output(
-                'pip install --no-cache clang-tidy=="15.0.2.1"', shell=True
-            )
+            subprocess.check_output('pip install --no-cache clang-tidy=="15.0.2.1"', shell=True)
     except Exception:
         print("clang-tidy not found, attempting auto-install...", file=sys.stderr)
-        subprocess.check_output(
-            'pip install --no-cache clang-tidy=="15.0.2.1"', shell=True
-        )
+        subprocess.check_output('pip install --no-cache clang-tidy=="15.0.2.1"', shell=True)
     main()

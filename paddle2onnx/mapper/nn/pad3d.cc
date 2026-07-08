@@ -24,7 +24,8 @@ int32_t Pad3DMapper::GetMinOpsetVersion(bool verbose) {
       Logger(verbose, 11)
           << "While Paddings is input and it's not a constant tensor, "
           << RequireOpset(11) << std::endl;
-      if (mode_ == "circular") return 19;
+      if (mode_ == "circular")
+        return 19;
       return 11;
     }
     std::vector<int64_t> paddings;
@@ -32,7 +33,8 @@ int32_t Pad3DMapper::GetMinOpsetVersion(bool verbose) {
       Logger(verbose, 11)
           << "Cannot get constant value from input of Paddings, "
           << RequireOpset(11) << std::endl;
-      if (mode_ == "circular") return 19;
+      if (mode_ == "circular")
+        return 19;
       return 11;
     } else {
       if (paddings.size() != 6) {
@@ -40,7 +42,8 @@ int32_t Pad3DMapper::GetMinOpsetVersion(bool verbose) {
                 << paddings.size() << std::endl;
         return -1;
       }
-      if (mode_ == "circular") return 19;
+      if (mode_ == "circular")
+        return 19;
     }
   } else {
     if (paddings_.size() != 6) {
@@ -52,8 +55,8 @@ int32_t Pad3DMapper::GetMinOpsetVersion(bool verbose) {
   return 7;
 }
 
-std::vector<int64_t> Pad3DMapper::ConvertPaddingParameter(
-    const std::vector<int64_t>& paddings) {
+std::vector<int64_t>
+Pad3DMapper::ConvertPaddingParameter(const std::vector<int64_t> &paddings) {
   std::vector<int64_t> new_paddings(10, 0);
   new_paddings[2] = paddings[4];
   new_paddings[3] = paddings[2];
@@ -123,21 +126,14 @@ void Pad3DMapper::Opset11() {
           helper_->Constant(ONNX_NAMESPACE::TensorProto::INT64, new_paddings);
     } else {
       auto pad_info = GetInput("Paddings");
-      auto cast_pad = helper_->AutoCast(
-          pad_info[0].name, pad_info[0].dtype, P2ODataType::INT64);
+      auto cast_pad = helper_->AutoCast(pad_info[0].name, pad_info[0].dtype,
+                                        P2ODataType::INT64);
       auto split_pads = helper_->Split(cast_pad, std::vector<int64_t>(6, 1), 0);
-      auto zero = helper_->Constant(
-          {1}, ONNX_NAMESPACE::TensorProto::INT64, int64_t(0));
-      paddings = helper_->Concat({zero,
-                                  zero,
-                                  split_pads[4],
-                                  split_pads[2],
-                                  split_pads[0],
-                                  zero,
-                                  zero,
-                                  split_pads[5],
-                                  split_pads[3],
-                                  split_pads[1]},
+      auto zero = helper_->Constant({1}, ONNX_NAMESPACE::TensorProto::INT64,
+                                    int64_t(0));
+      paddings = helper_->Concat({zero, zero, split_pads[4], split_pads[2],
+                                  split_pads[0], zero, zero, split_pads[5],
+                                  split_pads[3], split_pads[1]},
                                  0);
     }
   } else {
@@ -152,8 +148,8 @@ void Pad3DMapper::Opset11() {
     AddAttribute(node, "mode", mode);
     helper_->Transpose(node->output(0), output_info[0].name, {0, 2, 3, 4, 1});
   } else {
-    auto node = helper_->MakeNode(
-        "Pad", {input_name, paddings, value}, {output_info[0].name});
+    auto node = helper_->MakeNode("Pad", {input_name, paddings, value},
+                                  {output_info[0].name});
     AddAttribute(node, "mode", mode);
   }
 }
@@ -183,21 +179,14 @@ void Pad3DMapper::Opset19() {
           helper_->Constant(ONNX_NAMESPACE::TensorProto::INT64, new_paddings);
     } else {
       auto pad_info = GetInput("Paddings");
-      auto cast_pad = helper_->AutoCast(
-          pad_info[0].name, pad_info[0].dtype, P2ODataType::INT64);
+      auto cast_pad = helper_->AutoCast(pad_info[0].name, pad_info[0].dtype,
+                                        P2ODataType::INT64);
       auto split_pads = helper_->Split(cast_pad, std::vector<int64_t>(6, 1), 0);
-      auto zero = helper_->Constant(
-          {1}, ONNX_NAMESPACE::TensorProto::INT64, int64_t(0));
-      paddings = helper_->Concat({zero,
-                                  zero,
-                                  split_pads[4],
-                                  split_pads[2],
-                                  split_pads[0],
-                                  zero,
-                                  zero,
-                                  split_pads[5],
-                                  split_pads[3],
-                                  split_pads[1]},
+      auto zero = helper_->Constant({1}, ONNX_NAMESPACE::TensorProto::INT64,
+                                    int64_t(0));
+      paddings = helper_->Concat({zero, zero, split_pads[4], split_pads[2],
+                                  split_pads[0], zero, zero, split_pads[5],
+                                  split_pads[3], split_pads[1]},
                                  0);
     }
   } else {
@@ -211,10 +200,10 @@ void Pad3DMapper::Opset19() {
     AddAttribute(node, "mode", mode);
     helper_->Transpose(node->output(0), output_info[0].name, {0, 2, 3, 4, 1});
   } else {
-    auto node = helper_->MakeNode(
-        "Pad", {input_name, paddings, value}, {output_info[0].name});
+    auto node = helper_->MakeNode("Pad", {input_name, paddings, value},
+                                  {output_info[0].name});
     AddAttribute(node, "mode", mode);
   }
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

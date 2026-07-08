@@ -15,10 +15,9 @@
 import unittest
 
 import hypothesis.strategies as st
+import paddle
 from auto_scan_test import BaseNet, OPConvertAutoScanTest
 from onnxbase import _test_only_pir, randtool
-
-import paddle
 
 op_api_map = {
     "elementwise_add": paddle.add,
@@ -49,9 +48,7 @@ class TestElementwiseopsConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input1_shape = draw(
-            st.lists(st.integers(min_value=10, max_value=20), min_size=0, max_size=4)
-        )
+        input1_shape = draw(st.lists(st.integers(min_value=10, max_value=20), min_size=0, max_size=4))
 
         if len(input1_shape) > 0:
             if draw(st.booleans()):
@@ -69,11 +66,7 @@ class TestElementwiseopsConvert(OPConvertAutoScanTest):
                 input2_shape = input1_shape
             else:
                 # [] + [N * N]
-                input2_shape = draw(
-                    st.lists(
-                        st.integers(min_value=10, max_value=20), min_size=1, max_size=4
-                    )
-                )
+                input2_shape = draw(st.lists(st.integers(min_value=10, max_value=20), min_size=1, max_size=4))
 
         dtype = draw(st.sampled_from(["float32", "int32"]))
 
@@ -134,9 +127,7 @@ class TestElementwiseopsConvert_2(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input1_shape = draw(
-            st.lists(st.integers(min_value=10, max_value=20), min_size=0, max_size=4)
-        )
+        input1_shape = draw(st.lists(st.integers(min_value=10, max_value=20), min_size=0, max_size=4))
 
         if len(input1_shape) > 0:
             if draw(st.booleans()):
@@ -154,11 +145,7 @@ class TestElementwiseopsConvert_2(OPConvertAutoScanTest):
                 input2_shape = input1_shape
             else:
                 # [] + [N * N]
-                input2_shape = draw(
-                    st.lists(
-                        st.integers(min_value=10, max_value=20), min_size=1, max_size=4
-                    )
-                )
+                input2_shape = draw(st.lists(st.integers(min_value=10, max_value=20), min_size=1, max_size=4))
 
         dtype = draw(st.sampled_from(["float32"]))
 

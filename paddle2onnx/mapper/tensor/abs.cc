@@ -60,4 +60,4 @@ void AbsMapper::Opset18() {
   }
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

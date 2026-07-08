@@ -21,10 +21,8 @@
 namespace paddle2onnx {
 
 class FillLikeMapper : public Mapper {
- public:
-  FillLikeMapper(const PaddleParser& p,
-                 OnnxHelper* helper,
-                 int64_t block_id,
+public:
+  FillLikeMapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
                  int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     if (OpType() == "fill_zeros_like") {
@@ -40,9 +38,9 @@ class FillLikeMapper : public Mapper {
   }
   void Opset9() override;
 
- private:
+private:
   float value_;
   std::vector<std::string> op_mapper_;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

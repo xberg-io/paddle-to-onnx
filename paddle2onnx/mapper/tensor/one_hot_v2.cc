@@ -58,4 +58,4 @@ void OneHotV2Mapper::Opset9() {
       "OneHot", {casted_input, depth_node, value_node}, {output_info[0].name});
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

@@ -15,9 +15,8 @@
 import unittest
 
 import hypothesis.strategies as st
-from auto_scan_test import BaseNet, OPConvertAutoScanTest
-
 import paddle
+from auto_scan_test import BaseNet, OPConvertAutoScanTest
 
 op_api_map = {
     "greater_equal": paddle.greater_equal,
@@ -50,8 +49,7 @@ class Net(BaseNet):
             inputs1 = inputs1.astype("bool")
             inputs2 = inputs2.astype("bool")
         if (
-            self.config["op_names"]
-            in ["greater_equal", "greater_than", "less_equal", "less_than"]
+            self.config["op_names"] in ["greater_equal", "greater_than", "less_equal", "less_than"]
             and inputs1.dtype == paddle.bool
         ):
             inputs1 = inputs1.astype("int32")
@@ -66,9 +64,7 @@ class TestLogicopsConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input1_shape = draw(
-            st.lists(st.integers(min_value=10, max_value=20), min_size=0, max_size=4)
-        )
+        input1_shape = draw(st.lists(st.integers(min_value=10, max_value=20), min_size=0, max_size=4))
 
         if len(input1_shape) > 0:
             if draw(st.booleans()):
@@ -89,11 +85,7 @@ class TestLogicopsConvert(OPConvertAutoScanTest):
                 input2_shape = input1_shape
             else:
                 # [] + [N * N]
-                input2_shape = draw(
-                    st.lists(
-                        st.integers(min_value=10, max_value=20), min_size=1, max_size=4
-                    )
-                )
+                input2_shape = draw(st.lists(st.integers(min_value=10, max_value=20), min_size=1, max_size=4))
 
         dtype = draw(st.sampled_from(["float32", "int32", "int64", "bool"]))
 
@@ -135,9 +127,7 @@ class TestLogicNotConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input1_shape = draw(
-            st.lists(st.integers(min_value=10, max_value=20), min_size=0, max_size=4)
-        )
+        input1_shape = draw(st.lists(st.integers(min_value=10, max_value=20), min_size=0, max_size=4))
 
         dtype = "bool"
         config = {

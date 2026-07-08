@@ -21,18 +21,14 @@
 namespace paddle2onnx {
 
 class GroupNormMapper : public Mapper {
- public:
-  GroupNormMapper(const PaddleParser& p,
-                  OnnxHelper* helper,
-                  int64_t block_id,
+public:
+  GroupNormMapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
                   int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     GetAttr("groups", &groups_);
     GetAttr("epsilon", &epsilon_);
   }
-  GroupNormMapper(const PaddlePirParser& p,
-                  OnnxHelper* helper,
-                  int64_t op_id,
+  GroupNormMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t op_id,
                   bool c)
       : Mapper(p, helper, op_id, c) {
     in_pir_mode = true;
@@ -43,9 +39,9 @@ class GroupNormMapper : public Mapper {
   int32_t GetMinOpsetVersion(bool verbose) override;
   void Opset7() override;
 
- private:
+private:
   int64_t groups_;
   float epsilon_;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

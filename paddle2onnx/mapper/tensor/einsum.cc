@@ -42,4 +42,4 @@ void EinsumMapper::Opset12() {
   AddAttribute(node, "equation", equation_);
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

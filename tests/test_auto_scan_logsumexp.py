@@ -15,9 +15,8 @@
 import unittest
 
 import hypothesis.strategies as st
-from auto_scan_test import BaseNet, OPConvertAutoScanTest
-
 import paddle
+from auto_scan_test import BaseNet, OPConvertAutoScanTest
 
 
 class Net(BaseNet):
@@ -29,9 +28,7 @@ class Net(BaseNet):
         """
         forward
         """
-        return paddle.logsumexp(
-            inputs, axis=self.config["axis"], keepdim=self.config["keepdim"]
-        )
+        return paddle.logsumexp(inputs, axis=self.config["axis"], keepdim=self.config["keepdim"])
 
 
 class TestLogsumexpConvert(OPConvertAutoScanTest):
@@ -41,14 +38,10 @@ class TestLogsumexpConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=10, max_value=20), min_size=1, max_size=4)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=10, max_value=20), min_size=1, max_size=4))
 
         dtype = draw(st.sampled_from(["float32", "float64"]))
-        axis = draw(
-            st.integers(min_value=-len(input_shape), max_value=len(input_shape) - 1)
-        )
+        axis = draw(st.integers(min_value=-len(input_shape), max_value=len(input_shape) - 1))
         keepdim = draw(st.booleans())
 
         config = {

@@ -21,23 +21,19 @@
 namespace paddle2onnx {
 
 class Transpose2Mapper : public Mapper {
- public:
-  Transpose2Mapper(const PaddleParser& p,
-                   OnnxHelper* helper,
-                   int64_t block_id,
+public:
+  Transpose2Mapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
                    int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {}
-  Transpose2Mapper(const PaddlePirParser& p,
-                   OnnxHelper* helper,
-                   int64_t i,
+  Transpose2Mapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t i,
                    bool c)
       : Mapper(p, helper, i, c) {
     in_pir_mode = true;
   }
   void Opset7() override;
 
- private:
+private:
   std::vector<int64_t> axis_ = {};
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

@@ -16,10 +16,9 @@ import random
 import unittest
 
 import hypothesis.strategies as st
+import paddle
 from auto_scan_test import BaseNet, OPConvertAutoScanTest
 from onnxbase import _test_only_pir
-
-import paddle
 
 
 class Net(BaseNet):
@@ -34,9 +33,7 @@ class Net(BaseNet):
         axis = self.config["axis"]
         if self.config["isAxisTensor"]:
             axis = paddle.to_tensor(axis, dtype=self.config["axis_dtype"])
-        return paddle.split(
-            inputs, num_or_sections=self.config["num_or_sections"], axis=axis
-        )
+        return paddle.split(inputs, num_or_sections=self.config["num_or_sections"], axis=axis)
 
 
 class TestSplitConvert(OPConvertAutoScanTest):
@@ -46,9 +43,7 @@ class TestSplitConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=2, max_value=8), min_size=2, max_size=5)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=2, max_value=8), min_size=2, max_size=5))
         # float64 not supported
         dtype = draw(st.sampled_from(["float32", "int32", "int64"]))
         axis_dtype = "int64"  # 只能设置为INT64,设置为INT32时会在axis_tensor后增加cast导致取不到constant数值
@@ -68,9 +63,7 @@ class TestSplitConvert(OPConvertAutoScanTest):
                 if len(num_or_sections) == 1:
                     num_or_sections[0] = -1
                 else:
-                    idx = draw(
-                        st.integers(min_value=0, max_value=len(num_or_sections) - 1)
-                    )
+                    idx = draw(st.integers(min_value=0, max_value=len(num_or_sections) - 1))
                     num_or_sections[idx] = -1
         else:
             num_or_sections = draw(st.integers(min_value=2, max_value=5))

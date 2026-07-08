@@ -21,10 +21,8 @@
 namespace paddle2onnx {
 
 class FftR2cMapper : public Mapper {
- public:
-  FftR2cMapper(const PaddlePirParser& p,
-               OnnxHelper* helper,
-               int64_t op_id,
+public:
+  FftR2cMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t op_id,
                bool c)
       : Mapper(p, helper, op_id, c) {
     in_pir_mode = true;
@@ -37,11 +35,11 @@ class FftR2cMapper : public Mapper {
   int32_t GetMinOpsetVersion(bool verbose) override;
   void Opset17() override;
 
- private:
+private:
   std::string normalization_;
   bool onesided_;
   bool forward_;
   std::vector<int64_t> axes_;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

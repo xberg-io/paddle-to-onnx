@@ -20,12 +20,11 @@ import time
 import unittest
 
 import numpy as np
-from PIL import Image
-
 import paddle
 from paddle.dataset.common import download
 from paddle.static.io import load_inference_model
 from paddle.static.quantization import PostTrainingQuantization
+from PIL import Image
 
 if platform.system() == "Windows":
     os.system("set no_proxy=bcebos.com")
@@ -80,9 +79,7 @@ def process_image(sample, mode, color_jitter, rotate):
     return img, sample[1]
 
 
-def _reader_creator(
-    file_list, mode, shuffle=False, color_jitter=False, rotate=False, data_dir=DATA_DIR
-):
+def _reader_creator(file_list, mode, shuffle=False, color_jitter=False, rotate=False, data_dir=DATA_DIR):
     def reader():
         with open(file_list) as flist:
             full_lines = [line.strip() for line in flist]
@@ -97,9 +94,7 @@ def _reader_creator(
                     continue
                 yield img_path, int(label)
 
-    mapper = functools.partial(
-        process_image, mode=mode, color_jitter=color_jitter, rotate=rotate
-    )
+    mapper = functools.partial(process_image, mode=mode, color_jitter=color_jitter, rotate=rotate)
 
     return paddle.reader.xmap_readers(mapper, reader, THREAD, BUF_SIZE)
 
@@ -112,32 +107,20 @@ def val(data_dir=DATA_DIR):
 class TestPostTrainingQuantization(unittest.TestCase):
     def setUp(self):
         self.int8_download = "int8/download"
-        self.cache_folder = os.path.expanduser(
-            "~/.cache/paddle/dataset/" + self.int8_download
-        )
+        self.cache_folder = os.path.expanduser("~/.cache/paddle/dataset/" + self.int8_download)
         self.data_cache_folder = ""
         data_urls = []
         data_md5s = []
         if os.environ.get("DATASET") == "full":
-            data_urls.append(
-                "https://paddle-inference-dist.bj.bcebos.com/int8/ILSVRC2012_img_val.tar.gz.partaa"
-            )
+            data_urls.append("https://paddle-inference-dist.bj.bcebos.com/int8/ILSVRC2012_img_val.tar.gz.partaa")
             data_md5s.append("60f6525b0e1d127f345641d75d41f0a8")
-            data_urls.append(
-                "https://paddle-inference-dist.bj.bcebos.com/int8/ILSVRC2012_img_val.tar.gz.partab"
-            )
+            data_urls.append("https://paddle-inference-dist.bj.bcebos.com/int8/ILSVRC2012_img_val.tar.gz.partab")
             data_md5s.append("1e9f15f64e015e58d6f9ec3210ed18b5")
-            self.data_cache_folder = self.download_data(
-                data_urls, data_md5s, "full_data", False
-            )
+            self.data_cache_folder = self.download_data(data_urls, data_md5s, "full_data", False)
         else:
-            data_urls.append(
-                "http://paddle-inference-dist.bj.bcebos.com/int8/calibration_test_data.tar.gz"
-            )
+            data_urls.append("http://paddle-inference-dist.bj.bcebos.com/int8/calibration_test_data.tar.gz")
             data_md5s.append("1b6c1c434172cca1bf9ba1e4d7a3157d")
-            self.data_cache_folder = self.download_data(
-                data_urls, data_md5s, "small_data", False
-            )
+            self.data_cache_folder = self.download_data(data_urls, data_md5s, "small_data", False)
 
         # reader/decorator.py requires the relative path to the data folder
         if not os.path.exists("./data/ILSVRC2012"):
@@ -215,12 +198,8 @@ class TestPostTrainingQuantization(unittest.TestCase):
                 enable_onnx_checker=True,
             )
             sess_options = rt.SessionOptions()
-            sess_options.graph_optimization_level = (
-                rt.GraphOptimizationLevel.ORT_DISABLE_ALL
-            )
-            sess = rt.InferenceSession(
-                onnx_model, sess_options, providers=["CPUExecutionProvider"]
-            )
+            sess_options.graph_optimization_level = rt.GraphOptimizationLevel.ORT_DISABLE_ALL
+            sess = rt.InferenceSession(onnx_model, sess_options, providers=["CPUExecutionProvider"])
             input_name = sess.get_inputs()[0].name
             label_name = sess.get_outputs()[0].name
             print("sess input/output name : ", input_name, label_name)
@@ -241,9 +220,7 @@ class TestPostTrainingQuantization(unittest.TestCase):
         periods = []
         results = []
         for batch_id, data in enumerate(val_reader()):
-            image = np.array([x[0].reshape(image_shape) for x in data]).astype(
-                "float32"
-            )
+            image = np.array([x[0].reshape(image_shape) for x in data]).astype("float32")
             label = np.array([x[1] for x in data]).astype("int64")
             label = label.reshape([-1, 1])
 
@@ -251,9 +228,7 @@ class TestPostTrainingQuantization(unittest.TestCase):
             if run_onnxruntime:
                 pred = sess.run(None, {input_name: image})
             else:
-                pred = exe.run(
-                    infer_program, feed={feed_dict[0]: image}, fetch_list=fetch_targets
-                )
+                pred = exe.run(infer_program, feed={feed_dict[0]: image}, fetch_list=fetch_targets)
             t2 = time.time()
             period = t2 - t1
             periods.append(period)
@@ -337,9 +312,7 @@ class TestPostTrainingQuantization(unittest.TestCase):
 
         model_cache_folder = os.path.join(self.cache_folder, model)
 
-        print(
-            f"Start FP32 inference for {model} on {infer_iterations * batch_size} images ..."
-        )
+        print(f"Start FP32 inference for {model} on {infer_iterations * batch_size} images ...")
         (fp32_throughput, fp32_latency, fp32_acc1) = self.run_program(
             model_cache_folder,
             batch_size,
@@ -348,9 +321,7 @@ class TestPostTrainingQuantization(unittest.TestCase):
             "inference.pdiparams",
         )
 
-        print(
-            f"Start INT8 post training quantization for {model} on {sample_iterations * batch_size} images ..."
-        )
+        print(f"Start INT8 post training quantization for {model} on {sample_iterations * batch_size} images ...")
         self.generate_quantized_model(
             model_cache_folder,
             quantizable_op_type,
@@ -363,9 +334,7 @@ class TestPostTrainingQuantization(unittest.TestCase):
             "inference.pdiparams",
         )
 
-        print(
-            f"Start INT8 inference for {model} on {infer_iterations * batch_size} images ..."
-        )
+        print(f"Start INT8 inference for {model} on {infer_iterations * batch_size} images ...")
         (int8_throughput, int8_latency, int8_acc1) = self.run_program(
             self.int8_model,
             batch_size,
@@ -374,9 +343,7 @@ class TestPostTrainingQuantization(unittest.TestCase):
             "model.pdiparams",
         )
 
-        print(
-            f"Start use ONNXRuntime inference for {model} on {infer_iterations * batch_size} images ..."
-        )
+        print(f"Start use ONNXRuntime inference for {model} on {infer_iterations * batch_size} images ...")
         (onnx_int8_throughput, onnx_int8_latency, onnx_int8_acc1) = self.run_program(
             self.int8_model,
             batch_size,

@@ -21,10 +21,8 @@
 namespace paddle2onnx {
 
 class PartialOpsMapper : public Mapper {
- public:
-  PartialOpsMapper(const PaddleParser& p,
-                   OnnxHelper* helper,
-                   int64_t block_id,
+public:
+  PartialOpsMapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
                    int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     GetAttr("start_index", &start_index_);
@@ -32,10 +30,8 @@ class PartialOpsMapper : public Mapper {
     op_mapper_["partial_sum"] = "Sum";
     op_mapper_["partial_concat"] = "Concat";
   }
-  PartialOpsMapper(const PaddlePirParser& p,
-                   OnnxHelper* helper,
-                   int64_t block_id,
-                   int64_t op_id)
+  PartialOpsMapper(const PaddlePirParser &p, OnnxHelper *helper,
+                   int64_t block_id, int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     GetAttr("start_index", &start_index_);
     GetAttr("length", &length_);
@@ -45,10 +41,10 @@ class PartialOpsMapper : public Mapper {
   int32_t GetMinOpsetVersion(bool verbose) override;
   void Opset7() override;
 
- private:
+private:
   std::map<std::string, std::string> op_mapper_;
   int64_t start_index_;
   int64_t length_;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

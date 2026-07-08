@@ -21,16 +21,12 @@
 namespace paddle2onnx {
 
 class IndexSampleMapper : public Mapper {
- public:
-  IndexSampleMapper(const PaddleParser& p,
-                    OnnxHelper* helper,
-                    int64_t block_id,
+public:
+  IndexSampleMapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
                     int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {}
 
-  IndexSampleMapper(const PaddlePirParser& p,
-                    OnnxHelper* helper,
-                    int64_t i,
+  IndexSampleMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t i,
                     bool c)
       : Mapper(p, helper, i, c) {}
 
@@ -38,4 +34,4 @@ class IndexSampleMapper : public Mapper {
   void Opset11() override;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

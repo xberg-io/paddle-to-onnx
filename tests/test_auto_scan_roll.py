@@ -15,10 +15,9 @@
 import unittest
 
 import hypothesis.strategies as st
+import paddle
 from auto_scan_test import BaseNet, OPConvertAutoScanTest
 from onnxbase import _test_with_pir
-
-import paddle
 
 
 class Net(BaseNet):
@@ -47,29 +46,18 @@ class TestRollConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=1, max_value=10), min_size=2, max_size=5)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=1, max_value=10), min_size=2, max_size=5))
 
         dtype = draw(st.sampled_from(["float32"]))
         axis_dtype = draw(st.sampled_from(["None", "int", "list"]))
         shift_dtype = draw(st.sampled_from(["int32", "int64"]))
         if axis_dtype == "int":
-            axis = draw(
-                st.integers(min_value=-len(input_shape), max_value=len(input_shape) - 1)
-            )
+            axis = draw(st.integers(min_value=-len(input_shape), max_value=len(input_shape) - 1))
             axis_idx = axis + len(input_shape) if axis < 0 else axis
-            shifts = draw(
-                st.integers(
-                    min_value=-input_shape[axis_idx], max_value=-input_shape[axis_idx]
-                )
-            )
+            shifts = draw(st.integers(min_value=-input_shape[axis_idx], max_value=-input_shape[axis_idx]))
         elif axis_dtype == "list":
             axis = [0, -1]
-            axis_idx = [
-                axis + len(input_shape) if axis < 0 else axis
-                for i, axis in enumerate(axis)
-            ]
+            axis_idx = [axis + len(input_shape) if axis < 0 else axis for i, axis in enumerate(axis)]
             shifts = []
             sf0 = draw(
                 st.integers(
@@ -87,9 +75,7 @@ class TestRollConvert(OPConvertAutoScanTest):
             shifts.append(sf1)
         else:
             axis = None
-            shifts = draw(
-                st.integers(min_value=-input_shape[0], max_value=-input_shape[0])
-            )
+            shifts = draw(st.integers(min_value=-input_shape[0], max_value=-input_shape[0]))
 
         is_shifts_tensor = draw(st.booleans())
 

@@ -26,7 +26,8 @@ const int g_NegIntInfinity = 0xFF800000;
 const float g_NegFloatInfinity = *((float *)&g_NegIntInfinity);
 
 int32_t DistMapper::GetMinOpsetVersion(bool verbose) {
-  if (p_str_ == "0") return 9;
+  if (p_str_ == "0")
+    return 9;
   return 7;
 }
 
@@ -43,20 +44,20 @@ void DistMapper::Opset7() {
     auto sum_node = helper_->MakeNode("ReduceSum", {sign_node->output(0)});
     AddAttribute(sum_node, "keepdims", static_cast<int64_t>(0));
     auto s_sum_node = helper_->Reshape(sum_node->output(0), {-1});
-    helper_->AutoCast(
-        s_sum_node, output_info[0].name, x_info[0].dtype, output_info[0].dtype);
+    helper_->AutoCast(s_sum_node, output_info[0].name, x_info[0].dtype,
+                      output_info[0].dtype);
   } else if (p_str_ == "3.40282e+38" || p_str_ == "inf") {
     auto max_node = helper_->MakeNode("ReduceMax", {abs_node->output(0)});
     AddAttribute(max_node, "keepdims", static_cast<int64_t>(0));
     auto s_max_node = helper_->Reshape(max_node->output(0), {-1});
-    helper_->AutoCast(
-        s_max_node, output_info[0].name, x_info[0].dtype, output_info[0].dtype);
+    helper_->AutoCast(s_max_node, output_info[0].name, x_info[0].dtype,
+                      output_info[0].dtype);
   } else if (p_str_ == "1.17549e-38" || p_str_ == "-inf") {
     auto min_node = helper_->MakeNode("ReduceMin", {abs_node->output(0)});
     AddAttribute(min_node, "keepdims", static_cast<int64_t>(0));
     auto s_min_node = helper_->Reshape(min_node->output(0), {-1});
-    helper_->AutoCast(
-        s_min_node, output_info[0].name, x_info[0].dtype, output_info[0].dtype);
+    helper_->AutoCast(s_min_node, output_info[0].name, x_info[0].dtype,
+                      output_info[0].dtype);
   } else {
     std::string p = helper_->Constant({1}, GetOnnxDtype(x_info[0].dtype), p_);
     auto pow_node = helper_->MakeNode("Pow", {abs_node->output(0), p});
@@ -70,4 +71,4 @@ void DistMapper::Opset7() {
   }
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

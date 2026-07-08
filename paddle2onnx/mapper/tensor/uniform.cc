@@ -50,4 +50,4 @@ void UniformMapper::Opset7() {
     AddAttribute(random_node, "seed", static_cast<float>(seed_));
   }
 }
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

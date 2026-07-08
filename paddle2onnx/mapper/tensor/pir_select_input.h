@@ -21,15 +21,13 @@
 namespace paddle2onnx {
 
 class PirSelectInputMapper : public Mapper {
- public:
-  PirSelectInputMapper(const PaddlePirParser& p,
-                       OnnxHelper* helper,
-                       int64_t op_id,
-                       bool if_in_cf_block)
+public:
+  PirSelectInputMapper(const PaddlePirParser &p, OnnxHelper *helper,
+                       int64_t op_id, bool if_in_cf_block)
       : Mapper(p, helper, op_id, if_in_cf_block) {}
 
   int32_t GetMinOpsetVersion(bool verbose) override;
   void Opset9() override;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

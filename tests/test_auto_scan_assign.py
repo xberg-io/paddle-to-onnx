@@ -16,10 +16,9 @@ import unittest
 
 import hypothesis.strategies as st
 import numpy as np
+import paddle
 from auto_scan_test import BaseNet, OPConvertAutoScanTest
 from onnxbase import _test_only_pir
-
-import paddle
 
 
 class Net(BaseNet):
@@ -53,13 +52,9 @@ class TestAssignConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=4, max_value=8), min_size=0, max_size=5)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=4, max_value=8), min_size=0, max_size=5))
 
-        dtype = draw(
-            st.sampled_from(["float16", "float32", "float64", "int32", "int64"])
-        )
+        dtype = draw(st.sampled_from(["float16", "float32", "float64", "int32", "int64"]))
         # "list" has a bug
         input_dtype = draw(st.sampled_from(["tensor", "ndarray"]))
 

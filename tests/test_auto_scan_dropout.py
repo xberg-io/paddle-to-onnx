@@ -16,10 +16,9 @@ import random
 import unittest
 
 import hypothesis.strategies as st
+import paddle
 from auto_scan_test import BaseNet, OPConvertAutoScanTest
 from onnxbase import _test_only_pir
-
-import paddle
 
 
 class Net(BaseNet):
@@ -36,9 +35,7 @@ class Net(BaseNet):
         else:
             p = self.config["p"]
         # when training is true, has diff
-        return paddle.nn.functional.dropout(
-            x, training=False, p=p, axis=self.config["axis"], mode=self.config["mode"]
-        )
+        return paddle.nn.functional.dropout(x, training=False, p=p, axis=self.config["axis"], mode=self.config["mode"])
 
 
 class TestDropoutConvert(OPConvertAutoScanTest):
@@ -48,9 +45,7 @@ class TestDropoutConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=2, max_value=8), min_size=0, max_size=5)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=2, max_value=8), min_size=0, max_size=5))
         # "float64" has a bug
         dtype = draw(st.sampled_from(["float32"]))
         p = random.random()

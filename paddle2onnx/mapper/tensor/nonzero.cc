@@ -26,4 +26,4 @@ void NonZeroMapper::Opset9() {
   helper_->Transpose(non_zero_indices, output_info[0].name, {1, 0});
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

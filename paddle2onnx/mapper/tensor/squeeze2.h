@@ -21,15 +21,11 @@
 namespace paddle2onnx {
 
 class Squeeze2Mapper : public Mapper {
- public:
-  Squeeze2Mapper(const PaddleParser& p,
-                 OnnxHelper* helper,
-                 int64_t block_id,
+public:
+  Squeeze2Mapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
                  int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {}
-  Squeeze2Mapper(const PaddlePirParser& p,
-                 OnnxHelper* helper,
-                 int64_t op_id,
+  Squeeze2Mapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t op_id,
                  bool c)
       : Mapper(p, helper, op_id, c) {
     in_pir_mode = true;
@@ -37,8 +33,8 @@ class Squeeze2Mapper : public Mapper {
   int32_t GetMinOpsetVersion(bool verbose) override;
   void Opset7() override;
 
- private:
+private:
   std::vector<int64_t> axes_;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

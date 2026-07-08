@@ -15,9 +15,8 @@
 import unittest
 
 import hypothesis.strategies as st
-from auto_scan_test import BaseNet, OPConvertAutoScanTest
-
 import paddle
+from auto_scan_test import BaseNet, OPConvertAutoScanTest
 
 
 class Net(BaseNet):
@@ -41,9 +40,7 @@ class TestWhereIndexConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=10, max_value=20), min_size=2, max_size=4)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=10, max_value=20), min_size=2, max_size=4))
 
         dtype = draw(st.sampled_from(["float32", "float64", "int32", "int64"]))
 

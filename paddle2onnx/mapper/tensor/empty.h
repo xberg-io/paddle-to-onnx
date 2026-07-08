@@ -21,17 +21,13 @@
 namespace paddle2onnx {
 
 class EmptyMapper : public Mapper {
- public:
-  EmptyMapper(const PaddleParser& p,
-              OnnxHelper* helper,
-              int64_t block_id,
+public:
+  EmptyMapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
               int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     GetAttr("dtype", &output_dtype_);
   }
-  EmptyMapper(const PaddlePirParser& p,
-              OnnxHelper* helper,
-              int64_t block_id,
+  EmptyMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t block_id,
               int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     GetAttr("dtype", &output_dtype_);
@@ -40,7 +36,7 @@ class EmptyMapper : public Mapper {
   int32_t GetMinOpsetVersion(bool verbose) override;
   void Opset11() override;
 
- private:
+private:
   int64_t output_dtype_;
 };
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

@@ -21,16 +21,12 @@
 namespace paddle2onnx {
 
 class ReduceLogSumExpMapper : public Mapper {
- public:
-  ReduceLogSumExpMapper(const PaddleParser& p,
-                        OnnxHelper* helper,
-                        int64_t block_id,
-                        int64_t op_id)
+public:
+  ReduceLogSumExpMapper(const PaddleParser &p, OnnxHelper *helper,
+                        int64_t block_id, int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {}
 
-  ReduceLogSumExpMapper(const PaddlePirParser& p,
-                        OnnxHelper* helper,
-                        int64_t i,
+  ReduceLogSumExpMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t i,
                         bool c)
       : Mapper(p, helper, i, c) {}
 
@@ -39,7 +35,7 @@ class ReduceLogSumExpMapper : public Mapper {
 
   int32_t GetMinOpsetVersion(bool verbose) override;
 
- private:
+private:
   bool keep_dim_;
   bool reduce_all_;
   int64_t in_dtype_;
@@ -47,4 +43,4 @@ class ReduceLogSumExpMapper : public Mapper {
   std::vector<int64_t> dim_;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

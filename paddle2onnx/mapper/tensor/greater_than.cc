@@ -59,4 +59,4 @@ void GreaterThanMapper::Opset7() {
   helper_->MakeNode("Greater", aligned_inputs, {out_info[0].name});
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

@@ -69,4 +69,4 @@ int32_t PaddleDataTypeSize(int32_t paddle_dtype) {
   }
   return -1;
 }
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

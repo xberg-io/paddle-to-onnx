@@ -18,10 +18,8 @@
 namespace paddle2onnx {
 
 class FlipMapper : public Mapper {
- public:
-  FlipMapper(const PaddleParser& p,
-             OnnxHelper* helper,
-             int64_t block_id,
+public:
+  FlipMapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
              int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     GetAttr("axis", &axes_);
@@ -33,9 +31,7 @@ class FlipMapper : public Mapper {
     }
   }
 
-  FlipMapper(const PaddlePirParser& p,
-             OnnxHelper* helper,
-             int64_t op_id,
+  FlipMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t op_id,
              bool in_cf_block)
       : Mapper(p, helper, op_id, in_cf_block) {
     GetAttr("axis", &axes_);
@@ -50,8 +46,8 @@ class FlipMapper : public Mapper {
   int32_t GetMinOpsetVersion(bool verbose) override;
   void Opset7() override;
 
- private:
+private:
   std::vector<int64_t> axes_;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

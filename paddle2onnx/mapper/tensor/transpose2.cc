@@ -29,9 +29,9 @@ void Transpose2Mapper::Opset7() {
     return;
   }
   GetAttr("axis", &axis_);
-  auto node = helper_->MakeNode(
-      "Transpose", {input_info[0].name}, {output_info[0].name});
+  auto node = helper_->MakeNode("Transpose", {input_info[0].name},
+                                {output_info[0].name});
   AddAttribute(node, "perm", axis_);
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

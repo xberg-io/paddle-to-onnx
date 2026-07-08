@@ -15,10 +15,9 @@
 import unittest
 
 import hypothesis.strategies as st
+import paddle
 from auto_scan_test import BaseNet, OPConvertAutoScanTest
 from onnxbase import _test_with_pir
-
-import paddle
 
 
 class Net(BaseNet):
@@ -30,9 +29,7 @@ class Net(BaseNet):
         """
         forward
         """
-        return paddle.flatten(
-            x, start_axis=self.config["start_axis"], stop_axis=self.config["stop_axis"]
-        )
+        return paddle.flatten(x, start_axis=self.config["start_axis"], stop_axis=self.config["stop_axis"])
 
 
 class TestFlattenConvert(OPConvertAutoScanTest):
@@ -42,9 +39,7 @@ class TestFlattenConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=1, max_value=20), min_size=0, max_size=5)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=1, max_value=20), min_size=0, max_size=5))
 
         dtype = draw(st.sampled_from(["int32", "int64", "float32", "float64"]))
 
@@ -56,9 +51,7 @@ class TestFlattenConvert(OPConvertAutoScanTest):
             start_axis = draw(st.integers(min_value=0, max_value=len(input_shape) - 1))
 
             # 生成合法的stop_axis
-            stop_axis = draw(
-                st.integers(min_value=start_axis, max_value=len(input_shape) - 1)
-            )
+            stop_axis = draw(st.integers(min_value=start_axis, max_value=len(input_shape) - 1))
 
         # 随机将start_axis转为负数
         if draw(st.booleans()):

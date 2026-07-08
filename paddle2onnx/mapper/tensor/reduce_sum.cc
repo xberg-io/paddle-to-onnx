@@ -85,4 +85,4 @@ void ReduceMapperSum::Opset13() {
   }
   helper_->AutoCast(out_node_name, out_info[0].name, x_tpye, out_info[0].dtype);
 }
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

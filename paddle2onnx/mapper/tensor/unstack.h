@@ -18,22 +18,20 @@
 namespace paddle2onnx {
 
 class UnstackMapper : public Mapper {
- public:
-  UnstackMapper(const PaddleParser& p,
-                OnnxHelper* helper,
-                int64_t block_id,
+public:
+  UnstackMapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
                 int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     GetAttr("axis", &axis_);
   }
-  UnstackMapper(const PaddlePirParser& p, OnnxHelper* helper, int64_t i, bool c)
+  UnstackMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t i, bool c)
       : Mapper(p, helper, i, c) {
     GetAttr("axis", &axis_);
   }
   void Opset7() override;
 
- private:
+private:
   int64_t axis_;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

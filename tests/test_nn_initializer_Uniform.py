@@ -12,9 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from onnxbase import APIOnnx, _test_with_pir, randtool
-
 import paddle
+from onnxbase import APIOnnx, _test_with_pir, randtool
 
 
 class Net(paddle.nn.Layer):
@@ -32,9 +31,7 @@ class Net(paddle.nn.Layer):
             name="linear_bias",
             initializer=paddle.nn.initializer.Uniform(low=-0.5, high=0.5),
         )
-        self._linear = paddle.nn.Linear(
-            2, 2, weight_attr=self.weight_attr, bias_attr=self.bias_attr
-        )
+        self._linear = paddle.nn.Linear(2, 2, weight_attr=self.weight_attr, bias_attr=self.bias_attr)
 
     def forward(self, inputs):
         """

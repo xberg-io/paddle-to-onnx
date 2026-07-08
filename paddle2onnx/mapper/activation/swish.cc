@@ -35,8 +35,7 @@ void SwishMapper::Opset7() {
     sigmod_node = helper_->MakeNode("Sigmoid", {input_info[0].name});
   }
 
-  helper_->MakeNode("Mul",
-                    {input_info[0].name, sigmod_node->output(0)},
+  helper_->MakeNode("Mul", {input_info[0].name, sigmod_node->output(0)},
                     {output_info[0].name});
 }
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

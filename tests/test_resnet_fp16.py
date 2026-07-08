@@ -16,10 +16,10 @@ import os
 
 import numpy as np
 import onnxruntime
-
 import paddle
-import paddle2onnx
 from paddle.inference import PlaceType, PrecisionType, convert_to_mixed_precision
+
+import paddle2onnx
 
 
 def test_resnet_fp16_convert():
@@ -50,9 +50,7 @@ def test_resnet_fp16_convert():
     paddle.enable_static()
     path_fp16 = os.path.join(path, "inference_fp16")
     exe = paddle.static.Executor(paddle.CUDAPlace(0))
-    [inference_program, feed_target_names, fetch_targets] = (
-        paddle.static.load_inference_model(path_fp16, exe)
-    )
+    [inference_program, feed_target_names, fetch_targets] = paddle.static.load_inference_model(path_fp16, exe)
 
     # infer paddle fp16
     np.random.seed(10)
@@ -69,9 +67,7 @@ def test_resnet_fp16_convert():
     # ]
     model_file = path_fp16 + ".pdmodel"
     params_file = path_fp16 + ".pdiparams"
-    paddle2onnx.export(
-        model_file, params_file, "./resnet_fp16.onnx", export_fp16_model=True
-    )  # ONNX模型导出
+    paddle2onnx.export(model_file, params_file, "./resnet_fp16.onnx", export_fp16_model=True)  # ONNX模型导出
 
     # valid precision
     onnx_file_name = "./resnet_fp16.onnx"

@@ -13,26 +13,22 @@
 // limitations under the License.
 #pragma once
 
+#include "paddle2onnx/mapper/mapper.h"
 #include <cmath>
 #include <map>
 #include <string>
 #include <vector>
-#include "paddle2onnx/mapper/mapper.h"
 
 namespace paddle2onnx {
 class HardShrinkMapper : public Mapper {
- public:
-  HardShrinkMapper(const PaddleParser& p,
-                   OnnxHelper* helper,
-                   int64_t block_id,
+public:
+  HardShrinkMapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
                    int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     GetAttr("threshold", &threshold_);
   }
 
-  HardShrinkMapper(const PaddlePirParser& p,
-                   OnnxHelper* helper,
-                   int64_t i,
+  HardShrinkMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t i,
                    bool c)
       : Mapper(p, helper, i, c) {
     GetAttr("threshold", &threshold_);
@@ -41,7 +37,7 @@ class HardShrinkMapper : public Mapper {
   int32_t GetMinOpsetVersion(bool verbose) override;
   void Opset9() override;
 
- private:
+private:
   float threshold_;
 };
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

@@ -21,10 +21,8 @@
 namespace paddle2onnx {
 
 class TrilTriuMapper : public Mapper {
- public:
-  TrilTriuMapper(const PaddleParser& p,
-                 OnnxHelper* helper,
-                 int64_t block_id,
+public:
+  TrilTriuMapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
                  int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     if (HasAttr("diagonal")) {
@@ -41,17 +39,15 @@ class TrilTriuMapper : public Mapper {
   int32_t GetMinOpsetVersion(bool verbose) override;
   void Opset14() override;
 
- private:
+private:
   int64_t diagonal_ = 0;
   bool lower_ = true;
   std::string triu_name_ = "None";
 };
 
 class TrilMapper : public Mapper {
- public:
-  TrilMapper(const PaddlePirParser& p,
-             OnnxHelper* helper,
-             int64_t op_id,
+public:
+  TrilMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t op_id,
              bool c)
       : Mapper(p, helper, op_id, c) {
     in_pir_mode = true;
@@ -66,17 +62,15 @@ class TrilMapper : public Mapper {
   int32_t GetMinOpsetVersion(bool verbose) override;
   void Opset14() override;
 
- private:
+private:
   int64_t diagonal_ = 0;
   bool lower_ = true;
   std::string tril_name_ = "None";
 };
 
 class TriuMapper : public Mapper {
- public:
-  TriuMapper(const PaddlePirParser& p,
-             OnnxHelper* helper,
-             int64_t op_id,
+public:
+  TriuMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t op_id,
              bool c)
       : Mapper(p, helper, op_id, c) {
     in_pir_mode = true;
@@ -91,9 +85,9 @@ class TriuMapper : public Mapper {
   int32_t GetMinOpsetVersion(bool verbose) override;
   void Opset14() override;
 
- private:
+private:
   int64_t diagonal_ = 0;
   bool lower_ = false;
   std::string triu_name_ = "None";
 };
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

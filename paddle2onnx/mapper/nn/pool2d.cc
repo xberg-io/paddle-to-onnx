@@ -26,7 +26,7 @@ REGISTER_MAPPER(max_pool2d_with_index, Pool2dMapper)
 REGISTER_PIR_MAPPER(pool2d, Pool2dMapper)
 REGISTER_PIR_MAPPER(max_pool2d_with_index, Pool2dMapper)
 
-bool Pool2dMapper::IsSameSpan(const int64_t& in_size, const int64_t& out_size) {
+bool Pool2dMapper::IsSameSpan(const int64_t &in_size, const int64_t &out_size) {
   std::vector<int64_t> spans;
   spans.reserve(out_size);
   for (auto i = 0; i < out_size; ++i) {
@@ -38,8 +38,8 @@ bool Pool2dMapper::IsSameSpan(const int64_t& in_size, const int64_t& out_size) {
   return spans[0] == spans[spans.size() - 1];
 }
 
-void Pool2dMapper::AdaptivePool(const std::vector<TensorInfo>& input_info,
-                                const std::vector<TensorInfo>& output_info) {
+void Pool2dMapper::AdaptivePool(const std::vector<TensorInfo> &input_info,
+                                const std::vector<TensorInfo> &output_info) {
   int64_t input_h = input_info[0].shape[2];
   int64_t input_w = input_info[0].shape[3];
   int64_t output_h = output_info[0].shape[2];
@@ -59,15 +59,13 @@ void Pool2dMapper::AdaptivePool(const std::vector<TensorInfo>& input_info,
   std::shared_ptr<ONNX_NAMESPACE::NodeProto> node(nullptr);
   if (kNoNeedCastTypesOpSet7.find(input_info[0].dtype) !=
       kNoNeedCastTypesOpSet7.end()) {
-    node = helper_->MakeNode(
-        onnx_pool_type, {input_info[0].name}, {output_info[0].name});
+    node = helper_->MakeNode(onnx_pool_type, {input_info[0].name},
+                             {output_info[0].name});
   } else {
-    auto input = helper_->AutoCast(
-        input_info[0].name, input_info[0].dtype, P2ODataType::FP32);
+    auto input = helper_->AutoCast(input_info[0].name, input_info[0].dtype,
+                                   P2ODataType::FP32);
     node = helper_->MakeNode(onnx_pool_type, {input});
-    helper_->AutoCast(node->output(0),
-                      output_info[0].name,
-                      P2ODataType::FP32,
+    helper_->AutoCast(node->output(0), output_info[0].name, P2ODataType::FP32,
                       output_info[0].dtype);
   }
 
@@ -94,8 +92,8 @@ void Pool2dMapper::AdaptivePool(const std::vector<TensorInfo>& input_info,
   }
 }
 
-void Pool2dMapper::NoAdaptivePool(const std::vector<TensorInfo>& input_info,
-                                  const std::vector<TensorInfo>& output_info) {
+void Pool2dMapper::NoAdaptivePool(const std::vector<TensorInfo> &input_info,
+                                  const std::vector<TensorInfo> &output_info) {
   std::vector<int64_t> input_shape = input_info[0].shape;
   if (pads_.size() == 2) {
     pads_.push_back(pads_[0]);
@@ -119,12 +117,12 @@ void Pool2dMapper::NoAdaptivePool(const std::vector<TensorInfo>& input_info,
   std::string input_x = input_info[0].name;
   if (kNoNeedCastTypesOpSet7.find(input_info[0].dtype) ==
       kNoNeedCastTypesOpSet7.end()) {
-    input_x = helper_->AutoCast(
-        input_info[0].name, input_info[0].dtype, P2ODataType::FP32);
+    input_x = helper_->AutoCast(input_info[0].name, input_info[0].dtype,
+                                P2ODataType::FP32);
   }
   if (max_ksize <= max_pads) {
-    std::vector<int64_t> onnx_paddings = {
-        0, 0, pads_[0], pads_[1], 0, 0, pads_[2], pads_[3]};
+    std::vector<int64_t> onnx_paddings = {0, 0, pads_[0], pads_[1],
+                                          0, 0, pads_[2], pads_[3]};
     std::vector<std::string> inputs_names = {input_x};
     if (helper_->GetOpsetVersion() >= 11) {
       std::string paddings_node =
@@ -161,9 +159,7 @@ void Pool2dMapper::NoAdaptivePool(const std::vector<TensorInfo>& input_info,
     node = helper_->MakeNode(onnx_pool_type, {input_x}, {output_info[0].name});
   } else {
     node = helper_->MakeNode(onnx_pool_type, {input_x});
-    helper_->AutoCast(node->output(0),
-                      output_info[0].name,
-                      P2ODataType::FP32,
+    helper_->AutoCast(node->output(0), output_info[0].name, P2ODataType::FP32,
                       output_info[0].dtype);
   }
 
@@ -280,12 +276,12 @@ void Pool2dMapper::Opset7() {
   auto output_info = GetOutput("Out");
   if (in_pir_mode) {
     /**
-    // TODO: For PIR, kernel size is in inputs
-    auto ksize = GetInput("ksize")[0];
-    for (auto i = 0; i < ksize.shape.size(); ++ i) {
-      k_size_.push_back(ksize.shape[i]);
-    }
-    */
+// TODO: For PIR, kernel size is in inputs
+auto ksize = GetInput("ksize")[0];
+for (auto i = 0; i < ksize.shape.size(); ++ i) {
+k_size_.push_back(ksize.shape[i]);
+}
+*/
     // k_size_ = GetInputAttrVar("ksize", "value");
     if (convert_pir_op_name(OpType()) != "max_pool2d_with_index")
       TryGetInputValue("ksize", &k_size_);
@@ -312,14 +308,14 @@ void Pool2dMapper::Opset7() {
     }
     if (kNoNeedCastTypesOpSet7.find(input_info[0].dtype) !=
         kNoNeedCastTypesOpSet7.end()) {
-      auto output = helper_->MakeNode(
-          onnx_pool_type, {input_info[0].name}, {output_info[0].name});
+      auto output = helper_->MakeNode(onnx_pool_type, {input_info[0].name},
+                                      {output_info[0].name});
     } else {
-      auto input = helper_->AutoCast(
-          input_info[0].name, input_info[0].dtype, P2ODataType::FP32);
+      auto input = helper_->AutoCast(input_info[0].name, input_info[0].dtype,
+                                     P2ODataType::FP32);
       auto output = helper_->MakeNode(onnx_pool_type, {input})->output(0);
-      helper_->AutoCast(
-          output, output_info[0].name, P2ODataType::FP32, output_info[0].dtype);
+      helper_->AutoCast(output, output_info[0].name, P2ODataType::FP32,
+                        output_info[0].dtype);
     }
   } else if (adaptive_) {
     AdaptivePool(input_info, output_info);
@@ -328,4 +324,4 @@ void Pool2dMapper::Opset7() {
   }
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

@@ -16,10 +16,9 @@ import unittest
 
 import hypothesis.strategies as st
 import numpy as np
+import paddle
 from auto_scan_test import BaseNet, OPConvertAutoScanTest
 from onnxbase import _test_with_pir
-
-import paddle
 
 
 class Net(BaseNet):
@@ -56,13 +55,9 @@ class TestConv2dTransposeConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=20, max_value=30), min_size=4, max_size=4)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=20, max_value=30), min_size=4, max_size=4))
 
-        kernel_size = draw(
-            st.lists(st.integers(min_value=1, max_value=7), min_size=4, max_size=4)
-        )
+        kernel_size = draw(st.lists(st.integers(min_value=1, max_value=7), min_size=4, max_size=4))
 
         data_format = "NCHW"
 
@@ -77,9 +72,7 @@ class TestConv2dTransposeConvert(OPConvertAutoScanTest):
             input_shape[1] = groups
             kernel_size[0] = groups
 
-        strides = draw(
-            st.lists(st.integers(min_value=1, max_value=5), min_size=1, max_size=2)
-        )
+        strides = draw(st.lists(st.integers(min_value=1, max_value=5), min_size=1, max_size=2))
         if len(strides) == 1:
             strides = strides[0]
             if strides > kernel_size[2]:
@@ -143,29 +136,19 @@ class TestConv2dTransposeConvert(OPConvertAutoScanTest):
             padding_2_2 = padding[3][1]
         elif padding_type == "list":
             if draw(st.booleans()):
-                padding = draw(
-                    st.lists(
-                        st.integers(min_value=1, max_value=5), min_size=2, max_size=2
-                    )
-                )
+                padding = draw(st.lists(st.integers(min_value=1, max_value=5), min_size=2, max_size=2))
                 padding_1_1 = padding[0]
                 padding_1_2 = padding[0]
                 padding_2_1 = padding[1]
                 padding_2_2 = padding[1]
             else:
-                padding = draw(
-                    st.lists(
-                        st.integers(min_value=1, max_value=5), min_size=4, max_size=4
-                    )
-                )
+                padding = draw(st.lists(st.integers(min_value=1, max_value=5), min_size=4, max_size=4))
                 padding_1_1 = padding[0]
                 padding_1_2 = padding[1]
                 padding_2_1 = padding[2]
                 padding_2_2 = padding[3]
 
-        dilations = draw(
-            st.lists(st.integers(min_value=1, max_value=3), min_size=1, max_size=2)
-        )
+        dilations = draw(st.lists(st.integers(min_value=1, max_value=3), min_size=1, max_size=2))
         if len(dilations) == 1:
             dilations = dilations[0]
             dilations_1 = dilations
@@ -179,18 +162,10 @@ class TestConv2dTransposeConvert(OPConvertAutoScanTest):
         output_size = None
         if draw(st.booleans()):
             output_size_1 = (
-                (input_shape[2] - 1) * stride_1
-                - padding_1_1
-                - padding_1_2
-                + dilations_1 * (kernel_size[2] - 1)
-                + 1
+                (input_shape[2] - 1) * stride_1 - padding_1_1 - padding_1_2 + dilations_1 * (kernel_size[2] - 1) + 1
             )
             output_size_2 = (
-                (input_shape[3] - 1) * stride_2
-                - padding_2_1
-                - padding_2_2
-                + dilations_2 * (kernel_size[3] - 1)
-                + 1
+                (input_shape[3] - 1) * stride_2 - padding_2_1 - padding_2_2 + dilations_2 * (kernel_size[3] - 1) + 1
             )
             if output_size_1 == output_size_2:
                 output_size = output_size_1

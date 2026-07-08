@@ -15,10 +15,9 @@
 import unittest
 
 import hypothesis.strategies as st
+import paddle
 from auto_scan_test import BaseNet, OPConvertAutoScanTest
 from onnxbase import _test_with_pir, randtool
-
-import paddle
 
 
 class Net_tensorlist(BaseNet):
@@ -46,9 +45,7 @@ class TestGaussianRandomConvert_tensorlist(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=1, max_value=1), min_size=3, max_size=3)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=1, max_value=1), min_size=3, max_size=3))
 
         mean = draw(st.floats(min_value=-1.0, max_value=1.0))
 
@@ -114,9 +111,7 @@ class TestGaussianRandomConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=1, max_value=9), min_size=1, max_size=1)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=1, max_value=9), min_size=1, max_size=1))
 
         mean = draw(st.floats(min_value=-1.0, max_value=1.0))
 
@@ -176,9 +171,7 @@ class TestGaussianRandomConvert_list(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=1, max_value=10), min_size=0, max_size=5)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=1, max_value=10), min_size=0, max_size=5))
 
         mean = draw(st.floats(min_value=-1.0, max_value=1.0))
 

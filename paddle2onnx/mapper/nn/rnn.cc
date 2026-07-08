@@ -21,9 +21,9 @@ REGISTER_PIR_MAPPER(rnn, RnnMapper)
 
 int32_t RnnMapper::GetMinOpsetVersion(bool verbose) { return 7; }
 
-std::string RnnMapper::ReformWeight(const std::string& weight,
-                                    const int64_t& size,
-                                    const std::vector<int64_t>& perm) {
+std::string RnnMapper::ReformWeight(const std::string &weight,
+                                    const int64_t &size,
+                                    const std::vector<int64_t> &perm) {
   std::vector<std::string> items;
   for (size_t i = 0; i < perm.size(); i += 2) {
     auto item =
@@ -107,18 +107,16 @@ std::vector<std::string> RnnMapper::MakeInitParamInputs(int64_t layer_index) {
   std::vector<std::string> outputs;
   auto prestate_info = GetInput("PreState");
   int64_t bidirect_len = is_bidirec_ ? 2 : 1;
-  auto init_h = helper_->Slice(prestate_info[0].name,
-                               {0},
-                               {layer_index * bidirect_len},
-                               {layer_index * bidirect_len + bidirect_len});
+  auto init_h =
+      helper_->Slice(prestate_info[0].name, {0}, {layer_index * bidirect_len},
+                     {layer_index * bidirect_len + bidirect_len});
   outputs.push_back(init_h);
   if (mode_ == "GRU") {
     return outputs;
   }
-  auto init_c = helper_->Slice(prestate_info[1].name,
-                               {0},
-                               {layer_index * bidirect_len},
-                               {layer_index * bidirect_len + bidirect_len});
+  auto init_c =
+      helper_->Slice(prestate_info[1].name, {0}, {layer_index * bidirect_len},
+                     {layer_index * bidirect_len + bidirect_len});
   outputs.push_back(init_c);
   return outputs;
 }
@@ -136,8 +134,8 @@ void RnnMapper::Opset7() {
       auto init_param_inputs = MakeInitParamInputs(i);
       std::vector<std::string> inputs({input});
       inputs.insert(inputs.end(), param_inputs.begin(), param_inputs.end());
-      inputs.insert(
-          inputs.end(), init_param_inputs.begin(), init_param_inputs.end());
+      inputs.insert(inputs.end(), init_param_inputs.begin(),
+                    init_param_inputs.end());
       auto node = helper_->MakeNode("LSTM", inputs, 3);
       std::string direction = is_bidirec_ ? "bidirectional" : "forward";
       AddAttribute(node, "direction", direction);
@@ -157,8 +155,8 @@ void RnnMapper::Opset7() {
       auto init_param_inputs = MakeInitParamInputs(i);
       std::vector<std::string> inputs({input});
       inputs.insert(inputs.end(), param_inputs.begin(), param_inputs.end());
-      inputs.insert(
-          inputs.end(), init_param_inputs.begin(), init_param_inputs.end());
+      inputs.insert(inputs.end(), init_param_inputs.begin(),
+                    init_param_inputs.end());
       auto node = helper_->MakeNode("GRU", inputs, 2);
       std::string direction = is_bidirec_ ? "bidirectional" : "forward";
       AddAttribute(node, "direction", direction);
@@ -172,4 +170,4 @@ void RnnMapper::Opset7() {
     helper_->MakeNode("Identity", {input}, {out_info[0].name});
   }
 }
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

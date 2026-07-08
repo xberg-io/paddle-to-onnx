@@ -150,9 +150,7 @@ def gen_onnx_export(q):
 
         sess = ort.InferenceSession(onnx_file_path)
         result1 = sess.run(None, {"x0": data[0], "x1": data[1]})
-        assert len(result0) == len(result1), (
-            "multiclass_nms3: Length of result is not same"
-        )
+        assert len(result0) == len(result1), "multiclass_nms3: Length of result is not same"
         diff = np.fabs(all_sort(result0[0]) - all_sort(result1[0]))
         print("Max diff of BBoxes:", result0[0].shape, result1[0].shape, diff.max())
         assert diff.max() < 1e-05, f"Difference={diff.max()} of bbox is exceed 1e-05"
@@ -172,17 +170,13 @@ def test_nms():
         p0.start()
         p0.join()
         if not q0.get(timeout=1):
-            raise AssertionError(
-                "Test failed for multiclass_nms as gen paddle model step."
-            )
+            raise AssertionError("Test failed for multiclass_nms as gen paddle model step.")
         q1 = Queue()
         p1 = Process(target=gen_onnx_export, args=(q1,))
         p1.start()
         p1.join()
         if not q1.get(timeout=1):
-            raise AssertionError(
-                "Test failed for multiclass_nms at gen_onnx_export step."
-            )
+            raise AssertionError("Test failed for multiclass_nms at gen_onnx_export step.")
 
 
 if __name__ == "__main__":

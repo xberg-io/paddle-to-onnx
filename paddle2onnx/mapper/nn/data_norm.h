@@ -21,10 +21,8 @@
 namespace paddle2onnx {
 
 class DataNormMapper : public Mapper {
- public:
-  DataNormMapper(const PaddleParser& p,
-                 OnnxHelper* helper,
-                 int64_t block_id,
+public:
+  DataNormMapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
                  int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     GetAttr("data_layout", &data_layout_);
@@ -37,10 +35,10 @@ class DataNormMapper : public Mapper {
   int32_t GetMinOpsetVersion(bool verbose) override;
   void Opset7() override;
 
- private:
+private:
   std::string data_layout_;
   float epsilon_;
   int64_t slot_dim_ = -1;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

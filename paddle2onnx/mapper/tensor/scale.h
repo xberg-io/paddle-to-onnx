@@ -19,10 +19,8 @@
 namespace paddle2onnx {
 
 class ScaleMapper : public Mapper {
- public:
-  ScaleMapper(const PaddlePirParser& p,
-              OnnxHelper* helper,
-              int64_t op_id,
+public:
+  ScaleMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t op_id,
               bool if_in_cf_block)
       : Mapper(p, helper, op_id, if_in_cf_block) {
     GetAttr("bias", &bias_);
@@ -31,10 +29,10 @@ class ScaleMapper : public Mapper {
 
   void Opset7() override;
 
- private:
+private:
   float scale_ = 1.0;
   float bias_ = 0.0;
   bool bias_after_scale_ = true;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

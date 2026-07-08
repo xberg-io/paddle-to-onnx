@@ -16,10 +16,9 @@ import random
 import unittest
 
 import hypothesis.strategies as st
+import paddle
 from auto_scan_test import BaseNet, OPConvertAutoScanTest
 from onnxbase import _test_with_pir
-
-import paddle
 
 op_api_map = {
     "reduce_all": paddle.all,
@@ -41,9 +40,7 @@ class Net(BaseNet):
         """
         forward
         """
-        x = op_api_map[self.config["op_names"]](
-            inputs, axis=self.config["dim"], keepdim=self.config["keep_dim"]
-        )
+        x = op_api_map[self.config["op_names"]](inputs, axis=self.config["dim"], keepdim=self.config["keep_dim"])
         x = paddle.unsqueeze(x, axis=0)
         return x.astype("int32")
 
@@ -55,9 +52,7 @@ class TestReduceAllConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=2, max_value=20), min_size=1, max_size=5)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=2, max_value=20), min_size=1, max_size=5))
 
         dtype = draw(st.sampled_from(["bool"]))
         axis_type = draw(
@@ -69,9 +64,7 @@ class TestReduceAllConvert(OPConvertAutoScanTest):
             )
         )
         if axis_type == "int":
-            dim = draw(
-                st.integers(min_value=-len(input_shape), max_value=len(input_shape) - 1)
-            )
+            dim = draw(st.integers(min_value=-len(input_shape), max_value=len(input_shape) - 1))
         elif axis_type == "list":
             lenSize = random.randint(1, len(input_shape))
             dim = []

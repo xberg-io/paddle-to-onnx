@@ -21,18 +21,14 @@
 namespace paddle2onnx {
 
 class ExpandAsMapper : public Mapper {
- public:
-  ExpandAsMapper(const PaddleParser& p,
-                 OnnxHelper* helper,
-                 int64_t block_id,
+public:
+  ExpandAsMapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
                  int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     GetAttr("target_shape", &target_shape_);
   }
 
-  ExpandAsMapper(const PaddlePirParser& p,
-                 OnnxHelper* helper,
-                 int64_t i,
+  ExpandAsMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t i,
                  bool c)
       : Mapper(p, helper, i, c) {
     GetAttr("target_shape", &target_shape_);
@@ -40,8 +36,8 @@ class ExpandAsMapper : public Mapper {
   int32_t GetMinOpsetVersion(bool verbose) override;
   void Opset8() override;
 
- private:
+private:
   std::vector<int64_t> target_shape_;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

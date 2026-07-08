@@ -12,9 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from onnxbase import APIOnnx, _test_with_pir
-
 import paddle
+from onnxbase import APIOnnx, _test_with_pir
 
 
 class Net(paddle.nn.Layer):
@@ -44,7 +43,5 @@ def test_GRU_base():
     op.eval()
     # net, name, ver_list, delta=1e-10, rtol=1e-11
     obj = APIOnnx(op, "nn_GRU", [9, 10, 11, 12])
-    obj.set_input_data(
-        "input_data", paddle.randn((4, 23, 16)), paddle.randn((2, 4, 32))
-    )
+    obj.set_input_data("input_data", paddle.randn((4, 23, 16)), paddle.randn((2, 4, 32)))
     obj.run()

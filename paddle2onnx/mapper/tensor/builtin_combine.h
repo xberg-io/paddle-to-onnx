@@ -22,17 +22,15 @@ namespace paddle2onnx {
 
 // PIR builtin.combine operation
 class BuiltinCombineMapper : public Mapper {
- public:
-  BuiltinCombineMapper(const PaddlePirParser& p,
-                       OnnxHelper* helper,
-                       int64_t op_id,
-                       bool c)
+public:
+  BuiltinCombineMapper(const PaddlePirParser &p, OnnxHelper *helper,
+                       int64_t op_id, bool c)
       : Mapper(p, helper, op_id, c) {}
 
   void Opset7() override;
 
- private:
+private:
   int64_t GetInputNum();
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

@@ -18,7 +18,7 @@ namespace paddle2onnx {
 REGISTER_MAPPER(eye, EyeMapper)
 REGISTER_PIR_MAPPER(eye, EyeMapper)
 
-void EyeMapper::ParseValue(const TensorInfo& tensor_info, int64_t* num_val) {
+void EyeMapper::ParseValue(const TensorInfo &tensor_info, int64_t *num_val) {
   std::vector<int64_t> value;
   TryGetValue(tensor_info, &value);
   *num_val = value[0];
@@ -101,4 +101,4 @@ void EyeMapper::Opset9() {
       helper_->MakeNode("EyeLike", {constant_node}, {output_info[0].name});
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

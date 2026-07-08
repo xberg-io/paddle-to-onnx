@@ -25,20 +25,15 @@
 
 namespace paddle2onnx {
 void AddAttribute(std::shared_ptr<ONNX_NAMESPACE::NodeProto> node,
-                  const std::string &name,
-                  const int64_t &value);
+                  const std::string &name, const int64_t &value);
 void AddAttribute(std::shared_ptr<ONNX_NAMESPACE::NodeProto> node,
-                  const std::string &name,
-                  const float &value);
+                  const std::string &name, const float &value);
 void AddAttribute(std::shared_ptr<ONNX_NAMESPACE::NodeProto> node,
-                  const std::string &name,
-                  const std::string &value);
+                  const std::string &name, const std::string &value);
 void AddAttribute(std::shared_ptr<ONNX_NAMESPACE::NodeProto> node,
-                  const std::string &name,
-                  const std::vector<int64_t> &values);
+                  const std::string &name, const std::vector<int64_t> &values);
 void AddAttribute(std::shared_ptr<ONNX_NAMESPACE::NodeProto> node,
-                  const std::string &name,
-                  const std::vector<float> &values);
+                  const std::string &name, const std::vector<float> &values);
 void AddAttribute(std::shared_ptr<ONNX_NAMESPACE::NodeProto> node,
                   const std::string &name,
                   ONNX_NAMESPACE::TensorProto_DataType dtype);
@@ -49,11 +44,11 @@ void AddAttribute(std::shared_ptr<ONNX_NAMESPACE::NodeProto> node,
 ONNX_NAMESPACE::TensorProto_DataType GetOnnxDtype(int32_t paddle_dtype);
 std::shared_ptr<ONNX_NAMESPACE::NodeProto> MakeConstant(const std::string &name,
                                                         const Weight &weight);
-std::shared_ptr<ONNX_NAMESPACE::ValueInfoProto> MakeValueInfo(
-    const TensorInfo &info);
+std::shared_ptr<ONNX_NAMESPACE::ValueInfoProto>
+MakeValueInfo(const TensorInfo &info);
 
 struct QuantizeInfo {
- public:
+public:
   std::vector<float> scale_;
   std::vector<int64_t> zeros_;
   std::string zeros_node_;
@@ -62,10 +57,8 @@ struct QuantizeInfo {
 
   QuantizeInfo() = default;
   QuantizeInfo(const std::vector<float> &scale,
-               const std::vector<int64_t> &zeros,
-               const std::string &scale_node,
-               const std::string &zeros_node,
-               const int64_t &quantize_axis) {
+               const std::vector<int64_t> &zeros, const std::string &scale_node,
+               const std::string &zeros_node, const int64_t &quantize_axis) {
     zeros_node_ = zeros_node;
     scale_node_ = scale_node;
     quantize_axis_ = quantize_axis;
@@ -77,7 +70,7 @@ struct QuantizeInfo {
 };
 
 class OnnxHelper {
- public:
+public:
   bool verbose_;
   static int32_t opset_version;
   static void SetOpsetVersion(int32_t op_v) { opset_version = op_v; }
@@ -97,48 +90,38 @@ class OnnxHelper {
   template <typename T>
   bool TryGetTensorValue(const std::string &name, std::vector<T> *value);
 
-  std::shared_ptr<ONNX_NAMESPACE::ValueInfoProto> MakeValueInfo(
-      const std::string &name,
-      const int32_t &dtype,
-      const std::vector<int64_t> &shape);
+  std::shared_ptr<ONNX_NAMESPACE::ValueInfoProto>
+  MakeValueInfo(const std::string &name, const int32_t &dtype,
+                const std::vector<int64_t> &shape);
 
-  std::shared_ptr<ONNX_NAMESPACE::NodeProto> MakeNode(
-      const std::string &op_type,
-      const std::vector<std::string> &inputs,
-      const std::vector<std::string> &outputs);
+  std::shared_ptr<ONNX_NAMESPACE::NodeProto>
+  MakeNode(const std::string &op_type, const std::vector<std::string> &inputs,
+           const std::vector<std::string> &outputs);
   // we use this function to generate some temporary node
   // we do not need to define the outputs, because the outputs
   // is generate by MapperHelper, which will make sure there's no
   // name confict problem
   // the parameter `num_outputs` will define the number of output names
-  std::shared_ptr<ONNX_NAMESPACE::NodeProto> MakeNode(
-      const std::string &op_type,
-      const std::vector<std::string> &inputs,
-      int num_outputs = 1);
+  std::shared_ptr<ONNX_NAMESPACE::NodeProto>
+  MakeNode(const std::string &op_type, const std::vector<std::string> &inputs,
+           int num_outputs = 1);
 
-  std::shared_ptr<ONNX_NAMESPACE::NodeProto> MakeNode(
-      const std::string &name,
-      const std::string &op_type,
-      const std::vector<std::string> &inputs,
-      const std::vector<std::string> &outputs);
+  std::shared_ptr<ONNX_NAMESPACE::NodeProto>
+  MakeNode(const std::string &name, const std::string &op_type,
+           const std::vector<std::string> &inputs,
+           const std::vector<std::string> &outputs);
 
   template <typename T>
-  std::string ConstOfShape(const std::string &input,
-                           const std::string &output,
-                           ONNX_NAMESPACE::TensorProto_DataType dtype,
-                           T value);
+  std::string ConstOfShape(const std::string &input, const std::string &output,
+                           ONNX_NAMESPACE::TensorProto_DataType dtype, T value);
   template <typename T>
   std::string ConstOfShape(const std::string &input,
-                           ONNX_NAMESPACE::TensorProto_DataType dtype,
-                           T value);
+                           ONNX_NAMESPACE::TensorProto_DataType dtype, T value);
 
-  std::string AutoCast(const std::string &input,
-                       int32_t input_paddle_dtype,
+  std::string AutoCast(const std::string &input, int32_t input_paddle_dtype,
                        int32_t to_paddle_dtype);
-  std::string AutoCast(const std::string &input,
-                       const std::string &output,
-                       int32_t input_paddle_dtype,
-                       int32_t to_paddle_dtype);
+  std::string AutoCast(const std::string &input, const std::string &output,
+                       int32_t input_paddle_dtype, int32_t to_paddle_dtype);
 
   std::vector<int64_t> GetBroadcastShape(const std::vector<int64_t> &shape_a,
                                          const std::vector<int64_t> &shape_b);
@@ -149,8 +132,7 @@ class OnnxHelper {
   std::string BroadcastTo(const std::string &input,
                           const std::vector<int64_t> &input_shape,
                           const std::vector<int64_t> &target_shape);
-  std::string BroadcastTo(const std::string &input,
-                          const std::string &output,
+  std::string BroadcastTo(const std::string &input, const std::string &output,
                           const std::vector<int64_t> &input_shape,
                           const std::vector<int64_t> &target_shape);
 
@@ -159,50 +141,38 @@ class OnnxHelper {
   // will make sure all inputs to be 1-D tensor
   // will concat them as output
   std::string ConcatIndices(const std::vector<TensorInfo> &indices);
-  std::vector<std::string> DtypeAlignment(
-      const std::vector<TensorInfo> &input_info, int32_t *out_dtype);
-  std::string Clip(const std::string &input,
-                   const float &min,
-                   const float &max,
+  std::vector<std::string>
+  DtypeAlignment(const std::vector<TensorInfo> &input_info, int32_t *out_dtype);
+  std::string Clip(const std::string &input, const float &min, const float &max,
                    const int32_t &in_dtype);
-  std::string Clip(const std::string &input,
-                   const std::string &output,
-                   const float &min,
-                   const float &max,
-                   const int32_t &in_dtype);
+  std::string Clip(const std::string &input, const std::string &output,
+                   const float &min, const float &max, const int32_t &in_dtype);
   std::string Squeeze(const std::string &input,
                       const std::vector<int64_t> &axes);
-  std::string Squeeze(const std::string &input,
-                      const std::string &output,
+  std::string Squeeze(const std::string &input, const std::string &output,
                       const std::vector<int64_t> &axes);
   std::string Unsqueeze(const std::string &input,
                         const std::vector<int64_t> &axes);
-  std::string Unsqueeze(const std::string &input,
-                        const std::string &output,
+  std::string Unsqueeze(const std::string &input, const std::string &output,
                         const std::vector<int64_t> &axes);
-  std::string Reshape(const std::string &input,
-                      const std::string &output,
+  std::string Reshape(const std::string &input, const std::string &output,
                       const std::vector<int64_t> &shape);
   std::string Reshape(const std::string &input,
                       const std::vector<int64_t> &shape);
   std::string Flatten(const std::string &input, const std::string &output);
   std::string Flatten(const std::string &input);
-  std::string Slice(const std::string &input,
-                    const std::string &output,
+  std::string Slice(const std::string &input, const std::string &output,
                     const std::vector<int64_t> &axes,
                     const std::vector<int64_t> &starts,
                     const std::vector<int64_t> &ends);
-  std::string Slice(const std::string &input,
-                    const std::vector<int64_t> &axes,
+  std::string Slice(const std::string &input, const std::vector<int64_t> &axes,
                     const std::vector<int64_t> &starts,
                     const std::vector<int64_t> &ends);
   std::string Concat(const std::vector<std::string> &input,
-                     const std::string &output,
-                     int64_t axis);
+                     const std::string &output, int64_t axis);
   std::string Concat(const std::vector<std::string> &input, int64_t axis);
 
-  std::string Transpose(const std::string &input,
-                        const std::string &output,
+  std::string Transpose(const std::string &input, const std::string &output,
                         const std::vector<int64_t> &perm);
   std::string Transpose(const std::string &input,
                         const std::vector<int64_t> &perm);
@@ -225,12 +195,10 @@ class OnnxHelper {
   template <typename T>
   std::string Constant(const std::string &output,
                        const std::vector<int64_t> &shape,
-                       ONNX_NAMESPACE::TensorProto_DataType dtype,
-                       T value);
+                       ONNX_NAMESPACE::TensorProto_DataType dtype, T value);
   template <typename T>
   std::string Constant(const std::vector<int64_t> &shape,
-                       ONNX_NAMESPACE::TensorProto_DataType dtype,
-                       T value);
+                       ONNX_NAMESPACE::TensorProto_DataType dtype, T value);
 
   template <typename T>
   std::string Constant(const std::vector<int64_t> &shape,
@@ -267,9 +235,8 @@ std::string OnnxHelper::Constant(const std::vector<int64_t> &shape,
     tensor->add_dims(shape[i]);
     numel *= shape[i];
   }
-  Assert(numel == value.size(),
-         "numel and val number is not equal in Constant "
-         "function.");
+  Assert(numel == value.size(), "numel and val number is not equal in Constant "
+                                "function.");
   tensor->set_data_type(dtype);
   if (dtype == ONNX_NAMESPACE::TensorProto::FLOAT) {
     std::vector<float> data;
@@ -462,9 +429,8 @@ std::string OnnxHelper::Constant(const std::string &output,
     std::vector<int8_t> data(numel, static_cast<int8_t>(value));
     tensor->set_raw_data(std::string((const char *)(data.data()), numel));
   } else {
-    Assert(false,
-           "Only support data type of BOOL/FLOAT/DOUBLE/INT32/INT64 in "
-           "Constant function.");
+    Assert(false, "Only support data type of BOOL/FLOAT/DOUBLE/INT32/INT64 in "
+                  "Constant function.");
   }
   nodes.push_back(node);
   return output;
@@ -487,10 +453,9 @@ std::string OnnxHelper::ConstOfShape(const std::string &input,
 }
 
 template <typename T>
-std::string OnnxHelper::ConstOfShape(const std::string &input,
-                                     const std::string &output,
-                                     ONNX_NAMESPACE::TensorProto_DataType dtype,
-                                     T value) {
+std::string
+OnnxHelper::ConstOfShape(const std::string &input, const std::string &output,
+                         ONNX_NAMESPACE::TensorProto_DataType dtype, T value) {
   auto node = MakeNode("ConstantOfShape", {input}, {output});
   auto attr = node->add_attribute();
   attr->set_name("value");
@@ -525,11 +490,11 @@ std::string OnnxHelper::ConstOfShape(const std::string &input,
 }
 
 template <typename T>
-std::string OnnxHelper::Assign(
-    const std::string &output,
-    const ONNX_NAMESPACE::TensorProto_DataType &dtype,
-    const std::vector<int64_t> &shape,
-    const std::vector<T> &value) {
+std::string
+OnnxHelper::Assign(const std::string &output,
+                   const ONNX_NAMESPACE::TensorProto_DataType &dtype,
+                   const std::vector<int64_t> &shape,
+                   const std::vector<T> &value) {
   auto node = std::make_shared<ONNX_NAMESPACE::NodeProto>();
   node->set_op_type("Constant");
   node->add_output(output);
@@ -539,8 +504,8 @@ std::string OnnxHelper::Assign(
   auto tensor = attr->mutable_t();
   tensor->set_name(output);
 
-  int numel = std::accumulate(
-      std::begin(shape), std::end(shape), 1, std::multiplies<int64_t>());
+  int numel = std::accumulate(std::begin(shape), std::end(shape), 1,
+                              std::multiplies<int64_t>());
   Assert(numel == value.size(),
          "Numel of value not satisfy the input shape while creating contant "
          "tensor.");
@@ -582,10 +547,10 @@ std::string OnnxHelper::Assign(
 }
 
 template <typename T>
-std::string OnnxHelper::Assign(
-    const ONNX_NAMESPACE::TensorProto_DataType &dtype,
-    const std::vector<int64_t> &shape,
-    const std::vector<T> &value) {
+std::string
+OnnxHelper::Assign(const ONNX_NAMESPACE::TensorProto_DataType &dtype,
+                   const std::vector<int64_t> &shape,
+                   const std::vector<T> &value) {
   auto output = MapperHelper::Get()->GenName("helper.constant");
   return Assign(output, dtype, shape, value);
 }
@@ -614,7 +579,8 @@ bool OnnxHelper::TryGetTensorValue(const std::string &name,
         shape.push_back(tensor->dims(i));
       }
       int64_t nums = 1;
-      for (auto &i : shape) nums *= i;
+      for (auto &i : shape)
+        nums *= i;
       value->resize(nums);
       if (dtype == ONNX_NAMESPACE::TensorProto::INT64) {
         std::vector<int64_t> val(nums, 0);
@@ -648,4 +614,4 @@ bool OnnxHelper::TryGetTensorValue(const std::string &name,
   return false;
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

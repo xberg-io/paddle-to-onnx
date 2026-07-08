@@ -81,12 +81,12 @@ void FillConstantMapper::Opset7() {
   float value = GetFillValue();
   if (HasInput("ValueTensor")) {
     auto value_info = GetInput("ValueTensor");
-    auto out = helper_->Constant(
-        shape, GetOnnxDtype(out_info[0].dtype), static_cast<float>(0.0));
+    auto out = helper_->Constant(shape, GetOnnxDtype(out_info[0].dtype),
+                                 static_cast<float>(0.0));
     helper_->MakeNode("Add", {out, value_info[0].name}, {out_info[0].name});
   } else {
-    helper_->Constant(
-        out_info[0].name, shape, GetOnnxDtype(out_info[0].dtype), value);
+    helper_->Constant(out_info[0].name, shape, GetOnnxDtype(out_info[0].dtype),
+                      value);
   }
 }
 
@@ -104,8 +104,8 @@ void FillConstantMapper::Opset9() {
     std::string shape_name;
     if (HasInput("ShapeTensor")) {
       auto shape_info = GetInput("ShapeTensor");
-      shape_name = helper_->AutoCast(
-          shape_info[0].name, shape_info[0].dtype, P2ODataType::INT64);
+      shape_name = helper_->AutoCast(shape_info[0].name, shape_info[0].dtype,
+                                     P2ODataType::INT64);
     } else {
       auto shape_info = GetInput("ShapeTensorList");
       shape_name = helper_->ConcatIndices(shape_info);
@@ -115,8 +115,8 @@ void FillConstantMapper::Opset9() {
     if (value_is_tensor) {
       node = helper_->MakeNode("ConstantOfShape", {shape_name});
     } else {
-      node = helper_->MakeNode(
-          "ConstantOfShape", {shape_name}, {out_info[0].name});
+      node = helper_->MakeNode("ConstantOfShape", {shape_name},
+                               {out_info[0].name});
     }
     auto attr = node->add_attribute();
     attr->set_name("value");
@@ -167,4 +167,4 @@ void FillConstantMapper::Opset9() {
   }
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

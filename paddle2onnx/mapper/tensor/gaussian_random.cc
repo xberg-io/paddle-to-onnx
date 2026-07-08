@@ -40,7 +40,7 @@ void GaussianRandomMapper::Opset7() {
   if (HasInput("ShapeTensor")) {
     if (!TryGetInputValue("ShapeTensor", &shape)) {
       auto shape_info = GetInput("ShapeTensor");
-      if (shape_info.size() != 1) {  // ShapeTensorList case
+      if (shape_info.size() != 1) { // ShapeTensorList case
         shape_tensor_name = helper_->ConcatIndices(shape_info);
       } else {
         shape_tensor_name = helper_->AutoCast(
@@ -84,4 +84,4 @@ void GaussianRandomMapper::Opset7() {
   }
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

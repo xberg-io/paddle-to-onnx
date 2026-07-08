@@ -25,34 +25,32 @@
 // After:
 //   C = Identity(Y)
 
-#include <cmath>
-#include <numeric>
 #include "onnx/defs/tensor_util.h"
 #include "onnxoptimizer/pass.h"
+#include <cmath>
+#include <numeric>
 
 namespace ONNX_NAMESPACE {
 namespace optimization {
 
 struct ReplaceAddToIdentity final : public PredicateBasedPass {
   explicit ReplaceAddToIdentity()
-      : PredicateBasedPass(PassType::Fuse,
-                           PassEfficiency::Complete,
+      : PredicateBasedPass(PassType::Fuse, PassEfficiency::Complete,
                            PassOptimizationType::Compute) {}
 
   std::string getPassName() const override { return "replace_add_to_identity"; }
 
-  bool patternMatchPredicate(Node* node) override {
+  bool patternMatchPredicate(Node *node) override {
     return node->kind() == kAdd &&
            (node->inputs()[0]->node()->kind() == kConstant ||
             node->inputs()[1]->node()->kind() == kConstant);
   }
 
-  bool runTransform(Node* n,
-                    Graph& graph,
-                    NodeDestroyType& destroy_current) override {
-    Node* add_node = n;
-    Node* add_ipt_0 = n->inputs()[0]->node();
-    Node* add_ipt_1 = n->inputs()[1]->node();
+  bool runTransform(Node *n, Graph &graph,
+                    NodeDestroyType &destroy_current) override {
+    Node *add_node = n;
+    Node *add_ipt_0 = n->inputs()[0]->node();
+    Node *add_ipt_1 = n->inputs()[1]->node();
 
     if (add_ipt_0->kind() == kConstant) {
       auto bias = add_ipt_0->t(kvalue);
@@ -62,19 +60,19 @@ struct ReplaceAddToIdentity final : public PredicateBasedPass {
       if (bias.sizes().size() > 1) {
         return false;
       }
-      const auto& float_data = bias.floats();
+      const auto &float_data = bias.floats();
       if (float_data.size() > 0 && fabs(float_data[0]) > 1e-05) {
         return false;
       }
-      const auto& double_data = bias.doubles();
+      const auto &double_data = bias.doubles();
       if (double_data.size() > 0 && fabs(double_data[0]) > 1e-05) {
         return false;
       }
-      const auto& int32_data = bias.int32s();
+      const auto &int32_data = bias.int32s();
       if (int32_data.size() > 0 && int32_data[0] != 0) {
         return false;
       }
-      const auto& int64_data = bias.int64s();
+      const auto &int64_data = bias.int64s();
       if (int64_data.size() > 0 && int64_data[0] != 0) {
         return false;
       }
@@ -91,19 +89,19 @@ struct ReplaceAddToIdentity final : public PredicateBasedPass {
       if (bias.sizes().size() > 1) {
         return false;
       }
-      const auto& float_data = bias.floats();
+      const auto &float_data = bias.floats();
       if (float_data.size() > 0 && fabs(float_data[0]) > 1e-05) {
         return false;
       }
-      const auto& double_data = bias.doubles();
+      const auto &double_data = bias.doubles();
       if (double_data.size() > 0 && fabs(double_data[0]) > 1e-05) {
         return false;
       }
-      const auto& int32_data = bias.int32s();
+      const auto &int32_data = bias.int32s();
       if (int32_data.size() > 0 && int32_data[0] != 0) {
         return false;
       }
-      const auto& int64_data = bias.int64s();
+      const auto &int64_data = bias.int64s();
       if (int64_data.size() > 0 && int64_data[0] != 0) {
         return false;
       }
@@ -117,5 +115,5 @@ struct ReplaceAddToIdentity final : public PredicateBasedPass {
   }
 };
 
-}  // namespace optimization
-}  // namespace ONNX_NAMESPACE
+} // namespace optimization
+} // namespace ONNX_NAMESPACE

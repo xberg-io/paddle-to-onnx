@@ -15,10 +15,9 @@
 import unittest
 
 import hypothesis.strategies as st
+import paddle
 from auto_scan_test import BaseNet, OPConvertAutoScanTest
 from onnxbase import randtool
-
-import paddle
 
 
 class Net(BaseNet):
@@ -45,24 +44,16 @@ class TestKookuptablev2Convert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=10, max_value=30), min_size=2, max_size=2)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=10, max_value=30), min_size=2, max_size=2))
 
-        weight_shape = draw(
-            st.lists(st.integers(min_value=10, max_value=30), min_size=2, max_size=2)
-        )
+        weight_shape = draw(st.lists(st.integers(min_value=10, max_value=30), min_size=2, max_size=2))
 
         def generator_data():
             return randtool("int", 0, weight_shape[0] - 1, input_shape)
 
         padding_idx = None
         if draw(st.booleans()):
-            padding_idx = draw(
-                st.integers(
-                    min_value=-1 * weight_shape[0] + 1, max_value=weight_shape[0] - 1
-                )
-            )
+            padding_idx = draw(st.integers(min_value=-1 * weight_shape[0] + 1, max_value=weight_shape[0] - 1))
 
         sparse = draw(st.booleans())
 

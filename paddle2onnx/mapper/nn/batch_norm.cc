@@ -44,24 +44,21 @@ void BatchNormMapper::Opset7() {
     scale_name = GetInput("Scale")[0].name;
   } else {
     std::vector<int64_t> values(numel, 1);
-    scale_name = helper_->Constant(
-        mean_info[0].shape, GetOnnxDtype(mean_info[0].dtype), values);
+    scale_name = helper_->Constant(mean_info[0].shape,
+                                   GetOnnxDtype(mean_info[0].dtype), values);
   }
 
   if (HasInput("Bias")) {
     bias_name = GetInput("Bias")[0].name;
   } else {
     std::vector<int64_t> values(numel, 0);
-    bias_name = helper_->Constant(
-        mean_info[0].shape, GetOnnxDtype(mean_info[0].dtype), values);
+    bias_name = helper_->Constant(mean_info[0].shape,
+                                  GetOnnxDtype(mean_info[0].dtype), values);
   }
 
   auto node = helper_->MakeNode("BatchNormalization",
-                                {input_info[0].name,
-                                 scale_name,
-                                 bias_name,
-                                 mean_info[0].name,
-                                 variance_info[0].name},
+                                {input_info[0].name, scale_name, bias_name,
+                                 mean_info[0].name, variance_info[0].name},
                                 {output_info[0].name});
   if (helper_->GetOpsetVersion() < 9) {
     int64_t spatial = 1;
@@ -89,16 +86,16 @@ void BatchNormMapper::Opset14() {
     scale_name = GetInput("Scale")[0].name;
   } else {
     std::vector<int64_t> values(numel, 1);
-    scale_name = helper_->Constant(
-        mean_info[0].shape, GetOnnxDtype(mean_info[0].dtype), values);
+    scale_name = helper_->Constant(mean_info[0].shape,
+                                   GetOnnxDtype(mean_info[0].dtype), values);
   }
 
   if (HasInput("Bias")) {
     bias_name = GetInput("Bias")[0].name;
   } else {
     std::vector<int64_t> values(numel, 0);
-    bias_name = helper_->Constant(
-        mean_info[0].shape, GetOnnxDtype(mean_info[0].dtype), values);
+    bias_name = helper_->Constant(mean_info[0].shape,
+                                  GetOnnxDtype(mean_info[0].dtype), values);
   }
 
   std::vector<std::string> output_names;
@@ -108,11 +105,8 @@ void BatchNormMapper::Opset14() {
     output_names.push_back(variance_out_info[0].name);
   }
   auto node = helper_->MakeNode("BatchNormalization",
-                                {input_info[0].name,
-                                 scale_name,
-                                 bias_name,
-                                 mean_info[0].name,
-                                 variance_info[0].name},
+                                {input_info[0].name, scale_name, bias_name,
+                                 mean_info[0].name, variance_info[0].name},
                                 output_names);
   if (helper_->GetOpsetVersion() < 9) {
     int64_t spatial = 1;
@@ -121,8 +115,8 @@ void BatchNormMapper::Opset14() {
 
   AddAttribute(node, "epsilon", epsilon_);
   AddAttribute(node, "momentum", momentum_);
-  AddAttribute(
-      node, "training_mode", static_cast<int64_t>(trainable_statistics_));
+  AddAttribute(node, "training_mode",
+               static_cast<int64_t>(trainable_statistics_));
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

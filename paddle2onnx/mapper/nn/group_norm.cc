@@ -64,8 +64,7 @@ void GroupNormMapper::Opset7() {
     std::string unsqueezed_bias = helper_->Unsqueeze(bias_info[0].name, {1, 2});
     auto scale_output =
         helper_->MakeNode("Mul", {output->output(0), unsqueezed_scale});
-    helper_->MakeNode("Add",
-                      {scale_output->output(0), unsqueezed_bias},
+    helper_->MakeNode("Add", {scale_output->output(0), unsqueezed_bias},
                       {output_info[0].name});
   } else {
     helper_->MakeNode("Reshape",
@@ -74,4 +73,4 @@ void GroupNormMapper::Opset7() {
   }
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

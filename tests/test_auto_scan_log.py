@@ -15,10 +15,9 @@
 import unittest
 
 import hypothesis.strategies as st
+import paddle
 from auto_scan_test import BaseNet, OPConvertAutoScanTest
 from onnxbase import _test_with_pir
-
-import paddle
 
 op_api_map = {"log1p": paddle.log1p, "log10": paddle.log10}
 
@@ -35,9 +34,7 @@ class TestLogConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=10, max_value=20), min_size=1, max_size=4)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=10, max_value=20), min_size=1, max_size=4))
 
         dtype = draw(st.sampled_from(["float32", "float64"]))
 

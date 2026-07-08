@@ -12,9 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from onnxbase import APIOnnx, _test_with_pir
-
 import paddle
+from onnxbase import APIOnnx, _test_with_pir
 
 
 class Net(paddle.nn.Layer):
@@ -42,7 +41,5 @@ def test_floor_divide_base():
     op.eval()
     # net, name, ver_list, delta=1e-10, rtol=1e-11
     obj = APIOnnx(op, "floor_divide", [9, 10, 11, 12])
-    obj.set_input_data(
-        "input_data", paddle.to_tensor([2, 3, 8, 7]), paddle.to_tensor([1, 5, 3, 3])
-    )
+    obj.set_input_data("input_data", paddle.to_tensor([2, 3, 8, 7]), paddle.to_tensor([1, 5, 3, 3]))
     obj.run()

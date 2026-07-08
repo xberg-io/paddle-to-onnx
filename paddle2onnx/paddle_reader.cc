@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "paddle2onnx/converter.h"
+#include "paddle2onnx/mapper/exporter.h"
+#include "paddle2onnx/parser/parser.h"
 #include <cstring>
 #include <fstream>
 #include <iostream>
 #include <set>
 #include <string>
-#include "paddle2onnx/converter.h"
-#include "paddle2onnx/mapper/exporter.h"
-#include "paddle2onnx/parser/parser.h"
 
 namespace paddle2onnx {
 
@@ -41,7 +41,7 @@ int32_t GetDataTypeFromPaddle(int dtype) {
   return -1;
 }
 
-PaddleReader::PaddleReader(const char* model_buffer, int buffer_size) {
+PaddleReader::PaddleReader(const char *model_buffer, int buffer_size) {
   PaddleParser parser;
   Assert(parser.Init(model_buffer, buffer_size),
          "Failed to parse PaddlePaddle model.");
@@ -49,9 +49,7 @@ PaddleReader::PaddleReader(const char* model_buffer, int buffer_size) {
   num_inputs = parser.inputs.size();
   num_outputs = parser.outputs.size();
   for (int i = 0; i < num_inputs; ++i) {
-    snprintf(inputs[i].name,
-             sizeof(inputs[i].name),
-             "%s",
+    snprintf(inputs[i].name, sizeof(inputs[i].name), "%s",
              parser.inputs[i].name.c_str());
     inputs[i].rank = parser.inputs[i].Rank();
     inputs[i].shape = new int64_t[inputs[i].rank];
@@ -62,9 +60,7 @@ PaddleReader::PaddleReader(const char* model_buffer, int buffer_size) {
   }
 
   for (int i = 0; i < num_outputs; ++i) {
-    snprintf(outputs[i].name,
-             sizeof(outputs[i].name),
-             "%s",
+    snprintf(outputs[i].name, sizeof(outputs[i].name), "%s",
              parser.outputs[i].name.c_str());
     outputs[i].rank = parser.outputs[i].Rank();
     outputs[i].shape = new int64_t[outputs[i].rank];
@@ -83,7 +79,7 @@ PaddleReader::PaddleReader(const char* model_buffer, int buffer_size) {
     if (parser.GetOpDesc(0, i).type().find("multiclass_nms3") !=
         std::string::npos) {
       has_nms = true;
-      auto& op = parser.GetOpDesc(0, i);
+      auto &op = parser.GetOpDesc(0, i);
       parser.GetOpAttr(op, "background_label", &nms_params.background_label);
       parser.GetOpAttr(op, "keep_top_k", &nms_params.keep_top_k);
       parser.GetOpAttr(op, "nms_eta", &nms_params.nms_eta);
@@ -96,4 +92,4 @@ PaddleReader::PaddleReader(const char* model_buffer, int buffer_size) {
   }
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

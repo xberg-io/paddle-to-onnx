@@ -16,9 +16,8 @@ import unittest
 
 import hypothesis.strategies as st
 import numpy as np
-from auto_scan_test import BaseNet, OPConvertAutoScanTest
-
 import paddle
+from auto_scan_test import BaseNet, OPConvertAutoScanTest
 
 
 class NetAvgpool1d(BaseNet):
@@ -51,9 +50,7 @@ class TestAvgpool1dConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=10, max_value=20), min_size=3, max_size=3)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=10, max_value=20), min_size=3, max_size=3))
 
         # input_shape = [3, 1, 10]
         dtype = draw(st.sampled_from(["float32", "float64"]))
@@ -64,17 +61,13 @@ class TestAvgpool1dConvert(OPConvertAutoScanTest):
         if kernel_type == "int":
             kernel_size = draw(st.integers(min_value=7, max_value=10))
         elif kernel_type == "list":
-            kernel_size = draw(
-                st.lists(st.integers(min_value=7, max_value=10), min_size=1, max_size=1)
-            )
+            kernel_size = draw(st.lists(st.integers(min_value=7, max_value=10), min_size=1, max_size=1))
 
         stride_type = draw(st.sampled_from(["None", "int", "list"]))
         if stride_type == "int":
             stride = draw(st.integers(min_value=1, max_value=5))
         elif stride_type == "list":
-            stride = draw(
-                st.lists(st.integers(min_value=1, max_value=5), min_size=1, max_size=1)
-            )
+            stride = draw(st.lists(st.integers(min_value=1, max_value=5), min_size=1, max_size=1))
         else:
             stride = None
 
@@ -142,9 +135,7 @@ class TestAvgpool2dConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=10, max_value=20), min_size=4, max_size=4)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=10, max_value=20), min_size=4, max_size=4))
 
         dtype = draw(st.sampled_from(["float32", "float64"]))
         data_format = draw(st.sampled_from(["NCHW"]))
@@ -155,35 +146,25 @@ class TestAvgpool2dConvert(OPConvertAutoScanTest):
         if kernel_type == "int":
             kernel_size = draw(st.integers(min_value=5, max_value=7))
         elif kernel_type == "list":
-            kernel_size = draw(
-                st.lists(st.integers(min_value=5, max_value=7), min_size=2, max_size=2)
-            )
+            kernel_size = draw(st.lists(st.integers(min_value=5, max_value=7), min_size=2, max_size=2))
 
         stride_type = draw(st.sampled_from(["None", "int", "list"]))
         if stride_type == "int":
             stride = draw(st.integers(min_value=1, max_value=5))
         elif stride_type == "list":
-            stride = draw(
-                st.lists(st.integers(min_value=1, max_value=5), min_size=2, max_size=2)
-            )
+            stride = draw(st.lists(st.integers(min_value=1, max_value=5), min_size=2, max_size=2))
         else:
             stride = None
 
-        padding_type = draw(
-            st.sampled_from(["None", "str", "int", "list2", "list4", "list8"])
-        )
+        padding_type = draw(st.sampled_from(["None", "str", "int", "list2", "list4", "list8"]))
         if padding_type == "str":
             padding = draw(st.sampled_from(["SAME", "VALID"]))
         elif padding_type == "int":
             padding = draw(st.integers(min_value=1, max_value=3))
         elif padding_type == "list2":
-            padding = draw(
-                st.lists(st.integers(min_value=1, max_value=3), min_size=2, max_size=2)
-            )
+            padding = draw(st.lists(st.integers(min_value=1, max_value=3), min_size=2, max_size=2))
         elif padding_type == "list4":
-            padding = draw(
-                st.lists(st.integers(min_value=1, max_value=3), min_size=4, max_size=4)
-            )
+            padding = draw(st.lists(st.integers(min_value=1, max_value=3), min_size=4, max_size=4))
         elif padding_type == "list8":
             padding1 = np.expand_dims(
                 np.array(
@@ -278,9 +259,7 @@ class TestAvgpool3dConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=10, max_value=20), min_size=5, max_size=5)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=10, max_value=20), min_size=5, max_size=5))
 
         dtype = draw(st.sampled_from(["float32", "float64"]))
         data_format = draw(st.sampled_from(["NCDHW"]))
@@ -291,35 +270,25 @@ class TestAvgpool3dConvert(OPConvertAutoScanTest):
         if kernel_type == "int":
             kernel_size = draw(st.integers(min_value=7, max_value=10))
         elif kernel_type == "list":
-            kernel_size = draw(
-                st.lists(st.integers(min_value=7, max_value=10), min_size=3, max_size=3)
-            )
+            kernel_size = draw(st.lists(st.integers(min_value=7, max_value=10), min_size=3, max_size=3))
 
         stride_type = draw(st.sampled_from(["None", "int", "list"]))
         if stride_type == "int":
             stride = draw(st.integers(min_value=1, max_value=5))
         elif stride_type == "list":
-            stride = draw(
-                st.lists(st.integers(min_value=1, max_value=5), min_size=3, max_size=3)
-            )
+            stride = draw(st.lists(st.integers(min_value=1, max_value=5), min_size=3, max_size=3))
         else:
             stride = None
 
-        padding_type = draw(
-            st.sampled_from(["None", "str", "int", "list3", "list6", "list10"])
-        )
+        padding_type = draw(st.sampled_from(["None", "str", "int", "list3", "list6", "list10"]))
         if padding_type == "str":
             padding = draw(st.sampled_from(["SAME", "VALID"]))
         elif padding_type == "int":
             padding = draw(st.integers(min_value=1, max_value=5))
         elif padding_type == "list3":
-            padding = draw(
-                st.lists(st.integers(min_value=1, max_value=5), min_size=3, max_size=3)
-            )
+            padding = draw(st.lists(st.integers(min_value=1, max_value=5), min_size=3, max_size=3))
         elif padding_type == "list6":
-            padding = draw(
-                st.lists(st.integers(min_value=1, max_value=5), min_size=6, max_size=6)
-            )
+            padding = draw(st.lists(st.integers(min_value=1, max_value=5), min_size=6, max_size=6))
         elif padding_type == "list10":
             padding1 = np.expand_dims(
                 np.array(

@@ -18,9 +18,7 @@ import sys
 
 def parse_arguments():
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--model", required=True, help="Path of directory saved the input model."
-    )
+    parser.add_argument("--model", required=True, help="Path of directory saved the input model.")
     parser.add_argument(
         "--origin_names",
         required=True,
@@ -33,9 +31,7 @@ def parse_arguments():
         nargs="+",
         help="The new name you want change to, the number of new_names should be same with the number of origin_names",
     )
-    parser.add_argument(
-        "--save_file", required=True, help="Path to save the new onnx model."
-    )
+    parser.add_argument("--save_file", required=True, help="Path to save the new onnx model.")
     return parser.parse_args()
 
 
@@ -53,28 +49,20 @@ if __name__ == "__main__":
 
     for origin_name in args.origin_names:
         if origin_name not in output_tensor_names:
-            print(
-                f"[ERROR] Cannot find tensor name '{origin_name}' in onnx model graph."
-            )
+            print(f"[ERROR] Cannot find tensor name '{origin_name}' in onnx model graph.")
             sys.exit(-1)
     if len(set(args.origin_names)) < len(args.origin_names):
-        print(
-            "[ERROR] There's dumplicate name in --origin_names, which is not allowed."
-        )
+        print("[ERROR] There's dumplicate name in --origin_names, which is not allowed.")
         sys.exit(-1)
     if len(args.new_names) != len(args.origin_names):
-        print(
-            "[ERROR] Number of --new_names must be same with the number of --origin_names."
-        )
+        print("[ERROR] Number of --new_names must be same with the number of --origin_names.")
         sys.exit(-1)
     if len(set(args.new_names)) < len(args.new_names):
         print("[ERROR] There's dumplicate name in --new_names, which is not allowed.")
         sys.exit(-1)
     for new_name in args.new_names:
         if new_name in output_tensor_names:
-            print(
-                "[ERROR] The defined new_name '{}' is already exist in the onnx model, which is not allowed."
-            )
+            print("[ERROR] The defined new_name '{}' is already exist in the onnx model, which is not allowed.")
             sys.exit(-1)
 
     for i, ipt in enumerate(model.graph.input):
@@ -100,9 +88,5 @@ if __name__ == "__main__":
     onnx.checker.check_model(model)
     onnx.save(model, args.save_file)
     print(f"[Finished] The new model saved in {args.save_file}.")
-    print(
-        f"[DEBUG INFO] The inputs of new model: {[x.name for x in model.graph.input]}"
-    )
-    print(
-        f"[DEBUG INFO] The outputs of new model: {[x.name for x in model.graph.output]}"
-    )
+    print(f"[DEBUG INFO] The inputs of new model: {[x.name for x in model.graph.input]}")
+    print(f"[DEBUG INFO] The outputs of new model: {[x.name for x in model.graph.output]}")

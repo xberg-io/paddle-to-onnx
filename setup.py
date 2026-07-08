@@ -114,12 +114,8 @@ class cmake_build(setuptools.Command):
                 "-DBUILD_PADDLE2ONNX_PYTHON=ON",
                 "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
                 f"-DONNX_NAMESPACE={ONNX_NAMESPACE}",
-                "-DPY_EXT_SUFFIX={}".format(
-                    sysconfig.get_config_var("EXT_SUFFIX") or ""
-                ),
-                "-DPY_VERSION={}".format(
-                    str(sys.version_info[0]) + "." + str(sys.version_info[1])
-                ),
+                "-DPY_EXT_SUFFIX={}".format(sysconfig.get_config_var("EXT_SUFFIX") or ""),
+                "-DPY_VERSION={}".format(str(sys.version_info[0]) + "." + str(sys.version_info[1])),
             ]
             cmake_args.append(f"-DCMAKE_BUILD_TYPE={build_type}")
             cmake_args.append("-DCMAKE_POLICY_VERSION_MINIMUM=3.5")
@@ -137,9 +133,7 @@ class cmake_build(setuptools.Command):
                 else:
                     cmake_args.extend(["-A", "Win32", "-T", "host=x86"])
             else:
-                cmake_args.append(
-                    f"-DPYTHON_LIBRARY={sysconfig.get_python_lib(standard_lib=True)}"
-                )
+                cmake_args.append(f"-DPYTHON_LIBRARY={sysconfig.get_python_lib(standard_lib=True)}")
             if "CMAKE_ARGS" in os.environ:
                 extra_cmake_args = shlex.split(os.environ["CMAKE_ARGS"])
                 # prevent crossfire with downstream scripts
@@ -182,15 +176,13 @@ class build_ext(setuptools.command.build_ext.build_ext):
                     lib_path = release_lib_dir
 
             src = os.path.join(lib_path, filename)
-            dst = os.path.join(
-                os.path.realpath(self.build_lib), "paddle2onnx", filename
-            )
+            dst = os.path.join(os.path.realpath(self.build_lib), "paddle2onnx", filename)
             if platform.system() == "Darwin":
-                command = f"install_name_tool -change @loader_path/../libs/ @loader_path/../paddle/base/libpaddle.so {src}"
+                command = (
+                    f"install_name_tool -change @loader_path/../libs/ @loader_path/../paddle/base/libpaddle.so {src}"
+                )
                 if os.system(command) != 0:
-                    raise Exception(
-                        f"Failed to change library paths using command: '{command}'"
-                    )
+                    raise Exception(f"Failed to change library paths using command: '{command}'")
             self.copy_file(src, dst)
 
 
@@ -203,9 +195,7 @@ cmdclass = {
 # Extensions
 ################################################################################
 
-ext_modules = [
-    setuptools.Extension(name="paddle2onnx.paddle2onnx_cpp2py_export", sources=[])
-]
+ext_modules = [setuptools.Extension(name="paddle2onnx.paddle2onnx_cpp2py_export", sources=[])]
 
 ################################################################################
 # Final

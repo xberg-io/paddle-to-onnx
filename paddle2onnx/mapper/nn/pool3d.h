@@ -22,10 +22,8 @@
 namespace paddle2onnx {
 
 class Pool3dMapper : public Mapper {
- public:
-  Pool3dMapper(const PaddleParser& p,
-               OnnxHelper* helper,
-               int64_t block_id,
+public:
+  Pool3dMapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
                int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     op_mapper_["max"] = {"MaxPool", "GlobalMaxPool"};
@@ -45,7 +43,7 @@ class Pool3dMapper : public Mapper {
     }
   }
 
-  Pool3dMapper(const PaddlePirParser& p, OnnxHelper* helper, int64_t i, bool c)
+  Pool3dMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t i, bool c)
       : Mapper(p, helper, i, c) {
     op_mapper_["max"] = {"MaxPool", "GlobalMaxPool"};
     op_mapper_["avg"] = {"AveragePool", "GlobalAveragePool"};
@@ -66,12 +64,12 @@ class Pool3dMapper : public Mapper {
   int32_t GetMinOpsetVersion(bool verbose) override;
   void Opset7() override;
 
- private:
-  bool IsSameSpan(const int64_t& in_size, const int64_t& out_size);
-  void AdaptivePool(const std::vector<TensorInfo>& input_info,
-                    const std::vector<TensorInfo>& output_info);
-  void NoAdaptivePool(const std::vector<TensorInfo>& input_info,
-                      const std::vector<TensorInfo>& output_info);
+private:
+  bool IsSameSpan(const int64_t &in_size, const int64_t &out_size);
+  void AdaptivePool(const std::vector<TensorInfo> &input_info,
+                    const std::vector<TensorInfo> &output_info);
+  void NoAdaptivePool(const std::vector<TensorInfo> &input_info,
+                      const std::vector<TensorInfo> &output_info);
   const std::unordered_set<int32_t> kNoNeedCastTypesOpSet7{P2ODataType::FP16,
                                                            P2ODataType::FP32};
   bool ceil_mode_;
@@ -87,4 +85,4 @@ class Pool3dMapper : public Mapper {
   std::map<std::string, std::vector<std::string>> op_mapper_;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

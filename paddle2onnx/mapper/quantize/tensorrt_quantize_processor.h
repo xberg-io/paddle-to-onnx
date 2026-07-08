@@ -18,7 +18,7 @@
 
 namespace paddle2onnx {
 class TensorRTQuantizeProcessor : public BaseQuantizeProcessor {
- public:
+public:
   TensorRTQuantizeProcessor() = default;
   virtual ~TensorRTQuantizeProcessor() = default;
 
@@ -27,17 +27,16 @@ class TensorRTQuantizeProcessor : public BaseQuantizeProcessor {
       std::vector<std::shared_ptr<ONNX_NAMESPACE::ValueInfoProto>> *inputs,
       std::vector<std::shared_ptr<ONNX_NAMESPACE::ValueInfoProto>> *outputs,
       std::vector<std::shared_ptr<ONNX_NAMESPACE::NodeProto>> *nodes,
-      OnnxHelper *helper,
-      const PaddleParser &parser,
+      OnnxHelper *helper, const PaddleParser &parser,
       std::string *calibration_cache = nullptr) override;
 
- protected:
+protected:
   // According to:
   // https://github.com/NVIDIA/TensorRT/tree/main/tools/pytorch-quantization/pytorch_quantization/nn/modules
   void AddQDQ() override;
 
- private:
+private:
   // Generate cache file for TensorRT8.X int8 deploy
   void GenerateCache(std::string *calibration_cache);
 };
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

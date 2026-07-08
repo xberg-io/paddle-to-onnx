@@ -109,19 +109,20 @@ def multiclass_nms(
         .. code-block:: python
             import paddle
             from ppdet.modeling import ops
-            boxes = paddle.static.data(name='bboxes', shape=[81, 4],
-                                      dtype='float32', lod_level=1)
-            scores = paddle.static.data(name='scores', shape=[81],
-                                      dtype='float32', lod_level=1)
-            out, index = ops.multiclass_nms(bboxes=boxes,
-                                            scores=scores,
-                                            background_label=0,
-                                            score_threshold=0.5,
-                                            nms_top_k=400,
-                                            nms_threshold=0.3,
-                                            keep_top_k=200,
-                                            normalized=False,
-                                            return_index=True)
+
+            boxes = paddle.static.data(name="bboxes", shape=[81, 4], dtype="float32", lod_level=1)
+            scores = paddle.static.data(name="scores", shape=[81], dtype="float32", lod_level=1)
+            out, index = ops.multiclass_nms(
+                bboxes=boxes,
+                scores=scores,
+                background_label=0,
+                score_threshold=0.5,
+                nms_top_k=400,
+                nms_threshold=0.3,
+                keep_top_k=200,
+                normalized=False,
+                return_index=True,
+            )
     """
     helper = LayerHelper("multiclass_nms3", **locals())
 
@@ -142,9 +143,7 @@ def multiclass_nms(
             "normalized",
             normalized,
         )
-        output, index, nms_rois_num = core.ops.multiclass_nms3(
-            bboxes, scores, rois_num, *attrs
-        )
+        output, index, nms_rois_num = core.ops.multiclass_nms3(bboxes, scores, rois_num, *attrs)
         if not return_index:
             index = None
         return output, nms_rois_num, index

@@ -16,9 +16,8 @@ import random
 import unittest
 
 import hypothesis.strategies as st
-from auto_scan_test import BaseNet, OPConvertAutoScanTest
-
 import paddle
+from auto_scan_test import BaseNet, OPConvertAutoScanTest
 
 
 class Net(BaseNet):
@@ -41,9 +40,7 @@ class TestStackConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape1 = draw(
-            st.lists(st.integers(min_value=4, max_value=8), min_size=0, max_size=5)
-        )
+        input_shape1 = draw(st.lists(st.integers(min_value=4, max_value=8), min_size=0, max_size=5))
 
         n = random.randint(1, 6 - len(input_shape1))
         pre_shape = random.sample([1, 1, 2, 2, 3, 3], n)

@@ -17,10 +17,9 @@ import unittest
 
 import hypothesis.strategies as st
 import numpy as np
+import paddle
 from auto_scan_test import BaseNet, OPConvertAutoScanTest
 from onnxbase import _test_with_pir, randtool
-
-import paddle
 
 
 class Net(BaseNet):
@@ -31,9 +30,7 @@ class Net(BaseNet):
     def forward(self, inputs, indices, value):
         accumulate = self.config.get("accumulate", False)
         indices = list(indices)  # index_put() expects a list/tuple of tensors
-        return paddle.index_put(
-            inputs, indices=indices, value=value, accumulate=accumulate
-        )
+        return paddle.index_put(inputs, indices=indices, value=value, accumulate=accumulate)
 
 
 class TestIndexPutConvert(OPConvertAutoScanTest):
@@ -44,9 +41,7 @@ class TestIndexPutConvert(OPConvertAutoScanTest):
 
     def sample_convert_config(self, draw):
         # Test with Tensors only up to 4 dimensions for simplicity
-        input_shape = draw(
-            st.lists(st.integers(min_value=2, max_value=10), min_size=2, max_size=4)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=2, max_value=10), min_size=2, max_size=4))
         dtype = draw(st.sampled_from(["float32", "float64", "int32", "int64"]))
         accumulate = draw(st.booleans())
 

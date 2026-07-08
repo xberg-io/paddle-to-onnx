@@ -99,4 +99,4 @@ void PutAlongAxisMapper::Opset18() {
   AddAttribute(node, "axis", axis_);
   AddAttribute(node, "reduction", onnx_reduction);
 }
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

@@ -22,14 +22,11 @@
 
 namespace paddle2onnx {
 class Mapper {
- public:
+public:
   using ScalarData = PaddlePirParser::ScalarData;
   Mapper() {}
-  Mapper(const PaddleParser& p,
-         OnnxHelper* helper,
-         int32_t block_id,
-         int32_t op_id,
-         std::string name = {})
+  Mapper(const PaddleParser &p, OnnxHelper *helper, int32_t block_id,
+         int32_t op_id, std::string name = {})
       : parser_(&p) {
     block_idx_ = block_id;
     op_idx_ = op_id;
@@ -37,11 +34,8 @@ class Mapper {
     name_ = name;
   }
 
-  Mapper(const PaddlePirParser& p,
-         OnnxHelper* helper,
-         int32_t op_id,
-         bool in_contro_flow_block = false,
-         std::string name = {})
+  Mapper(const PaddlePirParser &p, OnnxHelper *helper, int32_t op_id,
+         bool in_contro_flow_block = false, std::string name = {})
       : pir_parser_(&p) {
     helper_ = helper;
     name_ = name;
@@ -59,19 +53,19 @@ class Mapper {
   std::string custom_op_name;
   std::string deploy_backend;
 
-  P2OLogger Logger(const bool& verbose, const int32_t& opset_version = 100) {
+  P2OLogger Logger(const bool &verbose, const int32_t &opset_version = 100) {
     bool v = verbose;
     if (opset_version <= helper_->GetOpsetVersion()) {
       v = false;
     }
     std::string prefix;
     if (in_pir_mode) {
-      auto& op = if_in_cf_block ? pir_parser_->sub_blocks_ops[pir_op_idx_]
+      auto &op = if_in_cf_block ? pir_parser_->sub_blocks_ops[pir_op_idx_]
                                 : pir_parser_->global_blocks_ops[pir_op_idx_];
       prefix = "[Paddle2ONNX] [OP: " + op->name() + "]";
     } else {
       std::string output_name;
-      auto& op = parser_->GetOpDesc(block_idx_, op_idx_);
+      auto &op = parser_->GetOpDesc(block_idx_, op_idx_);
       if (op.outputs(0).arguments_size() > 0) {
         output_name = op.outputs(0).arguments(0);
       }
@@ -83,12 +77,12 @@ class Mapper {
   P2OLogger Error() {
     std::string prefix;
     if (in_pir_mode) {
-      auto& op = if_in_cf_block ? pir_parser_->sub_blocks_ops[pir_op_idx_]
+      auto &op = if_in_cf_block ? pir_parser_->sub_blocks_ops[pir_op_idx_]
                                 : pir_parser_->global_blocks_ops[pir_op_idx_];
       prefix = "[ERROR][Paddle2ONNX] [OP: " + op->name() + "]";
     } else {
       std::string output_name;
-      auto& op = parser_->GetOpDesc(block_idx_, op_idx_);
+      auto &op = parser_->GetOpDesc(block_idx_, op_idx_);
       if (op.outputs(0).arguments_size() > 0) {
         output_name = op.outputs(0).arguments(0);
       }
@@ -100,12 +94,12 @@ class Mapper {
   P2OLogger Warn() {
     std::string prefix;
     if (in_pir_mode) {
-      auto& op = if_in_cf_block ? pir_parser_->sub_blocks_ops[pir_op_idx_]
+      auto &op = if_in_cf_block ? pir_parser_->sub_blocks_ops[pir_op_idx_]
                                 : pir_parser_->global_blocks_ops[pir_op_idx_];
       prefix = "[WARNING][Paddle2ONNX] [OP: " + op->name() + "]";
     } else {
       std::string output_name = "";
-      auto& op = parser_->GetOpDesc(block_idx_, op_idx_);
+      auto &op = parser_->GetOpDesc(block_idx_, op_idx_);
       if (op.outputs(0).arguments_size() > 0) {
         output_name = op.outputs(0).arguments(0);
       }
@@ -204,13 +198,13 @@ class Mapper {
   bool is_experimental_op_ = false;
   bool in_pir_mode = false;
   bool if_in_cf_block = false;
-  const PaddleParser* parser_;
-  const PaddlePirParser* pir_parser_;
-  OnnxHelper* helper_;
+  const PaddleParser *parser_;
+  const PaddlePirParser *pir_parser_;
+  OnnxHelper *helper_;
   int32_t block_idx_;
   int32_t op_idx_;
   int32_t pir_op_idx_;
-  std::string name_;  // op transform name
+  std::string name_; // op transform name
 
   std::string OpType() const {
     if (in_pir_mode) {
@@ -223,7 +217,7 @@ class Mapper {
       }
 
     } else {
-      auto& op = parser_->GetOpDesc(block_idx_, op_idx_);
+      auto &op = parser_->GetOpDesc(block_idx_, op_idx_);
       return op.type();
     }
   }
@@ -234,25 +228,25 @@ class Mapper {
 
   std::string Name() const { return name_; }
 
-  void GetScalarAttr(const std::string& scalar_name, ScalarData* scalar_data) {
+  void GetScalarAttr(const std::string &scalar_name, ScalarData *scalar_data) {
     Assert(in_pir_mode, "Only support PIR mode.");
-    pir_parser_->GetOpScalarValue(
-        pir_op_idx_, if_in_cf_block, scalar_name, scalar_data);
+    pir_parser_->GetOpScalarValue(pir_op_idx_, if_in_cf_block, scalar_name,
+                                  scalar_data);
   }
 
-  bool HasInput(const std::string& name) const {
+  bool HasInput(const std::string &name) const {
     if (in_pir_mode) {
       return pir_parser_->OpHasInput(pir_op_idx_, name, if_in_cf_block);
     }
     return parser_->OpHasInput(block_idx_, op_idx_, name);
   }
-  bool HasOutput(const std::string& name) const {
+  bool HasOutput(const std::string &name) const {
     if (in_pir_mode) {
       return pir_parser_->OpHasOutput(pir_op_idx_, name, if_in_cf_block);
     }
     return parser_->OpHasOutput(block_idx_, op_idx_, name);
   }
-  std::vector<TensorInfo> GetInput(const std::string& name) const {
+  std::vector<TensorInfo> GetInput(const std::string &name) const {
     if (in_pir_mode) {
       int32_t value_idx = pir_parser_->GetOpInputOutputName2Idx(
           pir_op_idx_, name, true, if_in_cf_block);
@@ -260,7 +254,7 @@ class Mapper {
     }
     return parser_->GetOpInput(block_idx_, op_idx_, name);
   }
-  std::vector<TensorInfo> GetOutput(const std::string& name) const {
+  std::vector<TensorInfo> GetOutput(const std::string &name) const {
     if (in_pir_mode) {
       int32_t value_idx = pir_parser_->GetOpInputOutputName2Idx(
           pir_op_idx_, name, false, if_in_cf_block);
@@ -280,27 +274,27 @@ class Mapper {
   }
 
   // Judge whether Attribute(name)'s type is Var or Vars.
-  bool IsAttrVar(const std::string& name) const {
+  bool IsAttrVar(const std::string &name) const {
     if (in_pir_mode)
       return pir_parser_->OpIsAttrVar(pir_op_idx_, name, if_in_cf_block);
     return parser_->OpIsAttrVar(block_idx_, op_idx_, name);
   }
 
   // Get TensorInfo(s) from Attribute Var or Vars.
-  std::vector<TensorInfo> GetAttrVar(const std::string& name) const {
+  std::vector<TensorInfo> GetAttrVar(const std::string &name) const {
     return parser_->GetOpAttrVar(block_idx_, op_idx_, name);
   }
 
   /*
-   * todo(wangmingkai02): add GetInputAttrVar function.
-  std::vector<int64_t> GetInputAttrVar(const std::string &input_name, const
-  std::string &attr_name) const { int32_t value_idx =
-  pir_parser_->GetOpInputOutputName2Idx(pir_op_idx_, input_name, true); return
-  pir_parser_->GetOpAttrVar(pir_op_idx_, value_idx, attr_name);
-  }
-  */
+* todo(wangmingkai02): add GetInputAttrVar function.
+std::vector<int64_t> GetInputAttrVar(const std::string &input_name, const
+std::string &attr_name) const { int32_t value_idx =
+pir_parser_->GetOpInputOutputName2Idx(pir_op_idx_, input_name, true); return
+pir_parser_->GetOpAttrVar(pir_op_idx_, value_idx, attr_name);
+}
+*/
 
-  bool HasAttr(const std::string& name) const {
+  bool HasAttr(const std::string &name) const {
     if (in_pir_mode) {
       if (if_in_cf_block) {
         auto op = pir_parser_->sub_blocks_ops[pir_op_idx_];
@@ -312,13 +306,12 @@ class Mapper {
             op, pir_parser_->GetOpArgName(pir_op_idx_, name, false));
       }
     } else {
-      auto& op = parser_->GetOpDesc(block_idx_, op_idx_);
+      auto &op = parser_->GetOpDesc(block_idx_, op_idx_);
       return parser_->OpHasAttr(op, name);
     }
   }
 
-  template <typename T>
-  void GetAttr(const std::string& name, T* val) {
+  template <typename T> void GetAttr(const std::string &name, T *val) {
     if (in_pir_mode) {
       if (if_in_cf_block) {
         auto op = pir_parser_->sub_blocks_ops[pir_op_idx_];
@@ -330,42 +323,41 @@ class Mapper {
             op, pir_parser_->GetOpArgName(pir_op_idx_, name, false), val);
       }
     } else {
-      auto& op = parser_->GetOpDesc(block_idx_, op_idx_);
+      auto &op = parser_->GetOpDesc(block_idx_, op_idx_);
       parser_->GetOpAttr(op, name, val);
     }
   }
 
   template <typename T>
-  void GetScalars(const std::string& name, std::vector<T>* val) {
-    auto& op = parser_->GetOpDesc(block_idx_, op_idx_);
+  void GetScalars(const std::string &name, std::vector<T> *val) {
+    auto &op = parser_->GetOpDesc(block_idx_, op_idx_);
     parser_->GetOpScalarsAttr(op, name, val);
   }
 
-  bool IsConstantInput(const std::string& input_key) const {
+  bool IsConstantInput(const std::string &input_key) const {
     if (in_pir_mode) {
       int32_t value_idx = pir_parser_->GetOpInputOutputName2Idx(
           pir_op_idx_, input_key, true, if_in_cf_block);
-      return pir_parser_->IsConstantTensor(
-          pir_op_idx_, value_idx, if_in_cf_block);
+      return pir_parser_->IsConstantTensor(pir_op_idx_, value_idx,
+                                           if_in_cf_block);
     } else {
       auto input_info = GetInput(input_key);
       return parser_->IsConstantTensor(block_idx_, input_info[0].name);
     }
   }
 
-  bool IsConstant(const TensorInfo& info) const {
+  bool IsConstant(const TensorInfo &info) const {
     return parser_->IsConstantTensor(block_idx_, info.name);
   }
 
   template <typename T>
-  bool TryGetInputValue(const std::string& input_key, std::vector<T>* data) {
+  bool TryGetInputValue(const std::string &input_key, std::vector<T> *data) {
     if (in_pir_mode) {
       return pir_parser_->TryGetTensorValue(
           pir_op_idx_,
-          pir_parser_->GetOpInputOutputName2Idx(
-              pir_op_idx_, input_key, true, if_in_cf_block),
-          data,
-          if_in_cf_block);
+          pir_parser_->GetOpInputOutputName2Idx(pir_op_idx_, input_key, true,
+                                                if_in_cf_block),
+          data, if_in_cf_block);
     } else {
       auto input_info = GetInput(input_key);
       return parser_->TryGetTensorValue(block_idx_, input_info[0].name, data);
@@ -373,25 +365,24 @@ class Mapper {
   }
 
   template <typename T>
-  bool TryGetInputValue(const std::string& input_key, T* data) {
+  bool TryGetInputValue(const std::string &input_key, T *data) {
     if (in_pir_mode) {
       return pir_parser_->TryGetTensorValue(
           pir_op_idx_,
-          pir_parser_->GetOpInputOutputName2Idx(
-              pir_op_idx_, input_key, true, if_in_cf_block),
-          data,
-          if_in_cf_block);
+          pir_parser_->GetOpInputOutputName2Idx(pir_op_idx_, input_key, true,
+                                                if_in_cf_block),
+          data, if_in_cf_block);
     } else {
       Assert(false, "Not support in old IR.");
     }
   }
 
   template <typename T>
-  bool TryGetValue(const TensorInfo& info, std::vector<T>* data) {
+  bool TryGetValue(const TensorInfo &info, std::vector<T> *data) {
     return parser_->TryGetTensorValue(block_idx_, info.name, data);
   }
 
-  void SetTensorArrayName(const std::string& arr_name) {
+  void SetTensorArrayName(const std::string &arr_name) {
     pir_parser_->SetTensorArrayName(pir_op_idx_, if_in_cf_block, arr_name);
   }
 
@@ -399,4 +390,4 @@ class Mapper {
     return pir_parser_->GetTensorArrayName(pir_op_idx_, if_in_cf_block);
   }
 };
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

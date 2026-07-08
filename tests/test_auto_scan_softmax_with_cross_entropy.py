@@ -16,9 +16,8 @@ import unittest
 
 import hypothesis.strategies as st
 import numpy as np
-from auto_scan_test import BaseNet, OPConvertAutoScanTest
-
 import paddle
+from auto_scan_test import BaseNet, OPConvertAutoScanTest
 
 
 class Net(BaseNet):
@@ -46,12 +45,8 @@ class TestSoftmaxWithCrossEntropyConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=3, max_value=20), min_size=2, max_size=3)
-        )
-        axis = draw(
-            st.integers(min_value=-len(input_shape) + 1, max_value=len(input_shape) - 1)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=3, max_value=20), min_size=2, max_size=3))
+        axis = draw(st.integers(min_value=-len(input_shape) + 1, max_value=len(input_shape) - 1))
         soft_label = draw(st.booleans())
         return_softmax = draw(st.booleans())
 

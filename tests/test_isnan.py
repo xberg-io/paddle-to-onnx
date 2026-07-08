@@ -12,9 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from onnxbase import APIOnnx, _test_with_pir, randtool
-
 import paddle
+from onnxbase import APIOnnx, _test_with_pir, randtool
 
 
 class Net(paddle.nn.Layer):
@@ -66,9 +65,7 @@ def test_isnan_9():
     obj = APIOnnx(op, "isnan", [9])
     obj.set_input_data(
         "input_data",
-        paddle.to_tensor(
-            [float("-inf"), -2, 3.6, float("inf"), 0, float("-nan"), float("nan")]
-        ),
+        paddle.to_tensor([float("-inf"), -2, 3.6, float("inf"), 0, float("-nan"), float("nan")]),
     )
     obj.run()
 
@@ -85,9 +82,7 @@ def test_isnan_10():
     obj = APIOnnx(op, "isnan", [10])
     obj.set_input_data(
         "input_data",
-        paddle.to_tensor(
-            [float("-inf"), -2, 3.6, float("inf"), 0, float("-nan"), float("nan")]
-        ),
+        paddle.to_tensor([float("-inf"), -2, 3.6, float("inf"), 0, float("-nan"), float("nan")]),
     )
     obj.run()
 
@@ -104,9 +99,7 @@ def test_isnan_11():
     obj = APIOnnx(op, "isnan", [11])
     obj.set_input_data(
         "input_data",
-        paddle.to_tensor(
-            [float("-inf"), -2, 3.6, float("inf"), 0, float("-nan"), float("nan")]
-        ),
+        paddle.to_tensor([float("-inf"), -2, 3.6, float("inf"), 0, float("-nan"), float("nan")]),
     )
     obj.run()
 
@@ -123,8 +116,6 @@ def test_isnan_12():
     obj = APIOnnx(op, "isnan", [12])
     obj.set_input_data(
         "input_data",
-        paddle.to_tensor(
-            [float("-inf"), -2, 3.6, float("inf"), 0, float("-nan"), float("nan")]
-        ),
+        paddle.to_tensor([float("-inf"), -2, 3.6, float("inf"), 0, float("-nan"), float("nan")]),
     )
     obj.run()

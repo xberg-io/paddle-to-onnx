@@ -18,10 +18,8 @@
 namespace paddle2onnx {
 
 class TopKV2Mapper : public Mapper {
- public:
-  TopKV2Mapper(const PaddleParser& p,
-               OnnxHelper* helper,
-               int64_t block_id,
+public:
+  TopKV2Mapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
                int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     GetAttr("largest", &largest_);
@@ -29,9 +27,7 @@ class TopKV2Mapper : public Mapper {
     GetAttr("axis", &axis_);
   }
 
-  TopKV2Mapper(const PaddlePirParser& p,
-               OnnxHelper* helper,
-               int64_t op_id,
+  TopKV2Mapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t op_id,
                bool if_in_cf_block)
       : Mapper(p, helper, op_id, if_in_cf_block) {
     GetAttr("largest", &largest_);
@@ -44,10 +40,10 @@ class TopKV2Mapper : public Mapper {
   }
   void Opset11() override;
 
- private:
+private:
   bool largest_;
   bool sorted_;
   int64_t axis_;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

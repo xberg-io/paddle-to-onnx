@@ -15,9 +15,8 @@
 import unittest
 
 import hypothesis.strategies as st
-from auto_scan_test import BaseNet, OPConvertAutoScanTest
-
 import paddle
+from auto_scan_test import BaseNet, OPConvertAutoScanTest
 
 
 class Net(BaseNet):
@@ -29,9 +28,7 @@ class Net(BaseNet):
         """
         forward
         """
-        return paddle.nn.functional.normalize(
-            inputs, axis=self.config["axis"], epsilon=self.config["epsilon"]
-        )
+        return paddle.nn.functional.normalize(inputs, axis=self.config["axis"], epsilon=self.config["epsilon"])
 
 
 class TestNormConvert(OPConvertAutoScanTest):
@@ -41,13 +38,9 @@ class TestNormConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=10, max_value=20), min_size=1, max_size=4)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=10, max_value=20), min_size=1, max_size=4))
 
-        axis = draw(
-            st.integers(min_value=-len(input_shape) + 1, max_value=len(input_shape) - 1)
-        )
+        axis = draw(st.integers(min_value=-len(input_shape) + 1, max_value=len(input_shape) - 1))
 
         dtype = draw(st.sampled_from(["float32", "float64"]))
 

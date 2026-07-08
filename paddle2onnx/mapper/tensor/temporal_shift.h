@@ -21,20 +21,16 @@
 namespace paddle2onnx {
 
 class TemporalShiftMapper : public Mapper {
- public:
-  TemporalShiftMapper(const PaddleParser& p,
-                      OnnxHelper* helper,
-                      int64_t block_id,
-                      int64_t op_id)
+public:
+  TemporalShiftMapper(const PaddleParser &p, OnnxHelper *helper,
+                      int64_t block_id, int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     GetAttr("data_format", &data_format_);
     GetAttr("shift_ratio", &shift_ratio_);
     GetAttr("seg_num", &seg_num_);
   }
-  TemporalShiftMapper(const PaddlePirParser& p,
-                      OnnxHelper* helper,
-                      int64_t op_id,
-                      bool in_cf_block)
+  TemporalShiftMapper(const PaddlePirParser &p, OnnxHelper *helper,
+                      int64_t op_id, bool in_cf_block)
       : Mapper(p, helper, op_id, in_cf_block) {
     GetAttr("data_format", &data_format_);
     GetAttr("shift_ratio", &shift_ratio_);
@@ -43,10 +39,10 @@ class TemporalShiftMapper : public Mapper {
   int32_t GetMinOpsetVersion(bool verbose) override;
   void Opset7() override;
 
- private:
+private:
   int64_t seg_num_;
   float shift_ratio_;
   std::string data_format_;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

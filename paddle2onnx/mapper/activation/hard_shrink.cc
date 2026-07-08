@@ -23,9 +23,9 @@ int32_t HardShrinkMapper::GetMinOpsetVersion(bool verbose) {
 }
 
 void HardShrinkMapper::Opset9() {
-  auto node = helper_->MakeNode(
-      "Shrink", {GetInput("X")[0].name}, {GetOutput("Out")[0].name});
+  auto node = helper_->MakeNode("Shrink", {GetInput("X")[0].name},
+                                {GetOutput("Out")[0].name});
   AddAttribute(node, "lambd", threshold_);
   AddAttribute(node, "bias", static_cast<float>(0.0));
 }
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

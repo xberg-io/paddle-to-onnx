@@ -12,9 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from onnxbase import APIOnnx, _test_with_pir, randtool
-
 import paddle
+from onnxbase import APIOnnx, _test_with_pir, randtool
 
 
 class Net(paddle.nn.Layer):
@@ -45,9 +44,7 @@ def test_Pad3D_9():
     obj = APIOnnx(op, "nn_Pad3D", [9])
     obj.set_input_data(
         "input_data",
-        paddle.to_tensor(
-            randtool("float", -1, 1, [3, 1, 10, 10, 10]).astype("float32")
-        ),
+        paddle.to_tensor(randtool("float", -1, 1, [3, 1, 10, 10, 10]).astype("float32")),
     )
     obj.run()
 
@@ -64,9 +61,7 @@ def test_Pad3D_10():
     obj = APIOnnx(op, "nn_Pad3D", [10])
     obj.set_input_data(
         "input_data",
-        paddle.to_tensor(
-            randtool("float", -1, 1, [3, 1, 10, 10, 10]).astype("float32")
-        ),
+        paddle.to_tensor(randtool("float", -1, 1, [3, 1, 10, 10, 10]).astype("float32")),
     )
     obj.run()
 
@@ -83,9 +78,7 @@ def test_Pad3D_11():
     obj = APIOnnx(op, "nn_Pad3D", [11])
     obj.set_input_data(
         "input_data",
-        paddle.to_tensor(
-            randtool("float", -1, 1, [3, 1, 10, 10, 10]).astype("float32")
-        ),
+        paddle.to_tensor(randtool("float", -1, 1, [3, 1, 10, 10, 10]).astype("float32")),
     )
     obj.run()
 
@@ -102,9 +95,7 @@ def test_Pad3D_12():
     obj = APIOnnx(op, "nn_Pad3D", [12])
     obj.set_input_data(
         "input_data",
-        paddle.to_tensor(
-            randtool("float", -1, 1, [3, 1, 10, 10, 10]).astype("float32")
-        ),
+        paddle.to_tensor(randtool("float", -1, 1, [3, 1, 10, 10, 10]).astype("float32")),
     )
     obj.run()
 
@@ -137,8 +128,6 @@ def test_Pad3D_19():
     obj = APIOnnx(op, "nn_Pad3D", [19])
     obj.set_input_data(
         "input_data",
-        paddle.to_tensor(
-            randtool("float", -1, 1, [3, 1, 10, 10, 10]).astype("float32")
-        ),
+        paddle.to_tensor(randtool("float", -1, 1, [3, 1, 10, 10, 10]).astype("float32")),
     )
     obj.run()

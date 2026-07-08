@@ -22,10 +22,8 @@
 namespace paddle2onnx {
 
 class DistMapper : public Mapper {
- public:
-  DistMapper(const PaddleParser& p,
-             OnnxHelper* helper,
-             int64_t block_id,
+public:
+  DistMapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
              int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     GetAttr("p", &p_);
@@ -33,9 +31,7 @@ class DistMapper : public Mapper {
     oss << p_;
     p_str_ = oss.str();
   }
-  DistMapper(const PaddlePirParser& p,
-             OnnxHelper* helper,
-             int64_t op_id,
+  DistMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t op_id,
              bool if_in_cf_block)
       : Mapper(p, helper, op_id, if_in_cf_block) {
     GetAttr("p", &p_);
@@ -46,8 +42,8 @@ class DistMapper : public Mapper {
   int32_t GetMinOpsetVersion(bool verbose) override;
   void Opset7() override;
 
- private:
+private:
   float p_;
   std::string p_str_;
 };
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

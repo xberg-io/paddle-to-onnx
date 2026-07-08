@@ -29,8 +29,7 @@ void HardSwishMapper::Opset7() {
   auto hardsigmoid = helper_->MakeNode("HardSigmoid", {input_info[0].name});
   AddAttribute(hardsigmoid, "alpha", static_cast<float>(1.0 / 6.0));
   AddAttribute(hardsigmoid, "beta", static_cast<float>(0.5));
-  helper_->MakeNode("Mul",
-                    {hardsigmoid->output(0), input_info[0].name},
+  helper_->MakeNode("Mul", {hardsigmoid->output(0), input_info[0].name},
                     {output_info[0].name});
 }
 
@@ -39,4 +38,4 @@ void HardSwishMapper::Opset14() {
   auto output_info = GetOutput("Out");
   helper_->MakeNode("HardSwish", {input_info[0].name}, {output_info[0].name});
 }
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

@@ -117,18 +117,18 @@ void ActivationMapper::Opset7() {
   auto input_info = GetInput("X");
   auto output_info = GetOutput("Out");
   auto iter = op_mapper_.find(convert_pir_op_name(OpType()));
-  Assert(op_mapper_.end() != iter,
-         "Cannot find " + convert_pir_op_name(OpType()) +
-             " in activation op_mapper.");
+  Assert(op_mapper_.end() != iter, "Cannot find " +
+                                       convert_pir_op_name(OpType()) +
+                                       " in activation op_mapper.");
   if (convert_pir_op_name(OpType()) == "erf") {
-    auto input = helper_->AutoCast(
-        input_info[0].name, input_info[0].dtype, P2ODataType::FP32);
+    auto input = helper_->AutoCast(input_info[0].name, input_info[0].dtype,
+                                   P2ODataType::FP32);
     auto output = helper_->MakeNode(iter->second, {input})->output(0);
-    helper_->AutoCast(
-        output, output_info[0].name, P2ODataType::FP32, output_info[0].dtype);
+    helper_->AutoCast(output, output_info[0].name, P2ODataType::FP32,
+                      output_info[0].dtype);
   } else {
-    helper_->MakeNode(
-        iter->second, {input_info[0].name}, {output_info[0].name});
+    helper_->MakeNode(iter->second, {input_info[0].name},
+                      {output_info[0].name});
   }
 }
 
@@ -153,8 +153,8 @@ void PReluMapper::Opset7() {
 
   std::string slope_cast_name = slope_info[0].name;
   if (slope_info[0].dtype == P2ODataType::FP64) {
-    slope_cast_name = helper_->AutoCast(
-        {slope_info[0].name}, P2ODataType::FP64, P2ODataType::FP32);
+    slope_cast_name = helper_->AutoCast({slope_info[0].name}, P2ODataType::FP64,
+                                        P2ODataType::FP32);
   }
 
   if (slope_info[0].Rank() != input_info[0].Rank()) {
@@ -173,13 +173,11 @@ void PReluMapper::Opset7() {
     std::string x_cast_name = helper_->AutoCast(
         {input_info[0].name}, P2ODataType::FP64, P2ODataType::FP32);
     auto node = helper_->MakeNode("PRelu", {x_cast_name, slope_cast_name});
-    helper_->AutoCast(node->output(0),
-                      {output_info[0].name},
-                      P2ODataType::FP32,
+    helper_->AutoCast(node->output(0), {output_info[0].name}, P2ODataType::FP32,
                       P2ODataType::FP64);
   } else {
-    helper_->MakeNode(
-        "PRelu", {input_info[0].name, slope_cast_name}, {output_info[0].name});
+    helper_->MakeNode("PRelu", {input_info[0].name, slope_cast_name},
+                      {output_info[0].name});
   }
 }
 
@@ -195,8 +193,8 @@ void SeluMapper::Opset7() {
 void LeakyReluMapper::Opset7() {
   auto input_info = GetInput("X");
   auto output_info = GetOutput("Out");
-  auto node = helper_->MakeNode(
-      "LeakyRelu", {input_info[0].name}, {output_info[0].name});
+  auto node = helper_->MakeNode("LeakyRelu", {input_info[0].name},
+                                {output_info[0].name});
   AddAttribute(node, "alpha", alpha_);
 }
 
@@ -214,8 +212,8 @@ void GeluMapper::Opset9() {
   auto const_1 =
       helper_->Constant({}, ONNX_NAMESPACE::TensorProto::FLOAT, const_1_value);
 
-  auto input_name = helper_->AutoCast(
-      input_info[0].name, input_info[0].dtype, P2ODataType::FP32);
+  auto input_name = helper_->AutoCast(input_info[0].name, input_info[0].dtype,
+                                      P2ODataType::FP32);
 
   // the computation formula follows
   // https://www.paddlepaddle.org.cn/documentation/docs/zh/api/paddle/nn/functional/gelu_cn.html#gelu
@@ -247,8 +245,8 @@ void SoftMaxMapper::Opset7() {
       axis_ = axis_ + output_info[0].Rank();
     }
     if (axis_ == output_info[0].Rank() - 1) {
-      auto node = helper_->MakeNode(
-          "Softmax", {input_info[0].name}, {output_info[0].name});
+      auto node = helper_->MakeNode("Softmax", {input_info[0].name},
+                                    {output_info[0].name});
       AddAttribute(node, "axis", axis_);
     } else {
       std::vector<int64_t> perm = Arange(0, output_info[0].Rank());
@@ -279,24 +277,21 @@ void SoftMaxMapper::Opset13() {
     AddAttribute(node, "axis", static_cast<int64_t>(0));
     helper_->Squeeze(node->output(0), output_info[0].name, {0});
   } else {
-    auto node = helper_->MakeNode(
-        "Softmax", {input_info[0].name}, {output_info[0].name});
+    auto node = helper_->MakeNode("Softmax", {input_info[0].name},
+                                  {output_info[0].name});
     AddAttribute(node, "axis", axis);
   }
 }
 
 void BReluMapper::Opset7() {
   auto x_info = GetInput("X");
-  helper_->Clip(x_info[0].name,
-                GetOutput("Out")[0].name,
-                t_min_,
-                t_max_,
+  helper_->Clip(x_info[0].name, GetOutput("Out")[0].name, t_min_, t_max_,
                 x_info[0].dtype);
 }
 
 void EluMapper::Opset7() {
-  auto node = helper_->MakeNode(
-      "Elu", {GetInput("X")[0].name}, {GetOutput("Out")[0].name});
+  auto node = helper_->MakeNode("Elu", {GetInput("X")[0].name},
+                                {GetOutput("Out")[0].name});
   AddAttribute(node, "alpha", alpha_);
 }
 
@@ -311,25 +306,24 @@ int32_t MishMapper::GetMinOpsetVersion(bool verbose) {
 void MishMapper::Opset7() {
   auto input_info = GetInput("X");
   auto out_info = GetOutput("Out");
-  auto input = helper_->AutoCast(
-      input_info[0].name, input_info[0].dtype, P2ODataType::FP32);
+  auto input = helper_->AutoCast(input_info[0].name, input_info[0].dtype,
+                                 P2ODataType::FP32);
   auto softplus = helper_->MakeNode("Softplus", {input})->output(0);
   auto tanh = helper_->MakeNode("Tanh", {softplus})->output(0);
   auto output = helper_->MakeNode("Mul", {input, tanh})->output(0);
-  helper_->AutoCast(
-      output, out_info[0].name, P2ODataType::FP32, out_info[0].dtype);
+  helper_->AutoCast(output, out_info[0].name, P2ODataType::FP32,
+                    out_info[0].dtype);
 }
 
 void SquareMapper::Opset7() {
   auto input_info = GetInput("X");
-  helper_->MakeNode("Mul",
-                    {input_info[0].name, input_info[0].name},
+  helper_->MakeNode("Mul", {input_info[0].name, input_info[0].name},
                     {GetOutput("Out")[0].name});
 }
 
 void SoftShrinkMapper::Opset9() {
-  auto node = helper_->MakeNode(
-      "Shrink", {GetInput("X")[0].name}, {GetOutput("Out")[0].name});
+  auto node = helper_->MakeNode("Shrink", {GetInput("X")[0].name},
+                                {GetOutput("Out")[0].name});
   AddAttribute(node, "lambd", lambda_);
   AddAttribute(node, "bias", lambda_);
 }
@@ -338,8 +332,8 @@ void SizeMapper::Opset7() {
   auto out_info = GetOutput("Out");
   auto output =
       helper_->MakeNode("Size", {GetInput("Input")[0].name})->output(0);
-  output = helper_->AutoCast(
-      output, out_info[0].name, P2ODataType::INT64, out_info[0].dtype);
+  output = helper_->AutoCast(output, out_info[0].name, P2ODataType::INT64,
+                             out_info[0].dtype);
 }
 
 void RsqrtMapper::Opset7() {
@@ -372,8 +366,8 @@ void LogSoftmaxMapper::Opset7() {
       axis += input_info[0].Rank();
     }
     if (axis == input_info[0].Rank() - 1) {
-      auto node = helper_->MakeNode(
-          "LogSoftmax", {input_info[0].name}, {GetOutput("Out")[0].name});
+      auto node = helper_->MakeNode("LogSoftmax", {input_info[0].name},
+                                    {GetOutput("Out")[0].name});
       AddAttribute(node, "axis", axis);
     } else {
       auto perm = Arange(0, input_info[0].Rank());
@@ -395,9 +389,7 @@ void ThresholdedReluMapper::Opset10() {
     input = helper_->AutoCast(input, x_info[0].dtype, P2ODataType::FP32);
     auto node = helper_->MakeNode("ThresholdedRelu", {input});
     AddAttribute(node, "alpha", threshold_);
-    helper_->AutoCast(node->output(0),
-                      out_info[0].name,
-                      P2ODataType::FP32,
+    helper_->AutoCast(node->output(0), out_info[0].name, P2ODataType::FP32,
                       out_info[0].dtype);
   } else {
     auto node =
@@ -409,8 +401,8 @@ void ThresholdedReluMapper::Opset10() {
 void Log1PMapper::Opset7() {
   auto x_info = GetInput("X");
   auto out_info = GetOutput("Out");
-  auto one = helper_->Constant(
-      {}, GetOnnxDtype(x_info[0].dtype), static_cast<float>(1.0));
+  auto one = helper_->Constant({}, GetOnnxDtype(x_info[0].dtype),
+                               static_cast<float>(1.0));
   auto input = helper_->MakeNode("Add", {x_info[0].name, one})->output(0);
   helper_->MakeNode("Log", {input}, {out_info[0].name});
 }
@@ -439,4 +431,4 @@ void SiluMapper::Opset7() {
   auto out = helper_->MakeNode("Sigmoid", {x_info[0].name})->output(0);
   helper_->MakeNode("Mul", {x_info[0].name, out}, {out_info[0].name});
 }
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

@@ -29,4 +29,4 @@ void WhereMapper::Opset9() {
                     {out_info[0].name});
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

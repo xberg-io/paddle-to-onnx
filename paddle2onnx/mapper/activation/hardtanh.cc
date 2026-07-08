@@ -26,7 +26,7 @@ void HardtanhMapper::Opset7() {
   auto input_info = GetInput("x");
   auto output_info = GetOutput("out");
 
-  helper_->Clip(
-      input_info[0].name, output_info[0].name, min_, max_, input_info[0].dtype);
+  helper_->Clip(input_info[0].name, output_info[0].name, min_, max_,
+                input_info[0].dtype);
 }
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

@@ -21,13 +21,11 @@
 namespace paddle2onnx {
 
 class AbsMapper : public Mapper {
- public:
-  AbsMapper(const PaddleParser& p,
-            OnnxHelper* helper,
-            int64_t block_id,
+public:
+  AbsMapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
             int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {}
-  AbsMapper(const PaddlePirParser& p, OnnxHelper* helper, int64_t i, bool c)
+  AbsMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t i, bool c)
       : Mapper(p, helper, i, c) {
     in_pir_mode = true;
   }
@@ -37,4 +35,4 @@ class AbsMapper : public Mapper {
   void Opset18() override;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

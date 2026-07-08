@@ -17,10 +17,9 @@ import unittest
 
 import hypothesis.strategies as st
 import numpy as np
+import paddle
 from auto_scan_test import BaseNet, OPConvertAutoScanTest
 from onnxbase import _test_only_pir
-
-import paddle
 
 
 class Net(BaseNet):
@@ -47,9 +46,7 @@ class TestExpandConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=2, max_value=6), min_size=0, max_size=5)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=2, max_value=6), min_size=0, max_size=5))
 
         dtype = draw(st.sampled_from(["float32", "float64", "int32", "int64"]))
         isTensor = draw(st.booleans())  # future to valid
@@ -101,9 +98,7 @@ class TestExpandConvert1(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=2, max_value=6), min_size=0, max_size=5)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=2, max_value=6), min_size=0, max_size=5))
         input_shape = [2, 2]
         dtype = draw(st.sampled_from(["float32", "float64", "int32", "int64"]))
         isTensor = draw(st.booleans())  # future to valid

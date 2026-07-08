@@ -17,8 +17,8 @@
 #include <algorithm>
 
 namespace paddle2onnx {
-void BaseQuantizeProcessor::RemoveNodeByName(const std::string& name,
-                                             const bool& update_io) {
+void BaseQuantizeProcessor::RemoveNodeByName(const std::string &name,
+                                             const bool &update_io) {
   if (name.empty()) {
     return;
   }
@@ -36,10 +36,9 @@ void BaseQuantizeProcessor::RemoveNodeByName(const std::string& name,
 }
 
 void BaseQuantizeProcessor::ReplaceInputOfAllNodes(
-    const std::string& old_name,
-    const std::string& new_name,
-    const std::vector<std::shared_ptr<ONNX_NAMESPACE::NodeProto>>&
-        except_nodes) {
+    const std::string &old_name, const std::string &new_name,
+    const std::vector<std::shared_ptr<ONNX_NAMESPACE::NodeProto>>
+        &except_nodes) {
   auto iter = name2node_dict_.find(old_name);
   std::vector<std::shared_ptr<ONNX_NAMESPACE::NodeProto>> need_rename_nodes;
   // after replace all old_name to new_name, replace the quantize_info of new
@@ -52,7 +51,7 @@ void BaseQuantizeProcessor::ReplaceInputOfAllNodes(
   if (iter != name2node_dict_.end()) {
     need_rename_nodes = iter->second;
   }
-  for (auto& node : need_rename_nodes) {
+  for (auto &node : need_rename_nodes) {
     auto iter = std::find(except_nodes.begin(), except_nodes.end(), node);
     if (iter != except_nodes.end()) {
       continue;
@@ -67,7 +66,7 @@ void BaseQuantizeProcessor::ReplaceInputOfAllNodes(
 
 void BaseQuantizeProcessor::UpdateInputNameToNodes() {
   name2node_dict_.clear();
-  for (auto& node : *nodes_) {
+  for (auto &node : *nodes_) {
     for (size_t i = 0; i < node->input_size(); ++i) {
       std::string node_input = node->input(i);
       if (name2node_dict_.find(node_input) != name2node_dict_.end()) {
@@ -80,13 +79,12 @@ void BaseQuantizeProcessor::UpdateInputNameToNodes() {
 }
 
 void BaseQuantizeProcessor::ProcessQuantizeModel(
-    std::vector<std::shared_ptr<ONNX_NAMESPACE::NodeProto>>* parameters,
-    std::vector<std::shared_ptr<ONNX_NAMESPACE::ValueInfoProto>>* inputs,
-    std::vector<std::shared_ptr<ONNX_NAMESPACE::ValueInfoProto>>* outputs,
-    std::vector<std::shared_ptr<ONNX_NAMESPACE::NodeProto>>* nodes,
-    OnnxHelper* helper,
-    const PaddleParser& parser,
-    std::string* calibration_cache) {
+    std::vector<std::shared_ptr<ONNX_NAMESPACE::NodeProto>> *parameters,
+    std::vector<std::shared_ptr<ONNX_NAMESPACE::ValueInfoProto>> *inputs,
+    std::vector<std::shared_ptr<ONNX_NAMESPACE::ValueInfoProto>> *outputs,
+    std::vector<std::shared_ptr<ONNX_NAMESPACE::NodeProto>> *nodes,
+    OnnxHelper *helper, const PaddleParser &parser,
+    std::string *calibration_cache) {
   parser_ = &parser;
   helper_ = helper;
   parameters_ = parameters;
@@ -112,7 +110,7 @@ void BaseQuantizeProcessor::AddQDQ() { UpdateInputNameToNodes(); }
 
 void BaseQuantizeProcessor::AddQDQInModel() {
   // add Q and DQ according to tensors_to_be_quantize
-  for (auto& name : tensors_to_be_quantize_) {
+  for (auto &name : tensors_to_be_quantize_) {
     if (IsGraphOutput(name)) {
       continue;
     }
@@ -123,8 +121,8 @@ void BaseQuantizeProcessor::AddQDQInModel() {
     std::string scale_node = quantize_info.scale_node_;
     std::string zeros_node = quantize_info.zeros_node_;
     int64_t quantize_axis = quantize_info.quantize_axis_;
-    auto iter = std::find(
-        only_dequantize_tensors_.begin(), only_dequantize_tensors_.end(), name);
+    auto iter = std::find(only_dequantize_tensors_.begin(),
+                          only_dequantize_tensors_.end(), name);
     if (iter != only_dequantize_tensors_.end()) {
       // if only add DequantizeLinear
       std::vector<float> scale = quantize_info.scale_;
@@ -156,10 +154,10 @@ void BaseQuantizeProcessor::AddQDQInModel() {
       std::vector<std::shared_ptr<ONNX_NAMESPACE::NodeProto>> except_nodes;
       auto next_nodes = name2node_dict_[name];
       if (next_nodes.size() > 1) {
-        for (auto& node : next_nodes) {
-          auto iter = std::find(supported_quantize_type_.begin(),
-                                supported_quantize_type_.end(),
-                                node->op_type());
+        for (auto &node : next_nodes) {
+          auto iter =
+              std::find(supported_quantize_type_.begin(),
+                        supported_quantize_type_.end(), node->op_type());
           if (iter == supported_quantize_type_.end()) {
             except_nodes.push_back(node);
           }
@@ -294,18 +292,16 @@ void BaseQuantizeProcessor::MergeConvBN() {
     if (scale.size() == 1) {
       GetTensorWiseQuantizeInfo(new_weight, &new_scale, &new_zeros);
     } else {
-      GetChannelWiseQuantizeInfo(
-          new_weight, weight_shape, quantize_axis, &new_scale, &new_zeros);
+      GetChannelWiseQuantizeInfo(new_weight, weight_shape, quantize_axis,
+                                 &new_scale, &new_zeros);
     }
     auto weight_scale_node =
         helper_->Constant(ONNX_NAMESPACE::TensorProto::FLOAT, new_scale);
     auto weight_zero_node =
         helper_->Constant(ONNX_NAMESPACE::TensorProto::INT8, new_zeros);
-    QuantizeInfo updated_weight_quantize_info(new_scale,
-                                              new_zeros,
+    QuantizeInfo updated_weight_quantize_info(new_scale, new_zeros,
                                               weight_scale_node,
-                                              weight_zero_node,
-                                              quantize_axis);
+                                              weight_zero_node, quantize_axis);
     helper_->quantize_info[conv_node->input(1)] = updated_weight_quantize_info;
     // add bias scale and update bias
     auto act_quantize_info = helper_->quantize_info[conv_node->input(0)];
@@ -319,8 +315,8 @@ void BaseQuantizeProcessor::MergeConvBN() {
         helper_->Constant(ONNX_NAMESPACE::TensorProto::FLOAT, bias_scale);
     auto bias_zero_node =
         helper_->Constant(ONNX_NAMESPACE::TensorProto::INT32, bias_zeros);
-    QuantizeInfo bias_quantize_info(
-        bias_scale, bias_zeros, bias_scale_node, bias_zero_node, 0);
+    QuantizeInfo bias_quantize_info(bias_scale, bias_zeros, bias_scale_node,
+                                    bias_zero_node, 0);
     helper_->quantize_info[conv_bias_node] = bias_quantize_info;
     if (conv_node->input_size() == 2) {
       conv_node->add_input(conv_bias_node);
@@ -365,7 +361,7 @@ void BaseQuantizeProcessor::MergeConvAdd() {
                                    ? next_node->input(1)
                                    : next_node->input(0);
     std::vector<std::shared_ptr<ONNX_NAMESPACE::NodeProto>> before_nodes;
-    for (auto& node : *nodes_) {
+    for (auto &node : *nodes_) {
       for (size_t i = 0; i < node->output_size(); ++i) {
         std::string node_output = node->output(i);
         if (node_output == reshape_node) {
@@ -392,8 +388,8 @@ void BaseQuantizeProcessor::MergeConvAdd() {
       continue;
     }
     // continue if shape_val != [1, bias_val.size(), 1, 1]
-    std::vector<int64_t> target = {
-        1, static_cast<int64_t>(bias_val.size()), 1, 1};
+    std::vector<int64_t> target = {1, static_cast<int64_t>(bias_val.size()), 1,
+                                   1};
     if (target != shape_val) {
       continue;
     }
@@ -414,8 +410,8 @@ void BaseQuantizeProcessor::MergeConvAdd() {
     auto zero_node =
         helper_->Constant(ONNX_NAMESPACE::TensorProto::INT32, onnx_zeros);
 
-    QuantizeInfo quantize_info(
-        bias_scale, onnx_zeros, scale_node, zero_node, 0);
+    QuantizeInfo quantize_info(bias_scale, onnx_zeros, scale_node, zero_node,
+                               0);
 
     helper_->quantize_info[bias_node] = quantize_info;
     AppendQuantizeTensor(bias_node, true);
@@ -460,9 +456,9 @@ void BaseQuantizeProcessor::SortNodes() {
             if (i2o_mapper.find(input_node->name()) == i2o_mapper.end()) {
               i2o_mapper[input_node->name()] = {node->name()};
             } else {
-              auto iter = std::find(i2o_mapper[input_node->name()].begin(),
-                                    i2o_mapper[input_node->name()].end(),
-                                    node->name());
+              auto iter =
+                  std::find(i2o_mapper[input_node->name()].begin(),
+                            i2o_mapper[input_node->name()].end(), node->name());
               if (iter == i2o_mapper[input_node->name()].end()) {
                 i2o_mapper[input_node->name()].push_back(node->name());
               }
@@ -490,13 +486,12 @@ void BaseQuantizeProcessor::SortNodes() {
     std::string current_node_name = current_node->name();
     for (auto iter = i2o_mapper.begin(); iter != i2o_mapper.end(); iter++) {
       std::string input_node_name = iter->first;
-      std::vector<std::string>* output_nodes_name = &iter->second;
+      std::vector<std::string> *output_nodes_name = &iter->second;
       if (output_nodes_name->empty()) {
         continue;
       }
       auto in_inter = std::find(output_nodes_name->begin(),
-                                output_nodes_name->end(),
-                                current_node_name);
+                                output_nodes_name->end(), current_node_name);
       if (in_inter != output_nodes_name->end()) {
         output_nodes_name->erase(in_inter);
       }
@@ -507,7 +502,7 @@ void BaseQuantizeProcessor::SortNodes() {
     index++;
   }
 
-  for (auto& node : constant_nodes) {
+  for (auto &node : constant_nodes) {
     new_nodes.push_back(node);
   }
   std::reverse(new_nodes.begin(), new_nodes.end());
@@ -586,8 +581,8 @@ void BaseQuantizeProcessor::QuantizeInfoBroadcast() {
   }
 }
 
-bool BaseQuantizeProcessor::IsGraphOutput(const std::string& name) {
-  for (auto& item : *outputs_) {
+bool BaseQuantizeProcessor::IsGraphOutput(const std::string &name) {
+  for (auto &item : *outputs_) {
     auto out_node = (*item.get());
     if (name == out_node.name()) {
       return true;
@@ -597,9 +592,9 @@ bool BaseQuantizeProcessor::IsGraphOutput(const std::string& name) {
 }
 
 // Try get tensor shape value
-bool BaseQuantizeProcessor::GetTensorShape(const std::string& name,
-                                           std::vector<int64_t>* shape) {
-  for (auto& item : *parameters_) {
+bool BaseQuantizeProcessor::GetTensorShape(const std::string &name,
+                                           std::vector<int64_t> *shape) {
+  for (auto &item : *parameters_) {
     auto node = *(item.get());
     if (node.output(0) != name) {
       continue;
@@ -616,7 +611,7 @@ bool BaseQuantizeProcessor::GetTensorShape(const std::string& name,
     }
   }
 
-  for (auto& item : *nodes_) {
+  for (auto &item : *nodes_) {
     auto node = *(item.get());
     if (node.output(0) != name) {
       continue;
@@ -637,9 +632,8 @@ bool BaseQuantizeProcessor::GetTensorShape(const std::string& name,
 }
 
 void BaseQuantizeProcessor::GetTensorWiseQuantizeInfo(
-    const std::vector<float>& tensor,
-    std::vector<float>* scale,
-    std::vector<int64_t>* zero) {
+    const std::vector<float> &tensor, std::vector<float> *scale,
+    std::vector<int64_t> *zero) {
   Assert(!tensor.empty(),
          "[GetTensorWiseQuantizeInfo] Require weight is not empty.");
 
@@ -652,18 +646,16 @@ void BaseQuantizeProcessor::GetTensorWiseQuantizeInfo(
 }
 
 void BaseQuantizeProcessor::GetChannelWiseQuantizeInfo(
-    const std::vector<float>& tensor,
-    const std::vector<int64_t>& shape,
-    const int64_t& quant_axis,
-    std::vector<float>* scale,
-    std::vector<int64_t>* zero) {
+    const std::vector<float> &tensor, const std::vector<int64_t> &shape,
+    const int64_t &quant_axis, std::vector<float> *scale,
+    std::vector<int64_t> *zero) {
   int64_t channel_count = shape[quant_axis];
 
   for (int64_t i = 0; i < channel_count; i++) {
     if (quant_axis == 0) {
       float max_val = -1;
       int64_t inner_offset = 1;
-      for (auto& j : shape) {
+      for (auto &j : shape) {
         inner_offset *= j;
       }
       inner_offset /= channel_count;
@@ -707,8 +699,8 @@ void BaseQuantizeProcessor::GetChannelWiseQuantizeInfo(
 }
 
 template <typename T>
-bool BaseQuantizeProcessor::GetTensorByName(const std::string& name,
-                                            std::vector<T>* value) {
+bool BaseQuantizeProcessor::GetTensorByName(const std::string &name,
+                                            std::vector<T> *value) {
   // Find tensor values in the following order, if found, store the data in
   // value, and return true：
   // 1. updated_parameters, the weight of conv or matmul.
@@ -728,7 +720,7 @@ bool BaseQuantizeProcessor::GetTensorByName(const std::string& name,
   return helper_->TryGetTensorValue(name, value);
 }
 
-bool BaseQuantizeProcessor::ConnectToOutput(const std::string& output_name) {
+bool BaseQuantizeProcessor::ConnectToOutput(const std::string &output_name) {
   std::vector<std::string> names = {output_name};
   while (!names.empty()) {
     std::string name = names[names.size() - 1];
@@ -737,7 +729,7 @@ bool BaseQuantizeProcessor::ConnectToOutput(const std::string& output_name) {
       return true;
     }
     auto next_nodes = name2node_dict_[name];
-    for (auto& next : next_nodes) {
+    for (auto &next : next_nodes) {
       if (next->op_type() == "Identity") {
         names.push_back(next->output(0));
       }
@@ -747,9 +739,9 @@ bool BaseQuantizeProcessor::ConnectToOutput(const std::string& output_name) {
 }
 
 bool BaseQuantizeProcessor::CanBeQuantize(
-    const std::vector<std::string>& tensor_names,
-    const std::vector<int64_t>& output_index) {
-  for (auto& tensor : tensor_names) {
+    const std::vector<std::string> &tensor_names,
+    const std::vector<int64_t> &output_index) {
+  for (auto &tensor : tensor_names) {
     if (helper_->quantize_info.find(tensor) == helper_->quantize_info.end()) {
       return false;
     }
@@ -772,8 +764,8 @@ bool BaseQuantizeProcessor::CanBeQuantize(
   return true;
 }
 
-void BaseQuantizeProcessor::AppendQuantizeTensor(const std::string& tensor,
-                                                 const bool& only_dequantize) {
+void BaseQuantizeProcessor::AppendQuantizeTensor(const std::string &tensor,
+                                                 const bool &only_dequantize) {
   if (only_dequantize) {
     if (std::find(only_dequantize_tensors_.begin(),
                   only_dequantize_tensors_.end(),
@@ -788,4 +780,4 @@ void BaseQuantizeProcessor::AppendQuantizeTensor(const std::string& tensor,
     }
   }
 }
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

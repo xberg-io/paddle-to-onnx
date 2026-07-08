@@ -30,10 +30,10 @@ void TakeAlongAxisMapper::Opset11() {
 
   auto axis = axis_;
 
-  auto node = helper_->MakeNode("GatherElements",
-                                {x_info[0].name, index_info[0].name},
-                                {out_info[0].name});
+  auto node =
+      helper_->MakeNode("GatherElements", {x_info[0].name, index_info[0].name},
+                        {out_info[0].name});
   AddAttribute(node, "axis", axis);
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

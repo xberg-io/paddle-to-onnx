@@ -18,16 +18,15 @@ namespace paddle2onnx {
 REGISTER_PIR_MAPPER(builtin_split, BuiltinSplitMapper)
 
 int64_t BuiltinSplitMapper::GetOutputNum() {
-  auto& op = if_in_cf_block ? pir_parser_->sub_blocks_ops[pir_op_idx_]
+  auto &op = if_in_cf_block ? pir_parser_->sub_blocks_ops[pir_op_idx_]
                             : pir_parser_->global_blocks_ops[pir_op_idx_];
   return op->dyn_cast<pir::SplitOp>().outputs().size();
 }
 
 bool BuiltinSplitMapper::IsEinsumOut() {
-  auto& op = if_in_cf_block ? pir_parser_->sub_blocks_ops[pir_op_idx_]
+  auto &op = if_in_cf_block ? pir_parser_->sub_blocks_ops[pir_op_idx_]
                             : pir_parser_->global_blocks_ops[pir_op_idx_];
-  PADDLE_ENFORCE_EQ(op->isa<pir::SplitOp>(),
-                    true,
+  PADDLE_ENFORCE_EQ(op->isa<pir::SplitOp>(), true,
                     common::errors::InvalidArgument(
                         "The operator type must be builtin.split, but the "
                         "actual operator type is %s.",
@@ -40,21 +39,20 @@ bool BuiltinSplitMapper::IsEinsumOut() {
 }
 
 void BuiltinSplitMapper::Opset7() {
-  if (IsEinsumOut()) return;
+  if (IsEinsumOut())
+    return;
   auto input_info = GetInput(0);
   int64_t output_num = GetOutputNum();
   PADDLE_ENFORCE_EQ(
-      output_num == input_info.size(),
-      true,
+      output_num == input_info.size(), true,
       common::errors::InvalidArgument(
           "The number of inputs and outputs must be the same, but the actual "
           "input number is %d and output number is %d.",
-          input_info.size(),
-          output_num));
+          input_info.size(), output_num));
   for (int64_t i = 0; i < output_num; ++i) {
     auto output_info = GetOutput(i);
     helper_->MakeNode("Identity", {input_info[i].name}, {output_info[0].name});
   }
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

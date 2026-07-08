@@ -16,10 +16,9 @@ import unittest
 
 import hypothesis.strategies as st
 import numpy as np
+import paddle
 from auto_scan_test import BaseNet, OPConvertAutoScanTest
 from onnxbase import _test_with_pir
-
-import paddle
 
 
 class Net(BaseNet):
@@ -32,9 +31,7 @@ class Net(BaseNet):
         forward
         """
 
-        return paddle.argsort(
-            input, axis=self.config["axis"], descending=self.config["descending"]
-        )
+        return paddle.argsort(input, axis=self.config["axis"], descending=self.config["descending"])
 
 
 class TestArgsortConvert(OPConvertAutoScanTest):
@@ -44,13 +41,9 @@ class TestArgsortConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=2, max_value=5), min_size=2, max_size=5)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=2, max_value=5), min_size=2, max_size=5))
 
-        axis = draw(
-            st.integers(min_value=-len(input_shape), max_value=len(input_shape) - 1)
-        )
+        axis = draw(st.integers(min_value=-len(input_shape), max_value=len(input_shape) - 1))
 
         dtype = draw(st.sampled_from(["float32", "float64"]))
         descending = draw(st.booleans())

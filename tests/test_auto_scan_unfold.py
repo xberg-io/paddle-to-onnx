@@ -15,10 +15,9 @@
 import unittest
 
 import hypothesis.strategies as st
+import paddle
 from auto_scan_test import BaseNet, OPConvertAutoScanTest
 from onnxbase import _test_with_pir
-
-import paddle
 
 
 class Net(BaseNet):
@@ -46,36 +45,24 @@ class TestUnfoldConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=20, max_value=30), min_size=4, max_size=4)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=20, max_value=30), min_size=4, max_size=4))
 
-        kernel_size = draw(
-            st.lists(st.integers(min_value=1, max_value=5), min_size=1, max_size=2)
-        )
+        kernel_size = draw(st.lists(st.integers(min_value=1, max_value=5), min_size=1, max_size=2))
         if len(kernel_size) == 1:
             kernel_size = kernel_size[0]
 
-        strides = draw(
-            st.lists(st.integers(min_value=1, max_value=5), min_size=1, max_size=2)
-        )
+        strides = draw(st.lists(st.integers(min_value=1, max_value=5), min_size=1, max_size=2))
         if len(strides) == 1:
             strides = strides[0]
 
         if draw(st.booleans()):
-            paddings = draw(
-                st.lists(st.integers(min_value=1, max_value=5), min_size=1, max_size=2)
-            )
+            paddings = draw(st.lists(st.integers(min_value=1, max_value=5), min_size=1, max_size=2))
             if len(paddings) == 1:
                 paddings = paddings[0]
         else:
-            paddings = draw(
-                st.lists(st.integers(min_value=1, max_value=5), min_size=4, max_size=4)
-            )
+            paddings = draw(st.lists(st.integers(min_value=1, max_value=5), min_size=4, max_size=4))
 
-        dilations = draw(
-            st.lists(st.integers(min_value=1, max_value=3), min_size=1, max_size=2)
-        )
+        dilations = draw(st.lists(st.integers(min_value=1, max_value=3), min_size=1, max_size=2))
 
         if len(dilations) == 1:
             dilations = dilations[0]

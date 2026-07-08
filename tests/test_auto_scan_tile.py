@@ -16,10 +16,9 @@ import unittest
 
 import hypothesis.strategies as st
 import numpy as np
+import paddle
 from auto_scan_test import BaseNet, OPConvertAutoScanTest
 from onnxbase import _test_with_pir
-
-import paddle
 
 
 class Net(BaseNet):
@@ -35,9 +34,7 @@ class Net(BaseNet):
         if self.config["repeat_times_dtype"] == "list":
             repeat_times = repeat_times
         elif self.config["repeat_times_dtype"] == "Tensor":
-            repeat_times = paddle.to_tensor(
-                np.array(repeat_times).astype(self.config["shape_dtype"])
-            )
+            repeat_times = paddle.to_tensor(np.array(repeat_times).astype(self.config["shape_dtype"]))
         elif self.config["repeat_times_dtype"] == "int":
             repeat_times = [repeat_times[0]]
         return paddle.tile(inputs, repeat_times=repeat_times)
@@ -50,9 +47,7 @@ class TestTileConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=2, max_value=5), min_size=0, max_size=5)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=2, max_value=5), min_size=0, max_size=5))
 
         dtype = draw(st.sampled_from(["float32", "float64", "int32", "int64"]))
         # when repeat_times_dtype is tensor has a bug
@@ -105,9 +100,7 @@ class TestTileConvert1(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=2, max_value=5), min_size=0, max_size=5)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=2, max_value=5), min_size=0, max_size=5))
         input_shape = [4, 3, 2, 1]
         dtype = draw(st.sampled_from(["float32", "float64", "int32", "int64"]))
         shape_dtype = draw(st.sampled_from(["int32", "int64"]))

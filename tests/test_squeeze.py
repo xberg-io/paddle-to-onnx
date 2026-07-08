@@ -12,9 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from onnxbase import APIOnnx, randtool
-
 import paddle
+from onnxbase import APIOnnx, randtool
 
 
 class Net(paddle.nn.Layer):
@@ -156,9 +155,7 @@ def test_squeeze_9_None_has_two_negtive1():
     obj = APIOnnx(op, "squeeze", [9])
     obj.set_input_data(
         "input_data",
-        paddle.to_tensor(
-            randtool("float", -1, 1, [1, 3, 1, 1, 10, 1]).astype("float32")
-        ),
+        paddle.to_tensor(randtool("float", -1, 1, [1, 3, 1, 1, 10, 1]).astype("float32")),
     )
     obj.run()
 
@@ -174,9 +171,7 @@ def test_squeeze_9_None_has_two_negtive2():
     obj = APIOnnx(op, "squeeze", [9])
     obj.set_input_data(
         "input_data",
-        paddle.to_tensor(
-            randtool("float", -1, 1, [1, 3, 1, 1, 10, 1]).astype("float32")
-        ),
+        paddle.to_tensor(randtool("float", -1, 1, [1, 3, 1, 1, 10, 1]).astype("float32")),
     )
     obj.run()
 
@@ -192,9 +187,7 @@ def test_squeeze_9_None_has_two_negtive():
     obj = APIOnnx(op, "squeeze", [13])
     obj.set_input_data(
         "input_data",
-        paddle.to_tensor(
-            randtool("float", -1, 1, [1, 3, 1, 1, 10, 1]).astype("float32")
-        ),
+        paddle.to_tensor(randtool("float", -1, 1, [1, 3, 1, 1, 10, 1]).astype("float32")),
     )
     obj.run()
 

@@ -18,10 +18,8 @@
 namespace paddle2onnx {
 
 class InterpolateMapper : public Mapper {
- public:
-  InterpolateMapper(const PaddleParser& p,
-                    OnnxHelper* helper,
-                    int64_t block_id,
+public:
+  InterpolateMapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
                     int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     GetAttr("data_layout", &data_layout_);
@@ -39,9 +37,7 @@ class InterpolateMapper : public Mapper {
     resize_mapper_["linear_interp_v2"] = "linear";
     resize_mapper_["trilinear_interp_v2"] = "linear";
   }
-  InterpolateMapper(const PaddlePirParser& p,
-                    OnnxHelper* helper,
-                    int64_t op_id,
+  InterpolateMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t op_id,
                     bool c)
       : Mapper(p, helper, op_id, c) {
     in_pir_mode = true;
@@ -63,7 +59,7 @@ class InterpolateMapper : public Mapper {
   int32_t GetMinOpsetVersion(bool verbose) override;
   void Opset11() override;
 
- private:
+private:
   std::string ComputeOutSize();
   std::string ComputeScale();
   std::map<std::string, std::string> resize_mapper_;
@@ -76,4 +72,4 @@ class InterpolateMapper : public Mapper {
   bool align_corners_;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

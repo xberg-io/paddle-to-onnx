@@ -15,10 +15,9 @@
 import unittest
 
 import hypothesis.strategies as st
+import paddle
 from auto_scan_test import BaseNet, OPConvertAutoScanTest
 from onnxbase import _test_with_pir
-
-import paddle
 
 
 class Net(BaseNet):
@@ -40,13 +39,9 @@ class TestMeshgridConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape1 = draw(
-            st.lists(st.integers(min_value=4, max_value=8), min_size=1, max_size=1)
-        )
+        input_shape1 = draw(st.lists(st.integers(min_value=4, max_value=8), min_size=1, max_size=1))
 
-        input_shape2 = draw(
-            st.lists(st.integers(min_value=4, max_value=8), min_size=1, max_size=1)
-        )
+        input_shape2 = draw(st.lists(st.integers(min_value=4, max_value=8), min_size=1, max_size=1))
 
         dtype = draw(st.sampled_from(["float32", "float64", "int32", "int64"]))
 
@@ -86,17 +81,11 @@ class TestMeshgridConvert1(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape1 = draw(
-            st.lists(st.integers(min_value=4, max_value=8), min_size=1, max_size=1)
-        )
+        input_shape1 = draw(st.lists(st.integers(min_value=4, max_value=8), min_size=1, max_size=1))
 
-        input_shape2 = draw(
-            st.lists(st.integers(min_value=4, max_value=8), min_size=1, max_size=1)
-        )
+        input_shape2 = draw(st.lists(st.integers(min_value=4, max_value=8), min_size=1, max_size=1))
 
-        input_shape3 = draw(
-            st.lists(st.integers(min_value=4, max_value=8), min_size=1, max_size=1)
-        )
+        input_shape3 = draw(st.lists(st.integers(min_value=4, max_value=8), min_size=1, max_size=1))
 
         dtype = draw(st.sampled_from(["float32", "float64", "int32", "int64"]))
 
@@ -136,25 +125,15 @@ class TestMeshgridConvert2(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape1 = draw(
-            st.lists(st.integers(min_value=4, max_value=8), min_size=1, max_size=1)
-        )
+        input_shape1 = draw(st.lists(st.integers(min_value=4, max_value=8), min_size=1, max_size=1))
 
-        input_shape2 = draw(
-            st.lists(st.integers(min_value=4, max_value=8), min_size=1, max_size=1)
-        )
+        input_shape2 = draw(st.lists(st.integers(min_value=4, max_value=8), min_size=1, max_size=1))
 
-        input_shape3 = draw(
-            st.lists(st.integers(min_value=4, max_value=8), min_size=1, max_size=1)
-        )
+        input_shape3 = draw(st.lists(st.integers(min_value=4, max_value=8), min_size=1, max_size=1))
 
-        input_shape4 = draw(
-            st.lists(st.integers(min_value=4, max_value=8), min_size=1, max_size=1)
-        )
+        input_shape4 = draw(st.lists(st.integers(min_value=4, max_value=8), min_size=1, max_size=1))
 
-        input_shape5 = draw(
-            st.lists(st.integers(min_value=4, max_value=8), min_size=1, max_size=1)
-        )
+        input_shape5 = draw(st.lists(st.integers(min_value=4, max_value=8), min_size=1, max_size=1))
 
         dtype = draw(st.sampled_from(["float32", "float64", "int32", "int64"]))
 

@@ -22,12 +22,12 @@ void ScaleMapper::Opset7() {
   auto input_info = GetInput("X");
   auto output_info = GetOutput("Out");
   auto scale_info = GetInput("ScaleTensor");
-  auto input = helper_->AutoCast(
-      input_info[0].name, input_info[0].dtype, P2ODataType::FP32);
+  auto input = helper_->AutoCast(input_info[0].name, input_info[0].dtype,
+                                 P2ODataType::FP32);
   std::string out = input;
   if (bias_after_scale_) {
-    auto scale = helper_->AutoCast(
-        scale_info[0].name, scale_info[0].dtype, P2ODataType::FP32);
+    auto scale = helper_->AutoCast(scale_info[0].name, scale_info[0].dtype,
+                                   P2ODataType::FP32);
     out = helper_->MakeNode("Mul", {out, scale})->output(0);
     auto bias =
         helper_->Constant({}, ONNX_NAMESPACE::TensorProto::FLOAT, bias_);
@@ -36,11 +36,11 @@ void ScaleMapper::Opset7() {
     auto bias =
         helper_->Constant({}, ONNX_NAMESPACE::TensorProto::FLOAT, bias_);
     out = helper_->MakeNode("Add", {out, bias})->output(0);
-    auto scale = helper_->AutoCast(
-        scale_info[0].name, scale_info[0].dtype, P2ODataType::FP32);
+    auto scale = helper_->AutoCast(scale_info[0].name, scale_info[0].dtype,
+                                   P2ODataType::FP32);
     out = helper_->MakeNode("Mul", {out, scale})->output(0);
   }
-  helper_->AutoCast(
-      out, output_info[0].name, P2ODataType::FP32, output_info[0].dtype);
+  helper_->AutoCast(out, output_info[0].name, P2ODataType::FP32,
+                    output_info[0].dtype);
 }
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

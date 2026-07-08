@@ -18,15 +18,9 @@ import sys
 
 def parse_arguments():
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--model", required=True, help="Path of directory saved the input model."
-    )
-    parser.add_argument(
-        "--output_names", required=True, nargs="+", help="The outputs of pruned model."
-    )
-    parser.add_argument(
-        "--save_file", required=True, help="Path to save the new onnx model."
-    )
+    parser.add_argument("--model", required=True, help="Path of directory saved the input model.")
+    parser.add_argument("--output_names", required=True, nargs="+", help="The outputs of pruned model.")
+    parser.add_argument("--save_file", required=True, help="Path to save the new onnx model.")
     return parser.parse_args()
 
 
@@ -42,14 +36,10 @@ if __name__ == "__main__":
 
     for output_name in args.output_names:
         if output_name not in output_tensor_names:
-            print(
-                f"[ERROR] Cannot find output tensor name '{output_name}' in onnx model graph."
-            )
+            print(f"[ERROR] Cannot find output tensor name '{output_name}' in onnx model graph.")
             sys.exit(-1)
     if len(set(args.output_names)) < len(args.output_names):
-        print(
-            "[ERROR] There's dumplicate name in --output_names, which is not allowed."
-        )
+        print("[ERROR] There's dumplicate name in --output_names, which is not allowed.")
         sys.exit(-1)
 
     output_node_indices = set()
@@ -98,9 +88,5 @@ if __name__ == "__main__":
     onnx.checker.check_model(model)
     onnx.save(model, args.save_file)
     print(f"[Finished] The new model saved in {args.save_file}.")
-    print(
-        f"[DEBUG INFO] The inputs of new model: {[x.name for x in model.graph.input]}"
-    )
-    print(
-        f"[DEBUG INFO] The outputs of new model: {[x.name for x in model.graph.output]}"
-    )
+    print(f"[DEBUG INFO] The inputs of new model: {[x.name for x in model.graph.input]}")
+    print(f"[DEBUG INFO] The outputs of new model: {[x.name for x in model.graph.output]}")

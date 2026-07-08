@@ -21,15 +21,11 @@
 namespace paddle2onnx {
 
 class ShapeMapper : public Mapper {
- public:
-  ShapeMapper(const PaddleParser& p,
-              OnnxHelper* helper,
-              int64_t block_id,
+public:
+  ShapeMapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
               int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {}
-  ShapeMapper(const PaddlePirParser& p,
-              OnnxHelper* helper,
-              int64_t op_id,
+  ShapeMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t op_id,
               bool if_in_cf_block)
       : Mapper(p, helper, op_id, if_in_cf_block) {}
 
@@ -37,14 +33,12 @@ class ShapeMapper : public Mapper {
 };
 
 class Shape64Mapper : public Mapper {
- public:
-  Shape64Mapper(const PaddlePirParser& p,
-                OnnxHelper* helper,
-                int64_t op_id,
+public:
+  Shape64Mapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t op_id,
                 bool if_in_cf_block)
       : Mapper(p, helper, op_id, if_in_cf_block) {}
 
   void Opset7() override;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

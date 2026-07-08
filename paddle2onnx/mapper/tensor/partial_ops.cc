@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "paddle2onnx/mapper/tensor/partial_ops.h"
 #include "paddle2onnx/mapper/exporter.h"
+#include "paddle2onnx/mapper/tensor/partial_ops.h"
 
 namespace paddle2onnx {
 REGISTER_MAPPER(partial_sum, PartialOpsMapper)
@@ -81,10 +81,8 @@ void PartialOpsMapper::Opset7() {
   if (iter->second == "Concat") {
     AddAttribute(node, "axis", static_cast<int64_t>(1));
   }
-  helper_->AutoCast(node->output(0),
-                    {output_info[0].name},
-                    P2ODataType::FP32,
+  helper_->AutoCast(node->output(0), {output_info[0].name}, P2ODataType::FP32,
                     output_info[0].dtype);
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

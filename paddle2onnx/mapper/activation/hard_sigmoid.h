@@ -22,19 +22,15 @@
 
 namespace paddle2onnx {
 class HardSigmoidMapper : public Mapper {
- public:
-  HardSigmoidMapper(const PaddleParser& p,
-                    OnnxHelper* helper,
-                    int64_t block_id,
+public:
+  HardSigmoidMapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
                     int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     GetAttr("slope", &alpha_);
     GetAttr("offset", &beta_);
   }
 
-  HardSigmoidMapper(const PaddlePirParser& p,
-                    OnnxHelper* helper,
-                    int64_t op_id,
+  HardSigmoidMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t op_id,
                     bool c)
       : Mapper(p, helper, op_id, c) {
     in_pir_mode = true;
@@ -44,8 +40,8 @@ class HardSigmoidMapper : public Mapper {
 
   void Opset7() override;
 
- private:
+private:
   float alpha_;
   float beta_;
 };
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

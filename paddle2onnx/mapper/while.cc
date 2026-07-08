@@ -15,9 +15,8 @@
 #include "paddle/fluid/pir/dialect/operator/ir/control_flow_op.h"
 #include "paddle2onnx/mapper/exporter.h"
 namespace paddle2onnx {
-void ModelExporter::ExportWhile(const PaddlePirParser& pir_parser,
-                                OnnxHelper* temp_helper,
-                                pir::Operation* op) {
+void ModelExporter::ExportWhile(const PaddlePirParser &pir_parser,
+                                OnnxHelper *temp_helper, pir::Operation *op) {
   // ================================
   //  construct loop body sub graph
   // ================================
@@ -28,7 +27,7 @@ void ModelExporter::ExportWhile(const PaddlePirParser& pir_parser,
   auto cond_info = pir_parser.GetTensorInfo(while_op.cond());
   std::unordered_set<std::string> names;
   for (int index = 1; index < while_op.num_operands(); index++) {
-    const pir::Value& value = while_op.operand_source(index);
+    const pir::Value &value = while_op.operand_source(index);
     std::string name = pir_parser.GetSubBlockOpOutputName(value);
     if (names.count(name)) {
       // there are duplicated varianble names in while op's operands.
@@ -42,10 +41,10 @@ void ModelExporter::ExportWhile(const PaddlePirParser& pir_parser,
   }
   pir_parser.GetWhileInputValuesAndArgsMappings(&while_op);
 
-  std::vector<pir::Operation*> sub_blocks_ops_copy(pir_parser.sub_blocks_ops);
+  std::vector<pir::Operation *> sub_blocks_ops_copy(pir_parser.sub_blocks_ops);
   pir_parser.sub_blocks_ops.clear();
-  auto& body_block = while_op.body();
-  for (auto& op : body_block.ops()) {
+  auto &body_block = while_op.body();
+  for (auto &op : body_block.ops()) {
     if (op->name() != "builtin.parameter") {
       pir_parser.sub_blocks_ops.push_back(op);
     }
@@ -55,10 +54,9 @@ void ModelExporter::ExportWhile(const PaddlePirParser& pir_parser,
   // pir_parser.GetSubBlockOpOutputName(pir_parser.sub_blocks_ops);
   if (!pir_parser.sub_blocks_ops.empty()) {
     // get cf.yeild op input
-    pir::Operation* cf_yield_op = pir_parser.sub_blocks_ops.back();
+    pir::Operation *cf_yield_op = pir_parser.sub_blocks_ops.back();
     PADDLE_ENFORCE_EQ(
-        cf_yield_op->name(),
-        "cf.yield",
+        cf_yield_op->name(), "cf.yield",
         ::common::errors::InvalidArgument(
             "The last op of a control flow sub-block must be cf.yield"));
     for (auto oprand : cf_yield_op->operands()) {
@@ -82,8 +80,7 @@ void ModelExporter::ExportWhile(const PaddlePirParser& pir_parser,
     }
   } else {
     // sub_blocks_ops is empty
-    PADDLE_ENFORCE_NE(pir_parser.sub_blocks_ops.size(),
-                      0,
+    PADDLE_ENFORCE_NE(pir_parser.sub_blocks_ops.size(), 0,
                       ::common::errors::InvalidArgument(
                           "The number of ops of a control flow sub-block "
                           "cannot be zero."));
@@ -94,8 +91,8 @@ void ModelExporter::ExportWhile(const PaddlePirParser& pir_parser,
   std::vector<std::shared_ptr<ONNX_NAMESPACE::ValueInfoProto>> inputs;
   std::vector<std::shared_ptr<ONNX_NAMESPACE::ValueInfoProto>> outputs;
   auto iter_name = MapperHelper::Get()->GenName("loop.iter");
-  TensorInfo iter_info(
-      iter_name, std::vector<int64_t>(1, 1), P2ODataType::INT64);
+  TensorInfo iter_info(iter_name, std::vector<int64_t>(1, 1),
+                       P2ODataType::INT64);
   // inputs
   inputs.push_back(std::move(MakeValueInfo(iter_info)));
   inputs.push_back(std::move(MakeValueInfo(cond_info[0])));
@@ -106,10 +103,10 @@ void ModelExporter::ExportWhile(const PaddlePirParser& pir_parser,
   for (size_t i = 0; i < outputs_info.size(); ++i) {
     outputs.push_back(std::move(MakeValueInfo(outputs_info[i])));
   }
-  pir::Block* blockPtr = &body_block;
-  graph = ExportBlock(
-      pir_parser, blockPtr, parameters, &inputs, &outputs, true, true);
-  for (auto& item : extra_nodes) {
+  pir::Block *blockPtr = &body_block;
+  graph = ExportBlock(pir_parser, blockPtr, parameters, &inputs, &outputs, true,
+                      true);
+  for (auto &item : extra_nodes) {
     *(graph.add_node()) = (*item.get());
   }
 
@@ -121,7 +118,7 @@ void ModelExporter::ExportWhile(const PaddlePirParser& pir_parser,
   // =====================
   std::vector<std::string> input_names;
   std::vector<std::string> output_names;
-  input_names.push_back("");  // skip max loop iter
+  input_names.push_back(""); // skip max loop iter
   input_names.push_back(cond_info[0].name);
   for (size_t i = 0; i < inputs_info.size(); ++i) {
     input_names.push_back(inputs_info[i].name);
@@ -133,9 +130,8 @@ void ModelExporter::ExportWhile(const PaddlePirParser& pir_parser,
   AddAttribute(loop_node, "body", graph);
 }
 
-void ModelExporter::ExportWhile(const PaddleParser& parser,
-                                OnnxHelper* temp_helper,
-                                int32_t block_id,
+void ModelExporter::ExportWhile(const PaddleParser &parser,
+                                OnnxHelper *temp_helper, int32_t block_id,
                                 int32_t op_id) {
   auto op = parser.GetOpDesc(block_id, op_id);
   auto x_info = parser.GetOpInput(block_id, op_id, "X");
@@ -160,8 +156,8 @@ void ModelExporter::ExportWhile(const PaddleParser& parser,
   std::vector<std::shared_ptr<ONNX_NAMESPACE::ValueInfoProto>> outputs;
 
   auto iter_name = MapperHelper::Get()->GenName("loop.iter");
-  TensorInfo iter_info(
-      iter_name, std::vector<int64_t>(1, 1), P2ODataType::INT64);
+  TensorInfo iter_info(iter_name, std::vector<int64_t>(1, 1),
+                       P2ODataType::INT64);
   inputs.push_back(std::move(MakeValueInfo(iter_info)));
 
   // Make cond
@@ -183,8 +179,8 @@ void ModelExporter::ExportWhile(const PaddleParser& parser,
     outputs.push_back(std::move(MakeValueInfo(x_info[i])));
   }
 
-  graph = ExportBlock(
-      parser, sub_block_idx, &parameters, &inputs, &outputs, nullptr, true);
+  graph = ExportBlock(parser, sub_block_idx, &parameters, &inputs, &outputs,
+                      nullptr, true);
 
   /********************* Creat Body Gragh *********************/
   // Make Fake iter
@@ -198,4 +194,4 @@ void ModelExporter::ExportWhile(const PaddleParser& parser,
   auto loop_node = temp_helper->MakeNode("Loop", input_names, output_names);
   AddAttribute(loop_node, "body", graph);
 }
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

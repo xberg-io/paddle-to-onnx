@@ -69,8 +69,8 @@ void ReduceMapperProd::Opset18() {
     out_node_name = helper_->Reshape(out_node_name, {-1});
   }
   auto out_info = GetOutput("Out");
-  helper_->AutoCast(
-      out_node_name, out_info[0].name, x_info[0].dtype, out_info[0].dtype);
+  helper_->AutoCast(out_node_name, out_info[0].name, x_info[0].dtype,
+                    out_info[0].dtype);
 }
 
 void ReduceMapperProd::Opset11() {
@@ -108,8 +108,8 @@ void ReduceMapperProd::Opset11() {
 
   auto out_node_name = reduce_node->output(0);
   if (x_info[0].dtype == P2ODataType::FP64) {
-    out_node_name = helper_->AutoCast(
-        reduce_node->output(0), P2ODataType::FP32, P2ODataType::FP64);
+    out_node_name = helper_->AutoCast(reduce_node->output(0), P2ODataType::FP32,
+                                      P2ODataType::FP64);
   }
 
   bool reduce_all_axes = dim_.size() == x_info[0].Rank();
@@ -120,7 +120,7 @@ void ReduceMapperProd::Opset11() {
     out_node_name = helper_->Reshape(out_node_name, {-1});
   }
   auto out_info = GetOutput("Out");
-  helper_->AutoCast(
-      out_node_name, out_info[0].name, x_info[0].dtype, out_info[0].dtype);
+  helper_->AutoCast(out_node_name, out_info[0].name, x_info[0].dtype,
+                    out_info[0].dtype);
 }
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

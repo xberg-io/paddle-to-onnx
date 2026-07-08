@@ -12,9 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from onnxbase import APIOnnx
-
 import paddle
+from onnxbase import APIOnnx
 
 
 class Net(paddle.nn.Layer):
@@ -24,9 +23,7 @@ class Net(paddle.nn.Layer):
 
     def __init__(self):
         super().__init__()
-        self.shuffle = paddle.nn.PixelShuffle(
-            upscale_factor=3, data_format="NCHW", name=None
-        )
+        self.shuffle = paddle.nn.PixelShuffle(upscale_factor=3, data_format="NCHW", name=None)
 
     def forward(self, inputs):
         """

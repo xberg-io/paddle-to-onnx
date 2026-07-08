@@ -12,10 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from onnxbase import APIOnnx, _test_with_pir, randtool
-
 import paddle
 import paddle.nn.functional as F
+from onnxbase import APIOnnx, _test_with_pir, randtool
 
 
 class Net(paddle.nn.Layer):
@@ -60,9 +59,7 @@ def test_unfold_11_2():
     op.eval()
     # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "unfold", [11])
-    obj.set_input_data(
-        "input_data", paddle.arange(16).view([1, 1, 4, 4]).cast(paddle.float32)
-    )
+    obj.set_input_data("input_data", paddle.arange(16).view([1, 1, 4, 4]).cast(paddle.float32))
     obj.run()
 
 

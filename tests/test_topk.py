@@ -12,9 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from onnxbase import APIOnnx, _test_with_pir
-
 import paddle
+from onnxbase import APIOnnx, _test_with_pir
 
 
 class Net(paddle.nn.Layer):
@@ -29,9 +28,7 @@ class Net(paddle.nn.Layer):
         """
         forward
         """
-        x, indices = paddle.topk(
-            inputs, k=1, axis=None, largest=True, sorted=True, name=None
-        )
+        x, indices = paddle.topk(inputs, k=1, axis=None, largest=True, sorted=True, name=None)
         return x + indices
 
 

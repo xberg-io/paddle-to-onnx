@@ -21,10 +21,8 @@
 namespace paddle2onnx {
 
 class MultinomialMapper : public Mapper {
- public:
-  MultinomialMapper(const PaddlePirParser& p,
-                    OnnxHelper* helper,
-                    int64_t op_id,
+public:
+  MultinomialMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t op_id,
                     bool if_in_cf_block)
       : Mapper(p, helper, op_id, if_in_cf_block) {
     GetAttr("replacement", &replacement_);
@@ -33,7 +31,7 @@ class MultinomialMapper : public Mapper {
   int32_t GetMinOpsetVersion(bool verbose) override;
   void Opset7() override;
 
- private:
+private:
   bool replacement_;
 };
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

@@ -16,9 +16,8 @@ import unittest
 
 import hypothesis.strategies as st
 import numpy as np
-from auto_scan_test import BaseNet, OPConvertAutoScanTest
-
 import paddle
+from auto_scan_test import BaseNet, OPConvertAutoScanTest
 
 
 class Net(BaseNet):
@@ -50,13 +49,9 @@ class TestConv3dConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=15, max_value=25), min_size=5, max_size=5)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=15, max_value=25), min_size=5, max_size=5))
 
-        kernel_size = draw(
-            st.lists(st.integers(min_value=1, max_value=5), min_size=5, max_size=5)
-        )
+        kernel_size = draw(st.lists(st.integers(min_value=1, max_value=5), min_size=5, max_size=5))
 
         data_format = "NCDHW"
 
@@ -77,9 +72,7 @@ class TestConv3dConvert(OPConvertAutoScanTest):
             if strides > kernel_size[4]:
                 strides = kernel_size[4]
         else:
-            strides = draw(
-                st.lists(st.integers(min_value=1, max_value=5), min_size=3, max_size=3)
-            )
+            strides = draw(st.lists(st.integers(min_value=1, max_value=5), min_size=3, max_size=3))
             if strides[0] > kernel_size[2]:
                 strides[0] = kernel_size[2]
             if strides[1] > kernel_size[3]:
@@ -133,28 +126,16 @@ class TestConv3dConvert(OPConvertAutoScanTest):
             padding = [[0, 0], [0, 0], *padding1, *padding2, *padding3]
         elif padding_type == "list":
             if draw(st.booleans()):
-                padding = draw(
-                    st.lists(
-                        st.integers(min_value=1, max_value=5), min_size=3, max_size=3
-                    )
-                )
+                padding = draw(st.lists(st.integers(min_value=1, max_value=5), min_size=3, max_size=3))
             else:
-                padding = draw(
-                    st.lists(
-                        st.integers(min_value=1, max_value=5), min_size=6, max_size=6
-                    )
-                )
+                padding = draw(st.lists(st.integers(min_value=1, max_value=5), min_size=6, max_size=6))
 
         dilations_type = draw(st.sampled_from(["int", "tuple"]))
         dilations = None
         if dilations_type == "int":
-            dilations = draw(
-                st.lists(st.integers(min_value=1, max_value=3), min_size=1, max_size=1)
-            )
+            dilations = draw(st.lists(st.integers(min_value=1, max_value=3), min_size=1, max_size=1))
         else:
-            dilations = draw(
-                st.lists(st.integers(min_value=1, max_value=3), min_size=3, max_size=3)
-            )
+            dilations = draw(st.lists(st.integers(min_value=1, max_value=3), min_size=3, max_size=3))
         if len(dilations) == 1:
             dilations = dilations[0]
         if padding == "SAME":

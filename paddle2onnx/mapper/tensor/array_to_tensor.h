@@ -21,11 +21,9 @@
 namespace paddle2onnx {
 
 class ArrayToTensorMapper : public Mapper {
- public:
-  ArrayToTensorMapper(const PaddlePirParser& p,
-                      OnnxHelper* helper,
-                      int64_t op_id,
-                      bool if_in_cf_block)
+public:
+  ArrayToTensorMapper(const PaddlePirParser &p, OnnxHelper *helper,
+                      int64_t op_id, bool if_in_cf_block)
       : Mapper(p, helper, op_id, if_in_cf_block) {
     GetAttr("axis", &axis_);
     GetAttr("use_stack", &use_stack_);
@@ -34,8 +32,8 @@ class ArrayToTensorMapper : public Mapper {
   int32_t GetMinOpsetVersion(bool verbose) override;
   void Opset17() override;
 
- private:
+private:
   int64_t axis_;
   bool use_stack_;
 };
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

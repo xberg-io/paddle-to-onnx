@@ -18,11 +18,9 @@
 namespace paddle2onnx {
 
 class DequantizeLinearMapper : public Mapper {
- public:
-  DequantizeLinearMapper(const PaddleParser& p,
-                         OnnxHelper* helper,
-                         int64_t block_id,
-                         int64_t op_id)
+public:
+  DequantizeLinearMapper(const PaddleParser &p, OnnxHelper *helper,
+                         int64_t block_id, int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     GetAttr("quant_axis", &quant_axis_);
     GetAttr("bit_length", &bit_length_);
@@ -33,10 +31,8 @@ class DequantizeLinearMapper : public Mapper {
     }
   }
 
-  DequantizeLinearMapper(const PaddlePirParser& p,
-                         OnnxHelper* helper,
-                         int64_t i,
-                         bool c)
+  DequantizeLinearMapper(const PaddlePirParser &p, OnnxHelper *helper,
+                         int64_t i, bool c)
       : Mapper(p, helper, i, c) {
     GetAttr("quant_axis", &quant_axis_);
     GetAttr("bit_length", &bit_length_);
@@ -47,18 +43,18 @@ class DequantizeLinearMapper : public Mapper {
     }
   }
   template <typename T>
-  std::string CreateConstantNode(const std::vector<T>& values,
+  std::string CreateConstantNode(const std::vector<T> &values,
                                  ONNX_NAMESPACE::TensorProto_DataType type);
   int32_t GetMinOpsetVersion(bool verbose) override;
   void Opset19() override;
 
- private:
-  void ConvertInt8ToFp32(const std::vector<float>& onnx_scales,
-                         std::vector<float>* weight);
+private:
+  void ConvertInt8ToFp32(const std::vector<float> &onnx_scales,
+                         std::vector<float> *weight);
   int64_t quant_axis_ = 1;
   int64_t bit_length_ = 8;
   int64_t qmin_ = -128;
   int64_t qmax_ = 127;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

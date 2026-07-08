@@ -12,9 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "paddle2onnx/optimizer/paddle2onnx_optimizer.h"
-#include <onnx/shape_inference/implementation.h>
-#include <fstream>
 #include "onnxoptimizer/optimize.h"
 #include "paddle2onnx/converter.h"
 #include "paddle2onnx/optimizer/eliminate_non_transpose.h"
@@ -23,14 +20,17 @@
 #include "paddle2onnx/optimizer/fuse_constant_unsqueeze.h"
 #include "paddle2onnx/optimizer/fuse_paddle_conv_bias.h"
 #include "paddle2onnx/optimizer/fuse_unsqueeze_conv2d_squeeze.h"
+#include "paddle2onnx/optimizer/paddle2onnx_optimizer.h"
 #include "paddle2onnx/optimizer/replace_add_to_identity.h"
 #include "paddle2onnx/optimizer/replace_mul_to_identity.h"
 #include "paddle2onnx/utils/utils.h"
+#include <fstream>
+#include <onnx/shape_inference/implementation.h>
 
 namespace ONNX_NAMESPACE {
 namespace optimization {
-ONNX_NAMESPACE::ModelProto OptimizeOnnxModel(
-    const ONNX_NAMESPACE::ModelProto& model_proto) {
+ONNX_NAMESPACE::ModelProto
+OptimizeOnnxModel(const ONNX_NAMESPACE::ModelProto &model_proto) {
   OptimizerOption option;
   option.passes.clear();
   option.passes.push_back("eliminate_identity");
@@ -48,8 +48,9 @@ ONNX_NAMESPACE::ModelProto OptimizeOnnxModel(
   }
 
   try {
-    shape_inference::InferShapes(optimized_model_proto, OpSchemaRegistry::Instance());
-  } catch (const std::exception& e) {
+    shape_inference::InferShapes(optimized_model_proto,
+                                 OpSchemaRegistry::Instance());
+  } catch (const std::exception &e) {
     paddle2onnx::P2OLogger(true)
         << "[ERROR] Failed to reinfer shape for this model." << std::endl;
     paddle2onnx::P2OLogger(true) << e.what() << std::endl;
@@ -57,8 +58,8 @@ ONNX_NAMESPACE::ModelProto OptimizeOnnxModel(
   return optimized_model_proto;
 }
 
-std::shared_ptr<ONNX_NAMESPACE::ModelProto> LoadModelFromFile(
-    const std::string& file_path) {
+std::shared_ptr<ONNX_NAMESPACE::ModelProto>
+LoadModelFromFile(const std::string &file_path) {
   auto model_proto = std::make_shared<ONNX_NAMESPACE::ModelProto>();
   std::ifstream fin(file_path, std::ios::in | std::ios::binary);
   if (!fin.is_open()) {
@@ -84,9 +85,9 @@ std::shared_ptr<ONNX_NAMESPACE::ModelProto> LoadModelFromFile(
   return model_proto;
 }
 
-bool OptimizePaddle2ONNX(const std::string& model_path,
-                         const std::string& optimized_model_path,
-                         const OptimizerOption& option) {
+bool OptimizePaddle2ONNX(const std::string &model_path,
+                         const std::string &optimized_model_path,
+                         const OptimizerOption &option) {
   auto model_proto = LoadModelFromFile(model_path);
   ONNX_NAMESPACE::optimization::Optimizer::passes
       .registerPass<ONNX_NAMESPACE::optimization::FuseConstantReshape>();
@@ -128,10 +129,9 @@ bool OptimizePaddle2ONNX(const std::string& model_path,
 }
 
 bool OptimizePaddle2ONNX(
-    const std::string& model_path,
-    const std::string& optimized_model_path,
-    const std::map<std::string, std::vector<int>>& shape_infos,
-    const OptimizerOption& option) {
+    const std::string &model_path, const std::string &optimized_model_path,
+    const std::map<std::string, std::vector<int>> &shape_infos,
+    const OptimizerOption &option) {
   auto model_proto = LoadModelFromFile(model_path);
   if (shape_infos.size() > 0) {
     // reinfer shape for this onnx model
@@ -151,15 +151,16 @@ bool OptimizePaddle2ONNX(
             graph->mutable_input(i)->mutable_type()->mutable_tensor_type();
         tensor_type_proto->clear_shape();
         auto shape = tensor_type_proto->mutable_shape();
-        for (auto& dim : iter->second) {
+        for (auto &dim : iter->second) {
           shape->add_dim()->set_dim_value(dim);
         }
       }
     }
 
     try {
-      shape_inference::InferShapes(*(model_proto.get()), OpSchemaRegistry::Instance());
-    } catch (const std::exception& e) {
+      shape_inference::InferShapes(*(model_proto.get()),
+                                   OpSchemaRegistry::Instance());
+    } catch (const std::exception &e) {
       paddle2onnx::P2OLogger(true)
           << "[ERROR] Failed to reinfer shape for this model." << std::endl;
       paddle2onnx::P2OLogger(true) << e.what() << std::endl;
@@ -206,8 +207,8 @@ bool OptimizePaddle2ONNX(
   return true;
 }
 
-bool Paddle2ONNXFP32ToFP16(const std::string& model_path,
-                           const std::string& converted_model_path,
+bool Paddle2ONNXFP32ToFP16(const std::string &model_path,
+                           const std::string &converted_model_path,
                            bool verbose) {
   std::ifstream fin(model_path, std::ios::in | std::ios::binary);
   if (!fin.is_open()) {
@@ -225,10 +226,10 @@ bool Paddle2ONNXFP32ToFP16(const std::string& model_path,
   fin.read(&(contents.at(0)), contents.size());
   fin.close();
 
-  char* out_model_ptr = nullptr;
+  char *out_model_ptr = nullptr;
   int size = 0;
-  paddle2onnx::ConvertFP32ToFP16(
-      contents.c_str(), contents.size(), &out_model_ptr, &size, verbose);
+  paddle2onnx::ConvertFP32ToFP16(contents.c_str(), contents.size(),
+                                 &out_model_ptr, &size, verbose);
   std::string onnx_proto(out_model_ptr, out_model_ptr + size);
 
   std::fstream out(converted_model_path, std::ios::out | std::ios::binary);
@@ -243,5 +244,5 @@ bool Paddle2ONNXFP32ToFP16(const std::string& model_path,
   return true;
 }
 
-}  // namespace optimization
-}  // namespace ONNX_NAMESPACE
+} // namespace optimization
+} // namespace ONNX_NAMESPACE

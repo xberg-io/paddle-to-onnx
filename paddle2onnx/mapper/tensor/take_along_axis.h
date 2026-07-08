@@ -21,19 +21,15 @@
 namespace paddle2onnx {
 
 class TakeAlongAxisMapper : public Mapper {
- public:
-  TakeAlongAxisMapper(const PaddleParser& p,
-                      OnnxHelper* helper,
-                      int64_t block_id,
-                      int64_t op_id)
+public:
+  TakeAlongAxisMapper(const PaddleParser &p, OnnxHelper *helper,
+                      int64_t block_id, int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     GetAttr("Axis", &axis_);
   }
 
-  TakeAlongAxisMapper(const PaddlePirParser& p,
-                      OnnxHelper* helper,
-                      int64_t op_id,
-                      bool in_cf_block)
+  TakeAlongAxisMapper(const PaddlePirParser &p, OnnxHelper *helper,
+                      int64_t op_id, bool in_cf_block)
       : Mapper(p, helper, op_id, in_cf_block) {
     GetAttr("Axis", &axis_);
   }
@@ -41,8 +37,8 @@ class TakeAlongAxisMapper : public Mapper {
   int32_t GetMinOpsetVersion(bool verbose) override;
   void Opset11() override;
 
- private:
+private:
   int64_t axis_;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

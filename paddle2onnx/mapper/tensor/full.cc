@@ -24,31 +24,27 @@ REGISTER_PIR_MAPPER(full, FullMapper)
 void FullMapper::Opset7() {
   auto output_info = GetOutput("Out");
   std::visit(
-      [&](auto&& arg) {
+      [&](auto &&arg) {
         using T = std::decay_t<decltype(arg)>;
         if constexpr (std::is_same_v<T, double>) {
-          helper_->Constant(output_info[0].name,
-                            shape_,
+          helper_->Constant(output_info[0].name, shape_,
                             GetOnnxDtype(output_info[0].dtype),
                             std::get<double>(value_));
 
         } else if constexpr (std::is_same_v<T, float>) {
-          helper_->Constant(output_info[0].name,
-                            shape_,
+          helper_->Constant(output_info[0].name, shape_,
                             GetOnnxDtype(output_info[0].dtype),
                             std::get<float>(value_));
         } else if constexpr (std::is_same_v<T, int64_t>) {
-          helper_->Constant(output_info[0].name,
-                            shape_,
+          helper_->Constant(output_info[0].name, shape_,
                             GetOnnxDtype(output_info[0].dtype),
                             std::get<int64_t>(value_));
         } else if constexpr (std::is_same_v<T, int32_t>) {
-          helper_->Constant(output_info[0].name,
-                            shape_,
+          helper_->Constant(output_info[0].name, shape_,
                             GetOnnxDtype(output_info[0].dtype),
                             std::get<int32_t>(value_));
         }
       },
       value_);
 }
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

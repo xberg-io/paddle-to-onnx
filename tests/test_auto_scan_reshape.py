@@ -16,9 +16,8 @@ import unittest
 
 import hypothesis.strategies as st
 import numpy as np
-from auto_scan_test import BaseNet, OPConvertAutoScanTest
-
 import paddle
+from auto_scan_test import BaseNet, OPConvertAutoScanTest
 
 
 class Net0(BaseNet):
@@ -52,9 +51,7 @@ class TestReshapeConvert0(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=2, max_value=20), min_size=0, max_size=4)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=2, max_value=20), min_size=0, max_size=4))
 
         dtype = draw(st.sampled_from(["float32"]))
 
@@ -97,9 +94,7 @@ class TestReshapeConvert1(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=2, max_value=20), min_size=0, max_size=4)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=2, max_value=20), min_size=0, max_size=4))
 
         dtype = draw(st.sampled_from(["float32"]))
 

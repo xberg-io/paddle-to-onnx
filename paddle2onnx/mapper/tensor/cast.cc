@@ -26,4 +26,4 @@ void CastMapper::Opset7() {
   AddAttribute(node, "to", GetOnnxDtype(out_dtype_));
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

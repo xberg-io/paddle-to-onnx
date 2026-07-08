@@ -13,8 +13,8 @@
 // limitations under the License.
 
 #pragma once
-#include <vector>
 #include "paddle2onnx/utils/utils.h"
+#include <vector>
 
 namespace paddle2onnx {
 
@@ -27,4 +27,4 @@ inline std::vector<int64_t> Arange(int64_t start, int64_t end) {
   }
   return res;
 }
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

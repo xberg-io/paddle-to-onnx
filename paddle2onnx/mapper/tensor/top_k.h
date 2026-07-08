@@ -18,10 +18,8 @@
 namespace paddle2onnx {
 
 class TopKMapper : public Mapper {
- public:
-  TopKMapper(const PaddleParser& p,
-             OnnxHelper* helper,
-             int64_t block_id,
+public:
+  TopKMapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
              int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {}
   int32_t GetMinOpsetVersion(bool verbose) override {
@@ -31,4 +29,4 @@ class TopKMapper : public Mapper {
   void Opset11() override;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

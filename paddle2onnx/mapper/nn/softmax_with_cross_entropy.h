@@ -20,20 +20,16 @@
 namespace paddle2onnx {
 
 class SoftmaxCrossEntropyLossMapper : public Mapper {
- public:
-  SoftmaxCrossEntropyLossMapper(const PaddleParser& p,
-                                OnnxHelper* helper,
-                                int64_t block_id,
-                                int64_t op_id)
+public:
+  SoftmaxCrossEntropyLossMapper(const PaddleParser &p, OnnxHelper *helper,
+                                int64_t block_id, int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     GetAttr("axis", &axis_);
     GetAttr("soft_label", &soft_label_);
     GetAttr("ignore_index", &ignore_index_);
   }
-  SoftmaxCrossEntropyLossMapper(const PaddlePirParser& p,
-                                OnnxHelper* helper,
-                                int64_t op_id,
-                                bool in_cf_block)
+  SoftmaxCrossEntropyLossMapper(const PaddlePirParser &p, OnnxHelper *helper,
+                                int64_t op_id, bool in_cf_block)
       : Mapper(p, helper, op_id, in_cf_block) {
     GetAttr("axis", &axis_);
     GetAttr("soft_label", &soft_label_);
@@ -42,10 +38,10 @@ class SoftmaxCrossEntropyLossMapper : public Mapper {
   int32_t GetMinOpsetVersion(bool verbose) override;
   void Opset12() override;
 
- private:
+private:
   int64_t axis_ = -1;
   bool soft_label_ = false;
   int64_t ignore_index_ = -100;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

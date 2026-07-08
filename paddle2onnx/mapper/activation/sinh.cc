@@ -28,4 +28,4 @@ void SinhMapper::Opset9() {
   auto output_info = GetOutput("Out");
   helper_->MakeNode("Sinh", {input_info[0].name}, {output_info[0].name});
 }
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

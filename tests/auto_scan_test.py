@@ -22,10 +22,9 @@ from itertools import product
 
 import hypothesis.strategies as st
 import numpy as np
+import paddle
 from hypothesis import HealthCheck, given, settings
 from onnxbase import APIOnnx, randtool
-
-import paddle
 
 paddle.set_device("cpu")
 
@@ -49,10 +48,7 @@ settings.register_profile(
     derandomize=True,
     report_multiple_bugs=False,
 )
-if (
-    float(os.getenv("TEST_NUM_PERCENT_CASES", default="1.0")) < 1
-    or os.getenv("HYPOTHESIS_TEST_PROFILE", "dev") == "ci"
-):
+if float(os.getenv("TEST_NUM_PERCENT_CASES", default="1.0")) < 1 or os.getenv("HYPOTHESIS_TEST_PROFILE", "dev") == "ci":
     settings.load_profile("ci")
 else:
     settings.load_profile("dev")
@@ -143,18 +139,10 @@ class OPConvertAutoScanTest(unittest.TestCase):
         logging.info(f"Run configs: {config}")
 
         assert "op_names" in config, "config must include op_names in dict keys"
-        assert "test_data_shapes" in config, (
-            "config must include test_data_shapes in dict keys"
-        )
-        assert "test_data_types" in config, (
-            "config must include test_data_types in dict keys"
-        )
-        assert "opset_version" in config, (
-            "config must include opset_version in dict keys"
-        )
-        assert "input_spec_shape" in config, (
-            "config must include input_spec_shape in dict keys"
-        )
+        assert "test_data_shapes" in config, "config must include test_data_shapes in dict keys"
+        assert "test_data_types" in config, "config must include test_data_types in dict keys"
+        assert "opset_version" in config, "config must include opset_version in dict keys"
+        assert "input_spec_shape" in config, "config must include input_spec_shape in dict keys"
 
         op_names = config["op_names"]
         test_data_shapes = config["test_data_shapes"]
@@ -177,9 +165,7 @@ class OPConvertAutoScanTest(unittest.TestCase):
         if len(opset_version) == 1 and len(models) != len(opset_version):
             opset_version = opset_version * len(models)
 
-        assert len(models) == len(op_names), (
-            "Length of models should be equal to length of op_names"
-        )
+        assert len(models) == len(op_names), "Length of models should be equal to length of op_names"
 
         input_type_list = None
         if len(test_data_types) > 1:
@@ -221,23 +207,11 @@ class OPConvertAutoScanTest(unittest.TestCase):
                         input_tensors.append(paddle.to_tensor(data))
                         continue
                     if input_type[j].count("int") > 0:
-                        input_tensors.append(
-                            paddle.to_tensor(
-                                randtool("int", -20, 20, shape).astype(input_type[j])
-                            )
-                        )
+                        input_tensors.append(paddle.to_tensor(randtool("int", -20, 20, shape).astype(input_type[j])))
                     elif input_type[j].count("bool") > 0:
-                        input_tensors.append(
-                            paddle.to_tensor(
-                                randtool("bool", -2, 2, shape).astype(input_type[j])
-                            )
-                        )
+                        input_tensors.append(paddle.to_tensor(randtool("bool", -2, 2, shape).astype(input_type[j])))
                     else:
-                        input_tensors.append(
-                            paddle.to_tensor(
-                                randtool("float", -2, 2, shape).astype(input_type[j])
-                            )
-                        )
+                        input_tensors.append(paddle.to_tensor(randtool("float", -2, 2, shape).astype(input_type[j])))
                 obj.set_input_data("input_data", tuple(input_tensors))
                 logging.info(f"Now Run >>> dtype: {input_type}, op_name: {op_names[i]}")
                 obj.run()

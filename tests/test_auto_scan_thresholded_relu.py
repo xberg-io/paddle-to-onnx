@@ -15,9 +15,8 @@
 import unittest
 
 import hypothesis.strategies as st
-from auto_scan_test import BaseNet, OPConvertAutoScanTest
-
 import paddle
+from auto_scan_test import BaseNet, OPConvertAutoScanTest
 
 
 class Net(BaseNet):
@@ -29,9 +28,7 @@ class Net(BaseNet):
         """
         forward
         """
-        return paddle.nn.functional.thresholded_relu(
-            inputs, threshold=self.config["threshold"]
-        )
+        return paddle.nn.functional.thresholded_relu(inputs, threshold=self.config["threshold"])
 
 
 class TestThresholdedReluConvert(OPConvertAutoScanTest):
@@ -41,9 +38,7 @@ class TestThresholdedReluConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=2, max_value=20), min_size=0, max_size=4)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=2, max_value=20), min_size=0, max_size=4))
 
         threshold = draw(st.floats(min_value=1.0, max_value=10.0))
 

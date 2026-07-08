@@ -77,4 +77,4 @@ void TemporalShiftMapper::Opset7() {
   helper_->Reshape(concat_out, output_info[0].name, {-1, C, H, W});
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

@@ -21,10 +21,8 @@
 namespace paddle2onnx {
 
 class Flatten2Mapper : public Mapper {
- public:
-  Flatten2Mapper(const PaddleParser& p,
-                 OnnxHelper* helper,
-                 int64_t block_id,
+public:
+  Flatten2Mapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
                  int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     GetAttr("axis", &axis_);
@@ -32,8 +30,8 @@ class Flatten2Mapper : public Mapper {
   int32_t GetMinOpsetVersion(bool verbose) override;
   void Opset7() override;
 
- private:
+private:
   int64_t axis_;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

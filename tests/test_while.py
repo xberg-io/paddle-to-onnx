@@ -12,9 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from onnxbase import APIOnnx, _test_with_pir
-
 import paddle
+from onnxbase import APIOnnx, _test_with_pir
 
 
 class BaseNet1(paddle.nn.Layer):
@@ -75,9 +74,7 @@ def test_while_3():
     op = BaseNet3()
     op.eval()
     obj = APIOnnx(op, "while", [13])
-    obj.set_input_data(
-        "input_data", paddle.to_tensor(0), paddle.to_tensor(0), paddle.to_tensor(0)
-    )
+    obj.set_input_data("input_data", paddle.to_tensor(0), paddle.to_tensor(0), paddle.to_tensor(0))
     obj.run()
 
 
@@ -100,9 +97,7 @@ def test_while_4():
     op = BaseNet4()
     op.eval()
     obj = APIOnnx(op, "while", [13])
-    obj.set_input_data(
-        "input_data", paddle.to_tensor(0), paddle.to_tensor(0), paddle.to_tensor(0)
-    )
+    obj.set_input_data("input_data", paddle.to_tensor(0), paddle.to_tensor(0), paddle.to_tensor(0))
     obj.run()
 
 

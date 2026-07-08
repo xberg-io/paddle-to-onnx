@@ -43,9 +43,7 @@ class TestSetValueConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=5, max_value=20), min_size=1, max_size=4)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=5, max_value=20), min_size=1, max_size=4))
 
         update_input_shape = copy.copy(input_shape)
         update_input_shape[0] = update_input_shape[0] - 2

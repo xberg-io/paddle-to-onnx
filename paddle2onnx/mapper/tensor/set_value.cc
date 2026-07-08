@@ -84,9 +84,9 @@ void SetValueMapper::Opset17() {
   auto zero = helper_->Constant(ONNX_NAMESPACE::TensorProto::INT64,
                                 std::vector<int64_t>(axes_.size(), 0));
   auto starts_less_zero = helper_->MakeNode("Less", {starts, zero})->output(0);
-  auto axes_const = helper_->Constant(std::vector<int64_t>(1, axes_.size()),
-                                      ONNX_NAMESPACE::TensorProto::INT64,
-                                      axes_);
+  auto axes_const =
+      helper_->Constant(std::vector<int64_t>(1, axes_.size()),
+                        ONNX_NAMESPACE::TensorProto::INT64, axes_);
   auto shape_bound = helper_->MakeNode("Gather", {input_shape, axes_const});
   AddAttribute(shape_bound, "axis", int64_t(0));
   auto add_start =
@@ -127,14 +127,14 @@ void SetValueMapper::Opset17() {
     value_rank = shape_.size();
     int in_dtype = input_info[0].dtype;
     if (int_values_.size() > 0) {
-      value = helper_->Assign(
-          GetOnnxDtype(output_info[0].dtype), shape_, int_values_);
+      value = helper_->Assign(GetOnnxDtype(output_info[0].dtype), shape_,
+                              int_values_);
     } else if (fp32_values_.size() > 0) {
-      value = helper_->Assign(
-          GetOnnxDtype(output_info[0].dtype), shape_, fp32_values_);
+      value = helper_->Assign(GetOnnxDtype(output_info[0].dtype), shape_,
+                              fp32_values_);
     } else if (fp64_values_.size() > 0) {
-      value = helper_->Assign(
-          GetOnnxDtype(output_info[0].dtype), shape_, fp64_values_);
+      value = helper_->Assign(GetOnnxDtype(output_info[0].dtype), shape_,
+                              fp64_values_);
     }
   }
 
@@ -198,8 +198,7 @@ void SetValueMapper::Opset17() {
     }
     auto other_axes_const =
         if_else_helper.Constant(std::vector<int64_t>(1, other_axes.size()),
-                                ONNX_NAMESPACE::TensorProto::INT64,
-                                other_axes);
+                                ONNX_NAMESPACE::TensorProto::INT64, other_axes);
     auto other_shape_bound =
         if_else_helper.MakeNode("Gather", {input_shape, other_axes_const});
     AddAttribute(other_shape_bound, "axis", int64_t(0));
@@ -224,8 +223,7 @@ void SetValueMapper::Opset17() {
     }
     auto axes_index_const =
         if_else_helper.Constant(std::vector<int64_t>(1, axes_index.size()),
-                                ONNX_NAMESPACE::TensorProto::INT64,
-                                axes_index);
+                                ONNX_NAMESPACE::TensorProto::INT64, axes_index);
     auto sorted_starts_node =
         if_else_helper.MakeNode("Gather", {starts, axes_index_const});
     AddAttribute(sorted_starts_node, "axis", int64_t(0));
@@ -309,7 +307,7 @@ void SetValueMapper::Opset17() {
             .MakeNode("Where",
                       {temp_less_equal_zero, temp_one, temp_scalar_size_name})
             ->output(0);
-    temp_helper.Unsqueeze(scalar_size_name, size_out_name, {0});  // wmk
+    temp_helper.Unsqueeze(scalar_size_name, size_out_name, {0}); // wmk
     // auto range_2d = temp_helper.Unsqueeze(range, {1});
     // auto tile = temp_helper.MakeNode("Tile", {range_2d,
     // repeat_seq})->output(0); temp_helper.Reshape(tile, seq_map_out_name, {});
@@ -423,18 +421,16 @@ void SetValueMapper::Opset17() {
     OnnxHelper temp_helper2;
     auto slice_axes = temp_helper2.Constant(
         {1}, ONNX_NAMESPACE::TensorProto::INT64, static_cast<int64_t>(0));
-    auto prefix_size =
-        temp_helper2
-            .MakeNode("Slice",
-                      {concat_size, slice_start_1, slice_end_1, slice_axes})
-            ->output(0);
-    auto suffix_size =
-        temp_helper2
-            .MakeNode("Slice",
-                      {concat_size, slice_start_2, slice_end_2, slice_axes})
-            ->output(0);
+    auto prefix_size = temp_helper2
+                           .MakeNode("Slice", {concat_size, slice_start_1,
+                                               slice_end_1, slice_axes})
+                           ->output(0);
+    auto suffix_size = temp_helper2
+                           .MakeNode("Slice", {concat_size, slice_start_2,
+                                               slice_end_2, slice_axes})
+                           ->output(0);
     auto temp_repeat_1 = temp_helper2.MakeNode("ReduceProd", {prefix_size})
-                             ->output(0);  // use default attrs
+                             ->output(0); // use default attrs
     auto temp_repeat_2 =
         temp_helper2.MakeNode("ReduceProd", {suffix_size})->output(0);
     auto repeat_1 = temp_helper2.Reshape(temp_repeat_1, {1});
@@ -452,14 +448,11 @@ void SetValueMapper::Opset17() {
     }
     // ===== sequence map graph 2 =====
 
-    auto seq_map_node_2 = if_else_helper.MakeNode("SequenceMap",
-                                                  {slice_start_1,
-                                                   slice_end_1,
-                                                   slice_start_2,
-                                                   slice_end_2,
-                                                   seq_map_node_1->output(0),
-                                                   concat_size},
-                                                  1);
+    auto seq_map_node_2 = if_else_helper.MakeNode(
+        "SequenceMap",
+        {slice_start_1, slice_end_1, slice_start_2, slice_end_2,
+         seq_map_node_1->output(0), concat_size},
+        1);
     AddAttribute(seq_map_node_2, "body", graph2);
     auto indices_node = if_else_helper.MakeNode("ConcatFromSequence",
                                                 {seq_map_node_2->output(0)});
@@ -473,8 +466,7 @@ void SetValueMapper::Opset17() {
     auto expand_value =
         if_else_helper.MakeNode("Expand", {flatten_value, update_shape})
             ->output(0);
-    if_else_helper.MakeNode("ScatterND",
-                            {input_tensor, indices, expand_value},
+    if_else_helper.MakeNode("ScatterND", {input_tensor, indices, expand_value},
                             {output_info[0].name});
 
     for (auto &item : if_else_helper.nodes) {
@@ -501,41 +493,38 @@ void SetValueMapper::Opset17() {
 
     // Range 的输入要求时Scalar，当axes_ > 1时就不满足了
     auto indices = helper_
-                       ->MakeNode("Range",
-                                  {helper_->Squeeze(starts, {}),
-                                   helper_->Squeeze(ends, {}),
-                                   helper_->Squeeze(steps, {})})
+                       ->MakeNode("Range", {helper_->Squeeze(starts, {}),
+                                            helper_->Squeeze(ends, {}),
+                                            helper_->Squeeze(steps, {})})
                        ->output(0);
     if (axes_[0] == 0) {
       indices = helper_->Unsqueeze(indices, {1});
-      helper_->MakeNode("ScatterND",
-                        {input_tensor, indices, expand_value},
+      helper_->MakeNode("ScatterND", {input_tensor, indices, expand_value},
                         {output_info[0].name});
     } else {
       std::vector<int64_t> indices_shape(input_info[0].Rank(), 1);
       indices_shape[axes_[0]] = -1;
       indices = helper_->Reshape(indices, indices_shape);
-      auto one = helper_->Constant(
-          {1}, ONNX_NAMESPACE::TensorProto::INT64, int64_t(1));
+      auto one = helper_->Constant({1}, ONNX_NAMESPACE::TensorProto::INT64,
+                                   int64_t(1));
       if (axes_[0] == input_info[0].Rank() - 1) {
         auto part_shape = helper_->Slice(sliced_shape, {0}, {0}, {axes_[0]});
         auto tiled_shape = helper_->Concat({part_shape, one}, 0);
         indices = helper_->MakeNode("Tile", {indices, tiled_shape})->output(0);
       } else {
         auto part_0_shape = helper_->Slice(sliced_shape, {0}, {0}, {axes_[0]});
-        auto part_1_shape = helper_->Slice(
-            sliced_shape, {0}, {axes_[0] + 1}, {input_info[0].Rank()});
+        auto part_1_shape = helper_->Slice(sliced_shape, {0}, {axes_[0] + 1},
+                                           {input_info[0].Rank()});
         auto tiled_shape =
             helper_->Concat({part_0_shape, one, part_1_shape}, 0);
         indices = helper_->MakeNode("Tile", {indices, tiled_shape})->output(0);
       }
-      auto scatter_node =
-          helper_->MakeNode("ScatterElements",
-                            {input_tensor, indices, expand_value},
-                            {output_info[0].name});
+      auto scatter_node = helper_->MakeNode(
+          "ScatterElements", {input_tensor, indices, expand_value},
+          {output_info[0].name});
       AddAttribute(scatter_node, "axis", axes_[0]);
     }
   }
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

@@ -43,9 +43,7 @@ from onnx import helper
 
 import paddle2onnx
 
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
 
 
@@ -154,9 +152,7 @@ def export_to_onnx(config: ModelConfig, model_dir: Path, output_path: Path) -> N
     model_file = str(model_dir / config.model_filename)
     params_file = str(model_dir / config.params_filename)
 
-    logger.info(
-        "Exporting %s to ONNX (opset %d)...", config.hf_repo, config.opset_version
-    )
+    logger.info("Exporting %s to ONNX (opset %d)...", config.hf_repo, config.opset_version)
 
     paddle2onnx.export(
         model_filename=model_file,
@@ -181,9 +177,7 @@ def _promote_scalar_to_1d(shape_proto, dtype: int) -> bool:
     """Change a scalar shape declaration to [1]. Returns True if changed."""
     dims = [d.dim_value or d.dim_param for d in shape_proto.dim]
     if dims == []:
-        shape_proto.CopyFrom(
-            helper.make_tensor_type_proto(dtype, [1]).tensor_type.shape
-        )
+        shape_proto.CopyFrom(helper.make_tensor_type_proto(dtype, [1]).tensor_type.shape)
         return True
     return False
 
@@ -214,9 +208,7 @@ def fix_ort_compatibility(model_path: Path) -> None:
 
         # Fix graph-level Constant nodes that feed scalar values into the Loop
         for gnode in model.graph.node:
-            if gnode.op_type == "Constant" and any(
-                o in loop_inputs for o in gnode.output
-            ):
+            if gnode.op_type == "Constant" and any(o in loop_inputs for o in gnode.output):
                 for a in gnode.attribute:
                     if a.name == "value" and list(a.t.dims) == []:
                         a.t.dims[:] = [1]
@@ -236,13 +228,9 @@ def fix_ort_compatibility(model_path: Path) -> None:
             # Fix Loop body inputs and outputs ONLY (carried state boundary).
             # These must match [1] shapes for ORT's Loop shape inference.
             for inp in body.input:
-                fixed |= _promote_scalar_to_1d(
-                    inp.type.tensor_type.shape, inp.type.tensor_type.elem_type
-                )
+                fixed |= _promote_scalar_to_1d(inp.type.tensor_type.shape, inp.type.tensor_type.elem_type)
             for out in body.output:
-                fixed |= _promote_scalar_to_1d(
-                    out.type.tensor_type.shape, out.type.tensor_type.elem_type
-                )
+                fixed |= _promote_scalar_to_1d(out.type.tensor_type.shape, out.type.tensor_type.elem_type)
 
             # Do NOT promote body.value_info, body Constants, or body
             # initializers — these feed internal computation (If conditions,
@@ -317,9 +305,7 @@ def embed_character_dict(model_dir: Path, onnx_path: Path) -> None:
     meta.key = "character"
     meta.value = "\n".join(char_dict)
     onnx.save(model, str(onnx_path))
-    logger.info(
-        "Embedded character dictionary (%d chars) into ONNX metadata", len(char_dict)
-    )
+    logger.info("Embedded character dictionary (%d chars) into ONNX metadata", len(char_dict))
 
 
 ONNX_DTYPE_TO_NP = {
@@ -334,9 +320,7 @@ ONNX_DTYPE_TO_NP = {
 }
 
 
-def _build_dummy_inputs(
-    config: ModelConfig, session: ort.InferenceSession
-) -> dict[str, np.ndarray]:
+def _build_dummy_inputs(config: ModelConfig, session: ort.InferenceSession) -> dict[str, np.ndarray]:
     """Build dummy input tensors for validation, using config overrides or model metadata."""
     input_feed = {}
     for inp in session.get_inputs():
@@ -393,9 +377,7 @@ def validate_onnx(config: ModelConfig, model_path: Path) -> dict:
         "inputs": [
             {
                 "name": i.name,
-                "shape": [
-                    d.dim_value or d.dim_param for d in i.type.tensor_type.shape.dim
-                ],
+                "shape": [d.dim_value or d.dim_param for d in i.type.tensor_type.shape.dim],
             }
             for i in model.graph.input
         ],
@@ -421,9 +403,7 @@ def export_model(name: str, config: ModelConfig, output_dir: Path) -> dict | Non
 
     info = validate_onnx(config, onnx_path)
     logger.info("SHA256: %s", info["sha256"])
-    logger.info(
-        "Size: %d bytes (%.2f MB)", info["size_bytes"], info["size_bytes"] / 1024 / 1024
-    )
+    logger.info("Size: %d bytes (%.2f MB)", info["size_bytes"], info["size_bytes"] / 1024 / 1024)
 
     return info
 
@@ -438,21 +418,15 @@ def _try_export(name: str, config: ModelConfig, output_dir: Path) -> dict | None
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Export PaddlePaddle HF models to ONNX"
-    )
+    parser = argparse.ArgumentParser(description="Export PaddlePaddle HF models to ONNX")
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument(
         "--model",
         type=str,
         help="Model name (e.g. SLANet_plus) or HF repo (e.g. PaddlePaddle/SLANet_plus)",
     )
-    group.add_argument(
-        "--all", action="store_true", help="Export all configured models"
-    )
-    parser.add_argument(
-        "--output-dir", type=str, required=True, help="Output directory for ONNX files"
-    )
+    group.add_argument("--all", action="store_true", help="Export all configured models")
+    parser.add_argument("--output-dir", type=str, required=True, help="Output directory for ONNX files")
     parser.add_argument(
         "--manifest",
         type=str,
@@ -476,18 +450,14 @@ def main():
         # Support both "SLANet_plus" and "PaddlePaddle/SLANet_plus"
         model_key = args.model.split("/")[-1] if "/" in args.model else args.model
         if model_key not in MODELS:
-            logger.error(
-                "Unknown model: %s. Available: %s", model_key, list(MODELS.keys())
-            )
+            logger.error("Unknown model: %s. Available: %s", model_key, list(MODELS.keys()))
             sys.exit(1)
         models_to_export = {model_key: MODELS[model_key]}
 
     if args.dry_run:
         logger.info("Dry run — would export %d models:", len(models_to_export))
         for name, config in models_to_export.items():
-            logger.info(
-                "  %s (%s, opset %d)", name, config.hf_repo, config.opset_version
-            )
+            logger.info("  %s (%s, opset %d)", name, config.hf_repo, config.opset_version)
         return
 
     manifest = {}
@@ -501,9 +471,7 @@ def main():
             failed.append(name)
 
     # Write manifest
-    manifest_path = (
-        Path(args.manifest) if args.manifest else output_dir / "manifest.json"
-    )
+    manifest_path = Path(args.manifest) if args.manifest else output_dir / "manifest.json"
     with open(manifest_path, "w") as f:
         json.dump(manifest, f, indent=2)
     logger.info("Manifest written to %s", manifest_path)

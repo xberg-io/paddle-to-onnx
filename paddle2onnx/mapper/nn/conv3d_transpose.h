@@ -21,10 +21,8 @@
 namespace paddle2onnx {
 
 class Conv3dTransposeMapper : public Mapper {
- public:
-  Conv3dTransposeMapper(const PaddlePirParser& p,
-                        OnnxHelper* helper,
-                        int64_t i,
+public:
+  Conv3dTransposeMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t i,
                         bool c)
       : Mapper(p, helper, i, c) {
     GetAttr("groups", &groups_);
@@ -45,7 +43,7 @@ class Conv3dTransposeMapper : public Mapper {
   int32_t GetMinOpsetVersion(bool verbose) override;
   void Opset7() override;
 
- private:
+private:
   std::vector<int64_t> dilations_;
   std::vector<int64_t> strides_;
   std::vector<int64_t> paddings_;
@@ -56,4 +54,4 @@ class Conv3dTransposeMapper : public Mapper {
   int64_t groups_;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

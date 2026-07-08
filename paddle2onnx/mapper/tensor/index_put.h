@@ -21,17 +21,13 @@
 namespace paddle2onnx {
 
 class IndexPutMapper : public Mapper {
- public:
-  IndexPutMapper(const PaddleParser& p,
-                 OnnxHelper* helper,
-                 int64_t block_id,
+public:
+  IndexPutMapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
                  int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     GetAttr("accumulate", &accumulate_);
   }
-  IndexPutMapper(const PaddlePirParser& p,
-                 OnnxHelper* helper,
-                 int64_t op_id,
+  IndexPutMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t op_id,
                  bool in_cf_block)
       : Mapper(p, helper, op_id, in_cf_block) {
     GetAttr("accumulate", &accumulate_);
@@ -39,8 +35,8 @@ class IndexPutMapper : public Mapper {
   int32_t GetMinOpsetVersion(bool verbose) override;
   void Opset11() override;
 
- private:
+private:
   bool accumulate_ = false;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

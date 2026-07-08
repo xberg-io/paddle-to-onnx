@@ -21,9 +21,7 @@ import paddle.static as static
 
 def process_old_ops_desc(program):
     for i in range(len(program.blocks[0].ops)):
-        if program.blocks[0].ops[i].type == "matmul" and not program.blocks[0].ops[
-            i
-        ].has_attr("head_number"):
+        if program.blocks[0].ops[i].type == "matmul" and not program.blocks[0].ops[i].has_attr("head_number"):
             program.blocks[0].ops[i]._set_attr("head_number", 1)
 
 
@@ -88,9 +86,7 @@ def parse_arguments():
         required=True,
         help="Directory path to input model + model name without suffix.",
     )
-    parser.add_argument(
-        "--input_shape_dict", required=True, help="The new shape information."
-    )
+    parser.add_argument("--input_shape_dict", required=True, help="The new shape information.")
     parser.add_argument(
         "--save_path",
         required=True,
@@ -106,9 +102,7 @@ if __name__ == "__main__":
     input_shape_dict = eval(input_shape_dict_str)
     print("Start to load paddle model...")
     exe = base.Executor(paddle.CPUPlace())
-    [program, feed_target_names, fetch_targets] = static.io.load_inference_model(
-        args.model_path, exe
-    )
+    [program, feed_target_names, fetch_targets] = static.io.load_inference_model(args.model_path, exe)
     process_old_ops_desc(program)
     infer_shape(program, input_shape_dict)
 

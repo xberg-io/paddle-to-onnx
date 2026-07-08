@@ -21,10 +21,10 @@ from inspect import isfunction
 
 import numpy as np
 import onnx
-from onnxruntime import InferenceSession
-
 import paddle
 import paddle.static as static
+from onnxruntime import InferenceSession
+
 import paddle2onnx
 from paddle2onnx.convert import dygraph2onnx
 
@@ -50,9 +50,7 @@ def _test_only_pir(func):
 
 
 def compare_data(result_data, expect_data, delta, rtol):
-    res_data = np.allclose(
-        result_data, expect_data, atol=delta, rtol=rtol, equal_nan=True
-    )
+    res_data = np.allclose(result_data, expect_data, atol=delta, rtol=rtol, equal_nan=True)
     if res_data is True:
         return res_data
 
@@ -106,12 +104,8 @@ def compare(result, expect, delta=1e-10, rtol=1e-10):
         res_shape = compare_shape(result, expect)
 
         assert res_data, f"result: {result} != expect: {expect}"
-        assert res_shape, (
-            f"result.shape: {result.shape} != expect.shape: {expect.shape}"
-        )
-        assert result.dtype == expect.dtype, (
-            f"result.dtype: {result.dtype} != expect.dtype: {expect.dtype}"
-        )
+        assert res_shape, f"result.shape: {result.shape} != expect.shape: {expect.shape}"
+        assert result.dtype == expect.dtype, f"result.dtype: {result.dtype} != expect.dtype: {expect.dtype}"
     elif isinstance(result, list) and len(result) > 1:
         for i in range(len(result)):
             if isinstance(result[i], (np.generic, np.ndarray)):
@@ -272,9 +266,7 @@ class APIOnnx:
                         )
                     )
                     if len(tensor_data.shape) == 0:
-                        self.input_feed[str(i)] = np.array(
-                            float(in_data), dtype=dtype_map[in_data.dtype]
-                        )
+                        self.input_feed[str(i)] = np.array(float(in_data), dtype=dtype_map[in_data.dtype])
                     else:
                         self.input_feed[str(i)] = np.array(tensor_data)
                     i += 1
@@ -282,15 +274,9 @@ class APIOnnx:
                 if isinstance(in_data, tuple):
                     in_data = in_data[0]
                 self.input_dtype.append(in_data.dtype)
-                self.input_spec.append(
-                    paddle.static.InputSpec(
-                        shape=in_data.shape, dtype=in_data.dtype, name=str(i)
-                    )
-                )
+                self.input_spec.append(paddle.static.InputSpec(shape=in_data.shape, dtype=in_data.dtype, name=str(i)))
                 if len(in_data.shape) == 0:
-                    self.input_feed[str(i)] = np.array(
-                        float(in_data), dtype=dtype_map[in_data.dtype]
-                    )
+                    self.input_feed[str(i)] = np.array(float(in_data), dtype=dtype_map[in_data.dtype])
                 else:
                     self.input_feed[str(i)] = np.array(in_data)
 
@@ -307,11 +293,7 @@ class APIOnnx:
             return
         self.input_spec.clear()
         for i, shape in enumerate(self.input_spec_shape):
-            self.input_spec.append(
-                paddle.static.InputSpec(
-                    shape=shape, dtype=self.input_dtype[i], name=str(i)
-                )
-            )
+            self.input_spec.append(paddle.static.InputSpec(shape=shape, dtype=self.input_dtype[i], name=str(i)))
 
     def _mkdir(self):
         """
@@ -361,9 +343,7 @@ class APIOnnx:
         """
         make onnx res
         """
-        model_path = os.path.join(
-            self.pwd, self.name, self.name + "_" + str(ver) + ".onnx"
-        )
+        model_path = os.path.join(self.pwd, self.name, self.name + "_" + str(ver) + ".onnx")
         model = onnx.load(model_path)
         sess = InferenceSession(
             model_path,
@@ -404,9 +384,7 @@ class APIOnnx:
         if len(paddle_graph.node_map.keys()) == 0 and self.ops[0] == "":
             included = True
 
-        assert included is True, (
-            f"{self.ops} op in not in convert OPs, all OPs :{paddle_op_list}"
-        )
+        assert included is True, f"{self.ops} op in not in convert OPs, all OPs :{paddle_op_list}"
 
     # TODO: PaddlePaddle 2.6 has modified the ParseFromString API, and it cannot be simply replaced with
     #  parse_from_string. Considering that checking the OP name in the Paddle model has almost no impact on the CI
@@ -464,16 +442,12 @@ class APIOnnx:
         for place in self.places:
             paddle.set_device(place)
             exp = self._mk_dygraph_exp(self._func)
-            assert len(self.ops) <= 1, (
-                "Need to make sure the number of ops in config is 1."
-            )
+            assert len(self.ops) <= 1, "Need to make sure the number of ops in config is 1."
 
             # Save Paddle Inference model
             if os.path.exists(self.name):
                 shutil.rmtree(self.name)
-            paddle.jit.save(
-                self._func, os.path.join(self.name, "model"), self.input_spec
-            )
+            paddle.jit.save(self._func, os.path.join(self.name, "model"), self.input_spec)
 
             # Get PaddleInference model path
             default_model_name = "model.pdmodel"
@@ -529,9 +503,7 @@ class APIOnnx:
                     False,  # export_fp16_model
                     "None",  # optimize_tool
                 )
-                with open(
-                    os.path.join(self.name, self.name + "_" + str(v) + ".onnx"), "wb"
-                ) as f:
+                with open(os.path.join(self.name, self.name + "_" + str(v) + ".onnx"), "wb") as f:
                     f.write(onnx_model_str)
                 self.res_fict[str(v)] = self._mk_onnx_res(ver=v)
 

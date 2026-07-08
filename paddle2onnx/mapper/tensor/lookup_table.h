@@ -21,18 +21,14 @@
 namespace paddle2onnx {
 
 class LookupTableMapper : public Mapper {
- public:
-  LookupTableMapper(const PaddleParser& p,
-                    OnnxHelper* helper,
-                    int64_t block_id,
+public:
+  LookupTableMapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
                     int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     GetAttr("padding_idx", &padding_idx_);
   }
 
-  LookupTableMapper(const PaddlePirParser& p,
-                    OnnxHelper* helper,
-                    int64_t op_id,
+  LookupTableMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t op_id,
                     bool if_in_cf_block)
       : Mapper(p, helper, op_id, if_in_cf_block) {
     GetAttr("padding_idx", &padding_idx_);
@@ -41,8 +37,8 @@ class LookupTableMapper : public Mapper {
   void Opset7() override;
   void Opset11() override;
 
- private:
+private:
   int64_t padding_idx_;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

@@ -15,10 +15,9 @@
 import unittest
 
 import hypothesis.strategies as st
+import paddle
 from auto_scan_test import BaseNet, OPConvertAutoScanTest
 from onnxbase import _test_with_pir, randtool
-
-import paddle
 
 op_api_map = {"elementwise_floordiv": paddle.floor_divide}
 
@@ -39,9 +38,7 @@ class TestfloordivConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input1_shape = draw(
-            st.lists(st.integers(min_value=10, max_value=20), min_size=0, max_size=4)
-        )
+        input1_shape = draw(st.lists(st.integers(min_value=10, max_value=20), min_size=0, max_size=4))
 
         if len(input1_shape) > 0:
             if draw(st.booleans()):
@@ -59,11 +56,7 @@ class TestfloordivConvert(OPConvertAutoScanTest):
                 input2_shape = input1_shape
             else:
                 # [] + [N * N]
-                input2_shape = draw(
-                    st.lists(
-                        st.integers(min_value=10, max_value=20), min_size=1, max_size=4
-                    )
-                )
+                input2_shape = draw(st.lists(st.integers(min_value=10, max_value=20), min_size=1, max_size=4))
 
         dtype = draw(st.sampled_from(["int32", "int64"]))
 

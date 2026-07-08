@@ -16,10 +16,9 @@ import unittest
 
 import hypothesis.strategies as st
 import numpy as np
+import paddle
 from auto_scan_test import BaseNet, OPConvertAutoScanTest
 from onnxbase import _test_only_pir
-
-import paddle
 
 
 class Net(BaseNet):
@@ -41,9 +40,7 @@ class Net(BaseNet):
             ends = paddle.to_tensor(np.array(ends).astype("int32"))
         if self.config["isStridesTensor"]:
             strides = paddle.to_tensor(np.array(strides).astype("int32"))
-        return paddle.strided_slice(
-            inputs, axes=axes, starts=starts, ends=ends, strides=strides
-        )
+        return paddle.strided_slice(inputs, axes=axes, starts=starts, ends=ends, strides=strides)
 
 
 class TestStridedsliceConvert(OPConvertAutoScanTest):
@@ -53,9 +50,7 @@ class TestStridedsliceConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=4, max_value=10), min_size=4, max_size=6)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=4, max_value=10), min_size=4, max_size=6))
 
         dtype = draw(st.sampled_from(["float32", "float64", "int32", "int64"]))
         isStartsTensor = draw(st.booleans())
@@ -118,9 +113,7 @@ class Net1(BaseNet):
         # strides = [1, paddle.to_tensor(1).astype('int32'), 1]
         # strides = [1, paddle.to_tensor(1, dtype='int32'), 1]
         # strides = [1, paddle.to_tensor(np.array(1).astype("int32")), 1]
-        return paddle.strided_slice(
-            inputs, axes=axes, starts=starts, ends=ends, strides=strides
-        )
+        return paddle.strided_slice(inputs, axes=axes, starts=starts, ends=ends, strides=strides)
 
 
 class TestStridedsliceConvert1(OPConvertAutoScanTest):
@@ -130,9 +123,7 @@ class TestStridedsliceConvert1(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=4, max_value=10), min_size=4, max_size=6)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=4, max_value=10), min_size=4, max_size=6))
         input_shape = [4, 4, 4, 4]
         dtype = draw(st.sampled_from(["float32", "float64", "int32", "int64"]))
         isStartsTensor = False  # draw(st.booleans())

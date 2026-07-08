@@ -16,10 +16,9 @@ import random
 import unittest
 
 import hypothesis.strategies as st
+import paddle
 from auto_scan_test import BaseNet, OPConvertAutoScanTest
 from onnxbase import _test_with_pir
-
-import paddle
 
 op_api_map = {
     "reduce_max": paddle.max,
@@ -49,9 +48,7 @@ class Net(BaseNet):
         forward
         """
         axis = self.config["dim"]
-        x = op_api_map[self.config["op_names"]](
-            inputs, axis=axis, keepdim=self.config["keep_dim"]
-        )
+        x = op_api_map[self.config["op_names"]](inputs, axis=axis, keepdim=self.config["keep_dim"])
         return paddle.unsqueeze(x, axis=[0])
 
 
@@ -62,9 +59,7 @@ class TestReduceAllConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=2, max_value=10), min_size=1, max_size=4)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=2, max_value=10), min_size=1, max_size=4))
 
         dtype = draw(st.sampled_from(["float32", "float64", "int32", "int64"]))
         axis_type = draw(
@@ -76,19 +71,14 @@ class TestReduceAllConvert(OPConvertAutoScanTest):
             )
         )
         if axis_type == "int":
-            axes = draw(
-                st.integers(min_value=-len(input_shape), max_value=len(input_shape) - 1)
-            )
+            axes = draw(st.integers(min_value=-len(input_shape), max_value=len(input_shape) - 1))
         elif axis_type == "list":
             lenSize = random.randint(1, len(input_shape))
             axes = []
             for i in range(lenSize):
                 axes.append(random.choice([i, i - len(input_shape)]))
             # paddle.max/min has a bug when aixs < 0
-            axes = [
-                axis + len(input_shape) if axis < 0 else axis
-                for i, axis in enumerate(axes)
-            ]
+            axes = [axis + len(input_shape) if axis < 0 else axis for i, axis in enumerate(axes)]
         keep_dim = draw(st.booleans())
         # Must be int64, otherwise cast will be added after const and the value cannot be obtained
         axis_dtype = draw(st.sampled_from(["int64"]))

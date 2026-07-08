@@ -19,18 +19,14 @@
 namespace paddle2onnx {
 
 class DropoutMapper : public Mapper {
- public:
-  DropoutMapper(const PaddleParser& p,
-                OnnxHelper* helper,
-                int64_t block_id,
+public:
+  DropoutMapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
                 int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     GetAttr("dropout_implementation", &dropout_implementation_);
   }
 
-  DropoutMapper(const PaddlePirParser& p,
-                OnnxHelper* helper,
-                int64_t op_id,
+  DropoutMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t op_id,
                 bool c)
       : Mapper(p, helper, op_id, c) {
     GetAttr("mode", &dropout_implementation_);
@@ -39,9 +35,9 @@ class DropoutMapper : public Mapper {
   int32_t GetMinOpsetVersion(bool verbose) override;
   void Opset7() override;
 
- private:
+private:
   float dropout_prob_ = 0.0;
   std::string dropout_implementation_ = "upscale_in_train";
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

@@ -15,10 +15,9 @@
 import unittest
 
 import hypothesis.strategies as st
+import paddle
 from auto_scan_test import BaseNet, OPConvertAutoScanTest
 from onnxbase import randtool
-
-import paddle
 
 
 class Net(BaseNet):
@@ -40,9 +39,7 @@ class TestMishConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=5, max_value=20), min_size=0, max_size=4)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=5, max_value=20), min_size=0, max_size=4))
 
         def generator_data():
             return randtool("float", -100, 100, input_shape)

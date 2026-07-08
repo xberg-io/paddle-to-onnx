@@ -135,4 +135,4 @@ void DequantizeLinearMapper::Opset19() {
       helper_->MakeNode("Min", {min_node, qmax_node})->output(0);
   helper_->MakeNode("Identity", {final_output}, {y_info[0].name});
 }
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

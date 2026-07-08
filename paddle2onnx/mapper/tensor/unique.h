@@ -21,10 +21,8 @@
 namespace paddle2onnx {
 
 class UniqueMapper : public Mapper {
- public:
-  UniqueMapper(const PaddleParser& p,
-               OnnxHelper* helper,
-               int64_t block_id,
+public:
+  UniqueMapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
                int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     GetAttr("axis", &axis_);
@@ -35,9 +33,7 @@ class UniqueMapper : public Mapper {
     GetAttr("is_sorted", &is_sorted_);
   }
 
-  UniqueMapper(const PaddlePirParser& p,
-               OnnxHelper* helper,
-               int64_t op_id,
+  UniqueMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t op_id,
                bool if_in_cf_block)
       : Mapper(p, helper, op_id, if_in_cf_block) {
     GetAttr("axis", &axis_);
@@ -50,7 +46,7 @@ class UniqueMapper : public Mapper {
   int32_t GetMinOpsetVersion(bool verbose) override;
   void Opset11() override;
 
- private:
+private:
   std::vector<int64_t> axis_;
   int64_t dtype_;
   bool return_index_;
@@ -59,4 +55,4 @@ class UniqueMapper : public Mapper {
   bool is_sorted_;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

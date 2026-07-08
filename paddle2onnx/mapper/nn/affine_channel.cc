@@ -41,4 +41,4 @@ void AffineChannelMapper::Opset7() {
   helper_->MakeNode("Add", {out, bias}, {out_info[0].name});
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

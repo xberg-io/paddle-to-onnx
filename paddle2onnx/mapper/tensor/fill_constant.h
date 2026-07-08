@@ -17,11 +17,9 @@
 namespace paddle2onnx {
 
 class FillConstantMapper : public Mapper {
- public:
-  FillConstantMapper(const PaddleParser& p,
-                     OnnxHelper* helper,
-                     int64_t block_id,
-                     int64_t op_id)
+public:
+  FillConstantMapper(const PaddleParser &p, OnnxHelper *helper,
+                     int64_t block_id, int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     GetAttr("str_value", &str_value_);
     GetAttr("value", &value_);
@@ -31,10 +29,10 @@ class FillConstantMapper : public Mapper {
   void Opset7() override;
   void Opset9() override;
 
- private:
+private:
   float GetFillValue();
   std::string str_value_;
   float value_;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

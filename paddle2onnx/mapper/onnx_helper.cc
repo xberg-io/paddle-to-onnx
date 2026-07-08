@@ -18,8 +18,7 @@
 
 namespace paddle2onnx {
 void AddAttribute(std::shared_ptr<ONNX_NAMESPACE::NodeProto> node,
-                  const std::string &name,
-                  const int64_t &value) {
+                  const std::string &name, const int64_t &value) {
   for (int i = 0; i < node->attribute_size(); ++i) {
     if (node->attribute(i).name() == name) {
       node->mutable_attribute(i)->set_i(value);
@@ -34,8 +33,7 @@ void AddAttribute(std::shared_ptr<ONNX_NAMESPACE::NodeProto> node,
 }
 
 void AddAttribute(std::shared_ptr<ONNX_NAMESPACE::NodeProto> node,
-                  const std::string &name,
-                  const float &value) {
+                  const std::string &name, const float &value) {
   for (int i = 0; i < node->attribute_size(); ++i) {
     if (node->attribute(i).name() == name) {
       node->mutable_attribute(i)->set_f(value);
@@ -51,8 +49,7 @@ void AddAttribute(std::shared_ptr<ONNX_NAMESPACE::NodeProto> node,
 }
 
 void AddAttribute(std::shared_ptr<ONNX_NAMESPACE::NodeProto> node,
-                  const std::string &name,
-                  const std::string &value) {
+                  const std::string &name, const std::string &value) {
   auto attr = node->add_attribute();
   attr->set_name(name);
   attr->set_s(value);
@@ -60,8 +57,7 @@ void AddAttribute(std::shared_ptr<ONNX_NAMESPACE::NodeProto> node,
 }
 
 void AddAttribute(std::shared_ptr<ONNX_NAMESPACE::NodeProto> node,
-                  const std::string &name,
-                  const std::vector<int64_t> &values) {
+                  const std::string &name, const std::vector<int64_t> &values) {
   auto attr = node->add_attribute();
   attr->set_name(name);
   for (auto &item : values) {
@@ -71,8 +67,7 @@ void AddAttribute(std::shared_ptr<ONNX_NAMESPACE::NodeProto> node,
 }
 
 void AddAttribute(std::shared_ptr<ONNX_NAMESPACE::NodeProto> node,
-                  const std::string &name,
-                  const std::vector<float> &values) {
+                  const std::string &name, const std::vector<float> &values) {
   auto attr = node->add_attribute();
   attr->set_name(name);
   for (auto &item : values) {
@@ -185,8 +180,8 @@ std::shared_ptr<ONNX_NAMESPACE::NodeProto> MakeConstant(const std::string &name,
 //  return node;
 //}
 
-std::shared_ptr<ONNX_NAMESPACE::ValueInfoProto> MakeValueInfo(
-    const TensorInfo &info) {
+std::shared_ptr<ONNX_NAMESPACE::ValueInfoProto>
+MakeValueInfo(const TensorInfo &info) {
   auto value_info = std::make_shared<ONNX_NAMESPACE::ValueInfoProto>();
   value_info->set_name(info.name);
   auto type_proto = value_info->mutable_type();
@@ -204,10 +199,9 @@ std::shared_ptr<ONNX_NAMESPACE::ValueInfoProto> MakeValueInfo(
   return value_info;
 }
 
-std::shared_ptr<ONNX_NAMESPACE::ValueInfoProto> OnnxHelper::MakeValueInfo(
-    const std::string &name,
-    const int32_t &dtype,
-    const std::vector<int64_t> &shape) {
+std::shared_ptr<ONNX_NAMESPACE::ValueInfoProto>
+OnnxHelper::MakeValueInfo(const std::string &name, const int32_t &dtype,
+                          const std::vector<int64_t> &shape) {
   auto value_info = std::make_shared<ONNX_NAMESPACE::ValueInfoProto>();
   value_info->set_name(name);
   auto type_proto = value_info->mutable_type();
@@ -226,10 +220,10 @@ std::shared_ptr<ONNX_NAMESPACE::ValueInfoProto> OnnxHelper::MakeValueInfo(
   return value_info;
 }
 
-std::shared_ptr<ONNX_NAMESPACE::NodeProto> OnnxHelper::MakeNode(
-    const std::string &op_type,
-    const std::vector<std::string> &inputs,
-    const std::vector<std::string> &outputs) {
+std::shared_ptr<ONNX_NAMESPACE::NodeProto>
+OnnxHelper::MakeNode(const std::string &op_type,
+                     const std::vector<std::string> &inputs,
+                     const std::vector<std::string> &outputs) {
 #ifdef PADDLE2ONNX_DEBUG
   P2OLogger(verbose_) << "ONNX Node: " << op_type << std::endl;
 #endif
@@ -251,10 +245,9 @@ std::shared_ptr<ONNX_NAMESPACE::NodeProto> OnnxHelper::MakeNode(
   return node;
 }
 
-std::shared_ptr<ONNX_NAMESPACE::NodeProto> OnnxHelper::MakeNode(
-    const std::string &op_type,
-    const std::vector<std::string> &inputs,
-    int num_outputs) {
+std::shared_ptr<ONNX_NAMESPACE::NodeProto>
+OnnxHelper::MakeNode(const std::string &op_type,
+                     const std::vector<std::string> &inputs, int num_outputs) {
 #ifdef PADDLE2ONNX_DEBUG
   P2OLogger(verbose_) << "ONNX Node: " << op_type << std::endl;
 #endif
@@ -279,11 +272,10 @@ std::shared_ptr<ONNX_NAMESPACE::NodeProto> OnnxHelper::MakeNode(
   return node;
 }
 
-std::shared_ptr<ONNX_NAMESPACE::NodeProto> OnnxHelper::MakeNode(
-    const std::string &name,
-    const std::string &op_type,
-    const std::vector<std::string> &inputs,
-    const std::vector<std::string> &outputs) {
+std::shared_ptr<ONNX_NAMESPACE::NodeProto>
+OnnxHelper::MakeNode(const std::string &name, const std::string &op_type,
+                     const std::vector<std::string> &inputs,
+                     const std::vector<std::string> &outputs) {
 #ifdef PADDLE2ONNX_DEBUG
   P2OLogger(verbose_) << "ONNX Node: " << op_type << std::endl;
 #endif
@@ -333,8 +325,10 @@ std::string OnnxHelper::AutoCast(const std::string &input,
 
 bool OnnxHelper::CanBroadcast(const std::vector<int64_t> &shape_a,
                               const std::vector<int64_t> &shape_b) {
-  if (shape_a.empty() || shape_b.empty()) return false;
-  if (shape_a == shape_b) return true;
+  if (shape_a.empty() || shape_b.empty())
+    return false;
+  if (shape_a == shape_b)
+    return true;
 
   const int64_t a_rank = shape_a.size();
   const int64_t b_rank = shape_b.size();
@@ -347,13 +341,15 @@ bool OnnxHelper::CanBroadcast(const std::vector<int64_t> &shape_a,
     const int64_t dim_a = (idx_a >= 0) ? shape_a[idx_a] : 1;
     const int64_t dim_b = (idx_b >= 0) ? shape_b[idx_b] : 1;
 
-    if (dim_a != 1 && dim_b != 1 && dim_a != dim_b) return false;
+    if (dim_a != 1 && dim_b != 1 && dim_a != dim_b)
+      return false;
   }
   return true;
 }
 
-std::vector<int64_t> OnnxHelper::GetBroadcastShape(
-    const std::vector<int64_t> &shape_a, const std::vector<int64_t> &shape_b) {
+std::vector<int64_t>
+OnnxHelper::GetBroadcastShape(const std::vector<int64_t> &shape_a,
+                              const std::vector<int64_t> &shape_b) {
   std::vector<int64_t> result;
 
   if (shape_a == shape_b) {
@@ -428,10 +424,8 @@ std::string OnnxHelper::ConcatIndices(const std::vector<TensorInfo> &indices) {
 }
 
 std::string OnnxHelper::Clip(const std::string &input,
-                             const std::string &output,
-                             const float &min,
-                             const float &max,
-                             const int32_t &in_dtype) {
+                             const std::string &output, const float &min,
+                             const float &max, const int32_t &in_dtype) {
   // onnxruntime only supports float input
   std::string input_name = AutoCast(input, in_dtype, P2ODataType::FP32);
   if (opset_version < 11) {
@@ -451,10 +445,8 @@ std::string OnnxHelper::Clip(const std::string &input,
   }
 }
 
-std::string OnnxHelper::Clip(const std::string &input,
-                             const float &min,
-                             const float &max,
-                             const int32_t &in_dtype) {
+std::string OnnxHelper::Clip(const std::string &input, const float &min,
+                             const float &max, const int32_t &in_dtype) {
   std::string output = MapperHelper::Get()->GenName("helper.clip");
   return Clip(input, output, min, max, in_dtype);
 }
@@ -567,8 +559,7 @@ std::string OnnxHelper::Slice(const std::string &input,
 }
 
 std::string OnnxHelper::Concat(const std::vector<std::string> &input,
-                               const std::string &output,
-                               int64_t axis) {
+                               const std::string &output, int64_t axis) {
   auto node = MakeNode("Concat", input, {output});
   AddAttribute(node, "axis", axis);
   return output;
@@ -594,11 +585,10 @@ std::string OnnxHelper::Transpose(const std::string &input,
   return Transpose(input, output, perm);
 }
 
-std::vector<std::string> OnnxHelper::Split(
-    const std::string &input,
-    const std::vector<std::string> &outputs,
-    const std::vector<int64_t> &split,
-    int64_t axis) {
+std::vector<std::string>
+OnnxHelper::Split(const std::string &input,
+                  const std::vector<std::string> &outputs,
+                  const std::vector<int64_t> &split, int64_t axis) {
   Assert(outputs.size() > 0 || split.size() > 0,
          "OnnxHelper::Split requires the size of outputs or the size of split "
          "> 0.");
@@ -637,8 +627,9 @@ std::vector<std::string> OnnxHelper::Split(const std::string &input,
   }
   return Split(input, outputs, split, axis);
 }
-std::vector<std::string> OnnxHelper::DtypeAlignment(
-    const std::vector<TensorInfo> &input_info, int32_t *out_dtype) {
+std::vector<std::string>
+OnnxHelper::DtypeAlignment(const std::vector<TensorInfo> &input_info,
+                           int32_t *out_dtype) {
   Assert(input_info.size() > 0,
          "OnnxHelper::DtypeAlignment requires the size of input info > 0.");
   std::vector<int32_t> input_dtypes;
@@ -662,4 +653,4 @@ std::vector<std::string> OnnxHelper::DtypeAlignment(
   }
   return casted_node;
 }
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

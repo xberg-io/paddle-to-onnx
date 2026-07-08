@@ -47,8 +47,8 @@ void Unsqueeze2Mapper::Opset7() {
     } else {
       Warn() << "AxesTensor not found, using Identity instead of Unsqueeze."
              << std::endl;
-      helper_->MakeNode(
-          "Identity", {input_info[0].name}, {output_info[0].name});
+      helper_->MakeNode("Identity", {input_info[0].name},
+                        {output_info[0].name});
       return;
     }
   } else {
@@ -70,15 +70,15 @@ void Unsqueeze2Mapper::Opset13() {
   if (HasInput("AxesTensorList")) {
     auto info = GetInput("AxesTensorList");
     axes_node = helper_->ConcatIndices(info);
-    helper_->MakeNode(
-        "Unsqueeze", {input_info[0].name, axes_node}, {output_info[0].name});
+    helper_->MakeNode("Unsqueeze", {input_info[0].name, axes_node},
+                      {output_info[0].name});
     return;
   } else if (HasInput("AxesTensor")) {
     auto info = GetInput("AxesTensor");
     axes_node =
         helper_->AutoCast(info[0].name, info[0].dtype, P2ODataType::INT64);
-    helper_->MakeNode(
-        "Unsqueeze", {input_info[0].name, axes_node}, {output_info[0].name});
+    helper_->MakeNode("Unsqueeze", {input_info[0].name, axes_node},
+                      {output_info[0].name});
     return;
   }
 
@@ -89,8 +89,8 @@ void Unsqueeze2Mapper::Opset13() {
     } else {
       Warn() << "AxesTensor not found, using Identity instead of Unsqueeze."
              << std::endl;
-      helper_->MakeNode(
-          "Identity", {input_info[0].name}, {output_info[0].name});
+      helper_->MakeNode("Identity", {input_info[0].name},
+                        {output_info[0].name});
       return;
     }
   } else {
@@ -117,13 +117,13 @@ void Unsqueeze2Mapper::Opset13() {
       Warn() << "AxesTensor or AxesTensor not found, using Identity instead of "
                 "Unsqueeze."
              << std::endl;
-      helper_->MakeNode(
-          "Identity", {input_info[0].name}, {output_info[0].name});
+      helper_->MakeNode("Identity", {input_info[0].name},
+                        {output_info[0].name});
       return;
     }
-    helper_->MakeNode(
-        "Unsqueeze", {input_info[0].name, axes_node}, {output_info[0].name});
+    helper_->MakeNode("Unsqueeze", {input_info[0].name, axes_node},
+                      {output_info[0].name});
   }
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

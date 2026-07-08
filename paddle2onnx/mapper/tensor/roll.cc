@@ -40,9 +40,7 @@ void RollMapper::Opset7() {
     result_name = helper_->Flatten(result_name);
     for (int i = 0; i < shifts.size(); i++) {
       auto shift = shifts[i];
-      auto result_0 = helper_->Slice(result_name,
-                                     {axes},
-                                     {-shift},
+      auto result_0 = helper_->Slice(result_name, {axes}, {-shift},
                                      {(std::numeric_limits<int64_t>::max)()});
       auto result_1 = helper_->Slice(result_name, {axes}, {0}, {-shift});
       temp_node = helper_->MakeNode("Concat", {result_0, result_1});
@@ -57,14 +55,12 @@ void RollMapper::Opset7() {
     for (int i = 0; i < shifts.size(); i++) {
       auto shift = shifts[i];
       int64_t axes = axis[i];
-      auto result_0 = helper_->Slice(result_name,
-                                     {axes},
-                                     {-shift},
+      auto result_0 = helper_->Slice(result_name, {axes}, {-shift},
                                      {(std::numeric_limits<int64_t>::max)()});
       auto result_1 = helper_->Slice(result_name, {axes}, {0}, {-shift});
       if (i + 1 == shifts.size()) {
-        temp_node = helper_->MakeNode(
-            "Concat", {result_0, result_1}, {output_info[0].name});
+        temp_node = helper_->MakeNode("Concat", {result_0, result_1},
+                                      {output_info[0].name});
       } else {
         temp_node = helper_->MakeNode("Concat", {result_0, result_1});
       }
@@ -73,4 +69,4 @@ void RollMapper::Opset7() {
     }
   }
 }
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

@@ -26,9 +26,7 @@ def prepend_feed_ops(program, feed_target_names):
         return
 
     global_block = program.global_block()
-    feed_var = global_block.create_var(
-        name="feed", type=core.VarDesc.VarType.FEED_MINIBATCH, persistable=True
-    )
+    feed_var = global_block.create_var(name="feed", type=core.VarDesc.VarType.FEED_MINIBATCH, persistable=True)
 
     for i, name in enumerate(feed_target_names):
         if not global_block.has_var(name):
@@ -50,9 +48,7 @@ def append_fetch_ops(program, fetch_target_names):
     In this palce, we will add the fetch op
     """
     global_block = program.global_block()
-    fetch_var = global_block.create_var(
-        name="fetch", type=core.VarDesc.VarType.FETCH_LIST, persistable=True
-    )
+    fetch_var = global_block.create_var(name="fetch", type=core.VarDesc.VarType.FETCH_LIST, persistable=True)
     print(f"the len of fetch_target_names:{len(fetch_target_names)}")
     for i, name in enumerate(fetch_target_names):
         global_block.append_op(
@@ -81,19 +77,11 @@ def insert_by_op_type(program, op_names, op_type):
 
 def parse_arguments():
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--model_dir", required=True, help="Path of directory saved the input model."
-    )
-    parser.add_argument(
-        "--model_filename", required=True, help="The input model file name."
-    )
-    parser.add_argument(
-        "--params_filename", required=True, help="The parameters file name."
-    )
+    parser.add_argument("--model_dir", required=True, help="Path of directory saved the input model.")
+    parser.add_argument("--model_filename", required=True, help="The input model file name.")
+    parser.add_argument("--params_filename", required=True, help="The parameters file name.")
     parser.add_argument("--input_names", nargs="+", help="The inputs of pruned model.")
-    parser.add_argument(
-        "--output_names", required=True, nargs="+", help="The outputs of pruned model."
-    )
+    parser.add_argument("--output_names", required=True, nargs="+", help="The outputs of pruned model.")
     parser.add_argument(
         "--save_dir",
         required=True,
@@ -105,9 +93,7 @@ def parse_arguments():
 if __name__ == "__main__":
     args = parse_arguments()
     if len(set(args.output_names)) < len(args.output_names):
-        print(
-            "[ERROR] There's dumplicate name in --output_names, which is not allowed."
-        )
+        print("[ERROR] There's dumplicate name in --output_names, which is not allowed.")
         sys.exit(-1)
 
     paddle.enable_static()
@@ -128,9 +114,7 @@ if __name__ == "__main__":
 
     if args.output_names is not None:
         insert_by_op_type(program, args.output_names, "fetch")
-        fetch_vars = [
-            program.global_block().var(out_name) for out_name in args.output_names
-        ]
+        fetch_vars = [program.global_block().var(out_name) for out_name in args.output_names]
     else:
         fetch_vars = list(fetch_targets)
 

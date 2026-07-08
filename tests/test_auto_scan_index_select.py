@@ -15,10 +15,9 @@
 import unittest
 
 import hypothesis.strategies as st
+import paddle
 from auto_scan_test import BaseNet, OPConvertAutoScanTest
 from onnxbase import _test_with_pir, randtool
-
-import paddle
 
 
 class Net(BaseNet):
@@ -40,12 +39,8 @@ class TestIndexselectConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=2, max_value=20), min_size=2, max_size=5)
-        )
-        axis = draw(
-            st.integers(min_value=-len(input_shape), max_value=len(input_shape) - 1)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=2, max_value=20), min_size=2, max_size=5))
+        axis = draw(st.integers(min_value=-len(input_shape), max_value=len(input_shape) - 1))
         dtype = draw(st.sampled_from(["float32", "float64", "int32", "int64"]))
 
         def generator_data():

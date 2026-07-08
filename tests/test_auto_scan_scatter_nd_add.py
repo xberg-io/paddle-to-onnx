@@ -16,10 +16,9 @@ import unittest
 
 import hypothesis.strategies as st
 import numpy as np
+import paddle
 from auto_scan_test import BaseNet, OPConvertAutoScanTest
 from onnxbase import randtool
-
-import paddle
 
 
 class Net(BaseNet):
@@ -41,13 +40,9 @@ class TestScatterNdAddConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=5, max_value=15), min_size=2, max_size=4)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=5, max_value=15), min_size=2, max_size=4))
 
-        index_shape = draw(
-            st.lists(st.integers(min_value=4, max_value=10), min_size=2, max_size=4)
-        )
+        index_shape = draw(st.lists(st.integers(min_value=4, max_value=10), min_size=2, max_size=4))
 
         if draw(st.booleans()):
             index_shape[-1] = draw(st.integers(min_value=1, max_value=len(input_shape)))

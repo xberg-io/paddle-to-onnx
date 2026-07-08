@@ -21,10 +21,8 @@
 namespace paddle2onnx {
 
 class BatchNormMapper : public Mapper {
- public:
-  BatchNormMapper(const PaddleParser& p,
-                  OnnxHelper* helper,
-                  int64_t block_id,
+public:
+  BatchNormMapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
                   int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     GetAttr("epsilon", &epsilon_);
@@ -32,9 +30,7 @@ class BatchNormMapper : public Mapper {
     GetAttr("use_global_stats", &use_global_stats_);
   }
 
-  BatchNormMapper(const PaddlePirParser& p,
-                  OnnxHelper* helper,
-                  int64_t op_id,
+  BatchNormMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t op_id,
                   bool c)
       : Mapper(p, helper, op_id, c) {
     GetAttr("is_test", &is_test_);
@@ -49,7 +45,7 @@ class BatchNormMapper : public Mapper {
   void Opset7() override;
   void Opset14() override;
 
- private:
+private:
   bool is_test_;
   bool use_global_stats_;
   bool trainable_statistics_;
@@ -58,4 +54,4 @@ class BatchNormMapper : public Mapper {
   std::string data_format_;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

@@ -43,4 +43,4 @@ void NotEqualMapper::Opset7() {
   helper_->MakeNode("Not", {output}, {out_info[0].name});
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

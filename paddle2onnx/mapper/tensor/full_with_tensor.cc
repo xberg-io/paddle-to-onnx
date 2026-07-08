@@ -13,10 +13,10 @@
 // limitations under the License.
 
 #include "paddle2onnx/mapper/tensor/full_with_tensor.h"
+#include "paddle2onnx/proto/p2o_paddle.pb.h"
 #include <iostream>
 #include <string>
 #include <vector>
-#include "paddle2onnx/proto/p2o_paddle.pb.h"
 
 namespace paddle2onnx {
 REGISTER_PIR_MAPPER(full_with_tensor, FullWithTensorMapper)
@@ -28,8 +28,8 @@ void FullWithTensorMapper::Opset8() {
   auto shape_info = GetInput("shape");
   auto output_info = GetOutput("out");
 
-  auto shape = helper_->AutoCast(
-      shape_info[0].name, shape_info[0].dtype, P2ODataType::INT64);
+  auto shape = helper_->AutoCast(shape_info[0].name, shape_info[0].dtype,
+                                 P2ODataType::INT64);
 
   if (shape_info[0].Rank() == 0) {
     shape = helper_->Reshape(shape, {1});
@@ -39,10 +39,8 @@ void FullWithTensorMapper::Opset8() {
 
   auto expand_node = helper_->MakeNode("Expand", {value_info[0].name, shape});
 
-  helper_->AutoCast(expand_node->output(0),
-                    output_info[0].name,
-                    value_info[0].dtype,
-                    output_info[0].dtype);
+  helper_->AutoCast(expand_node->output(0), output_info[0].name,
+                    value_info[0].dtype, output_info[0].dtype);
 
   // double fill_value = 0;
   // if(TryGetInputValue("value", &fill_value)) {
@@ -91,4 +89,4 @@ void FullWithTensorMapper::Opset8() {
   // }
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

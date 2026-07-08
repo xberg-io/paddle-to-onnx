@@ -48,4 +48,4 @@ void MulMapper::Opset7() {
   helper_->MakeNode("Identity", {out}, {out_info[0].name});
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

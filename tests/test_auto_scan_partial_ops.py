@@ -60,17 +60,13 @@ class TestConcatConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=4, max_value=8), min_size=2, max_size=2)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=4, max_value=8), min_size=2, max_size=2))
 
         dtype = draw(st.sampled_from(["float32", "float64", "int64"]))
 
         start_index = draw(st.integers(min_value=0, max_value=len(input_shape) - 1))
 
-        length = draw(
-            st.integers(min_value=-1, max_value=len(input_shape) - start_index)
-        )
+        length = draw(st.integers(min_value=-1, max_value=len(input_shape) - start_index))
         if length == 0:
             length = 1
 

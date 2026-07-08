@@ -22,7 +22,7 @@ int32_t QuantizeLinearMapper::GetMinOpsetVersion(bool verbose) { return 19; }
 
 template <typename T>
 std::string QuantizeLinearMapper::CreateConstantNode(
-    const std::vector<T>& values, ONNX_NAMESPACE::TensorProto_DataType type) {
+    const std::vector<T> &values, ONNX_NAMESPACE::TensorProto_DataType type) {
   if (values.size() == 1) {
     return helper_->Constant({}, type, static_cast<T>(values[0]));
   } else {
@@ -60,14 +60,12 @@ void QuantizeLinearMapper::Opset19() {
   if (helper_->GetOpsetVersion() >= 13) {
     AddAttribute(QuantizeLinear_node, "axis", quant_axis_);
   }
-  helper_->AutoCast(QuantizeLinear_node->output(0),
-                    y_info[0].name,
-                    output_paddle_dtype,
-                    P2ODataType::FP32);
+  helper_->AutoCast(QuantizeLinear_node->output(0), y_info[0].name,
+                    output_paddle_dtype, P2ODataType::FP32);
 
   //   QuantizeInfo quantize_info(
   //       onnx_scales, onnx_zeros, onnx_scales, zero_node, quant_axis_);
   //   helper_->quantize_info[x_info[0].name] = quantize_info;
   // }
 }
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

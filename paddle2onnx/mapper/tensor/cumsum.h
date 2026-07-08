@@ -21,17 +21,13 @@
 namespace paddle2onnx {
 
 class CumsumMapper : public Mapper {
- public:
-  CumsumMapper(const PaddleParser& p,
-               OnnxHelper* helper,
-               int64_t block_id,
+public:
+  CumsumMapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
                int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     GetAttr("flatten", &flatten_);
   }
-  CumsumMapper(const PaddlePirParser& p,
-               OnnxHelper* helper,
-               int64_t op_id,
+  CumsumMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t op_id,
                bool c)
       : Mapper(p, helper, op_id, c) {
     in_pir_mode = true;
@@ -40,9 +36,9 @@ class CumsumMapper : public Mapper {
   int32_t GetMinOpsetVersion(bool verbose) override;
   void Opset11() override;
 
- private:
+private:
   int64_t axis_;
   bool flatten_;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

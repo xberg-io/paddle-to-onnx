@@ -84,8 +84,8 @@ void ReduceMaxMapper::Opset18() {
     out_node_name = helper_->Reshape(out_node_name, {-1});
   }
   auto out_info = GetOutput("Out");
-  helper_->AutoCast(
-      out_node_name, out_info[0].name, input_tpye, out_info[0].dtype);
+  helper_->AutoCast(out_node_name, out_info[0].name, input_tpye,
+                    out_info[0].dtype);
 }
 
 void ReduceMaxMapper::Opset12() {
@@ -144,7 +144,7 @@ void ReduceMaxMapper::Opset11() {
     out_node_name = helper_->Reshape(out_node_name, {-1});
   }
   auto out_info = GetOutput("Out");
-  helper_->AutoCast(
-      out_node_name, out_info[0].name, input_tpye, out_info[0].dtype);
+  helper_->AutoCast(out_node_name, out_info[0].name, input_tpye,
+                    out_info[0].dtype);
 }
-}  //  namespace paddle2onnx
+} //  namespace paddle2onnx

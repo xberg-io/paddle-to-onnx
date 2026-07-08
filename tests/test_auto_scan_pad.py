@@ -15,9 +15,8 @@
 import unittest
 
 import hypothesis.strategies as st
-from auto_scan_test import BaseNet, OPConvertAutoScanTest
-
 import paddle
+from auto_scan_test import BaseNet, OPConvertAutoScanTest
 
 
 class Net(BaseNet):
@@ -26,9 +25,7 @@ class Net(BaseNet):
         mode = self.config["mode"]
         value = self.config["value"]
         data_format = self.config["data_format"]
-        return paddle.nn.functional.pad(
-            inputs, pad=pad, mode=mode, value=value, data_format=data_format
-        )
+        return paddle.nn.functional.pad(inputs, pad=pad, mode=mode, value=value, data_format=data_format)
 
 
 class TestPadopsConvert(OPConvertAutoScanTest):
@@ -38,9 +35,7 @@ class TestPadopsConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=10, max_value=15), min_size=3, max_size=5)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=10, max_value=15), min_size=3, max_size=5))
 
         dtype = "float32"
 
@@ -56,9 +51,7 @@ class TestPadopsConvert(OPConvertAutoScanTest):
 
         value = draw(st.floats(min_value=10, max_value=20))
 
-        data_format = draw(
-            st.sampled_from(["NCL", "NLC", "NCHW", "NHWC", "NCDHW", "NDHWC"])
-        )
+        data_format = draw(st.sampled_from(["NCL", "NLC", "NCHW", "NHWC", "NCDHW", "NDHWC"]))
 
         config = {
             "op_names": ["pad"],

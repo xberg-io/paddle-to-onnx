@@ -13,19 +13,17 @@
 // limitations under the License.
 
 #pragma once
+#include "paddle2onnx/mapper/exporter.h"
+#include "paddle2onnx/mapper/mapper.h"
 #include <map>
 #include <string>
 #include <vector>
-#include "paddle2onnx/mapper/exporter.h"
-#include "paddle2onnx/mapper/mapper.h"
 
 namespace paddle2onnx {
 
 class BitWiseMapper : public Mapper {
- public:
-  BitWiseMapper(const PaddleParser &p,
-                OnnxHelper *helper,
-                int64_t block_id,
+public:
+  BitWiseMapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
                 int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     op_mapper_["bitwise_and"] = "BitwiseAnd";
@@ -37,9 +35,7 @@ class BitWiseMapper : public Mapper {
     onnx_elemwise_type_ = onnx_bitwise_type_.substr(7);
   }
 
-  BitWiseMapper(const PaddlePirParser &p,
-                OnnxHelper *helper,
-                int64_t op_id,
+  BitWiseMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t op_id,
                 bool if_in_cf_block)
       : Mapper(p, helper, op_id, if_in_cf_block) {
     op_mapper_["bitwise_and"] = "BitwiseAnd";
@@ -54,11 +50,11 @@ class BitWiseMapper : public Mapper {
   void Opset7() override;
   void Opset18() override;
 
- private:
+private:
   std::map<std::string, std::string> op_mapper_;
   std::string onnx_bitwise_type_;
   std::string onnx_elemwise_type_;
   std::string paddle_type_;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

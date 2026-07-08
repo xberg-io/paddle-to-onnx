@@ -70,9 +70,7 @@ void ElementwiseMulMapper::ExportForONNX() {
 
   if (input_x_info[0].dtype == P2ODataType::BOOL &&
       input_y_info[0].dtype == P2ODataType::BOOL) {
-    helper_->AutoCast(output_name,
-                      output_info[0].name,
-                      P2ODataType::INT32,
+    helper_->AutoCast(output_name, output_info[0].name, P2ODataType::INT32,
                       P2ODataType::BOOL);
   } else {
     helper_->MakeNode("Identity", {output_name}, {output_info[0].name});
@@ -114,9 +112,7 @@ void ElementwiseMulMapper::ExportForRKNN() {
 
   if (input_x_info[0].dtype == P2ODataType::BOOL &&
       input_y_info[0].dtype == P2ODataType::BOOL) {
-    helper_->AutoCast(output_name,
-                      output_info[0].name,
-                      P2ODataType::INT32,
+    helper_->AutoCast(output_name, output_info[0].name, P2ODataType::INT32,
                       P2ODataType::BOOL);
   } else {
     helper_->MakeNode("Identity", {output_name}, {output_info[0].name});
@@ -130,4 +126,4 @@ void ElementwiseMulMapper::Opset7() {
     return ExportForONNX();
   }
 }
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

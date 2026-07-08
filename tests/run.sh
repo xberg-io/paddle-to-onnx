@@ -28,21 +28,20 @@ $PY_CMD -m pip install pytest onnx onnxruntime hypothesis
 $PY_CMD -m pip install paddlepaddle -i https://www.paddlepaddle.org.cn/packages/nightly/cpu/
 
 export ENABLE_DEV=ON
-echo "============ failed cases =============" >> result.txt
-for file in ${cases}
-do
-    echo ${file}
-    if [[ ${ignore} =~ ${file##*/} ]]; then
-        echo "skipping ${file##*/}"
-    else
-        $PY_CMD -m pytest ${file}
-        if [ $? -ne 0 ]; then
-            echo ${file} >> result.txt
-            bug=`expr ${bug} + 1`
-        fi
-    fi
+echo "============ failed cases =============" >>result.txt
+for file in ${cases}; do
+	echo ${file}
+	if [[ ${ignore} =~ ${file##*/} ]]; then
+		echo "skipping ${file##*/}"
+	else
+		$PY_CMD -m pytest ${file}
+		if [ $? -ne 0 ]; then
+			echo ${file} >>result.txt
+			bug=$(expr ${bug} + 1)
+		fi
+	fi
 done
 
-echo "total bugs: ${bug}" >> result.txt
+echo "total bugs: ${bug}" >>result.txt
 cat result.txt
 exit "${bug}"

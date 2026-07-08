@@ -38,11 +38,7 @@ def _generate_copyright(comment_mark):
     copyright = COPYRIGHT.format(year=year)
 
     return [
-        (
-            f"{comment_mark} {line}{os.linesep}"
-            if line
-            else f"{comment_mark}{os.linesep}"
-        )
+        (f"{comment_mark} {line}{os.linesep}" if line else f"{comment_mark}{os.linesep}")
         for line in copyright.splitlines()
     ]
 
@@ -94,10 +90,7 @@ def generate_copyright(path, comment_mark):
         new_contents = original_contents[0:insert_line_no]
         new_contents.append(os.linesep)
         new_contents.extend(copyright)
-        if (
-            len(original_contents) > insert_line_no
-            and len(original_contents[insert_line_no].strip()) != 0
-        ):
+        if len(original_contents) > insert_line_no and len(original_contents[insert_line_no].strip()) != 0:
             new_contents.append(os.linesep)
         new_contents.extend(original_contents[insert_line_no:])
     new_contents = "".join(new_contents)

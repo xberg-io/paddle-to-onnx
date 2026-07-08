@@ -44,7 +44,8 @@ void Squeeze2Mapper::Opset7() {
   std::vector<int64_t> ret;
   ret.reserve(input_info[0].shape.size());
   for (auto i : input_info[0].shape) {
-    if (i > 1) ret.push_back(i);
+    if (i > 1)
+      ret.push_back(i);
   }
   if (ret.size() == input_info[0].Rank()) {
     // All dimensions are > 1, nothing to squeeze
@@ -77,21 +78,21 @@ void Squeeze2Mapper::Opset7() {
         }
         if (all_dims_not_one) {
           // None of the dimensions to squeeze have size 1, use Identity
-          helper_->MakeNode(
-              "Identity", {input_info[0].name}, {output_info[0].name});
+          helper_->MakeNode("Identity", {input_info[0].name},
+                            {output_info[0].name});
           return;
         }
       }
 
       std::string axes_name;
       if (axes_info.size() == 1U) {
-        axes_name = helper_->AutoCast(
-            axes_info[0].name, axes_info[0].dtype, P2ODataType::INT64);
+        axes_name = helper_->AutoCast(axes_info[0].name, axes_info[0].dtype,
+                                      P2ODataType::INT64);
       } else {
         axes_name = helper_->ConcatIndices(axes_info);
       }
-      helper_->MakeNode(
-          "Squeeze", {input_info[0].name, axes_name}, {output_info[0].name});
+      helper_->MakeNode("Squeeze", {input_info[0].name, axes_name},
+                        {output_info[0].name});
     } else {
       if (with_axis) {
         auto axes_info = in_pir_mode ? GetInput("axis") : GetAttrVar("axes");
@@ -125,4 +126,4 @@ void Squeeze2Mapper::Opset7() {
   }
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

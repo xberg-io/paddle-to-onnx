@@ -15,9 +15,8 @@
 import unittest
 
 import hypothesis.strategies as st
-from auto_scan_test import BaseNet, OPConvertAutoScanTest
-
 import paddle
+from auto_scan_test import BaseNet, OPConvertAutoScanTest
 
 
 class NetAvgPool1d(BaseNet):
@@ -40,9 +39,7 @@ class TestAdaptiveAvgPool1dConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=10, max_value=12), min_size=3, max_size=3)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=10, max_value=12), min_size=3, max_size=3))
 
         if input_shape[2] % 2 != 0:
             input_shape[2] = input_shape[2] + 1
@@ -82,9 +79,7 @@ class NetAvgPool2d(BaseNet):
         else:
             output_size = self.config["output_size"]
         data_format = self.config["data_format"]
-        return paddle.nn.functional.adaptive_avg_pool2d(
-            inputs, output_size=output_size, data_format=data_format
-        )
+        return paddle.nn.functional.adaptive_avg_pool2d(inputs, output_size=output_size, data_format=data_format)
 
 
 class TestAdaptiveAvgPool2dConvert(OPConvertAutoScanTest):
@@ -94,9 +89,7 @@ class TestAdaptiveAvgPool2dConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=10, max_value=12), min_size=4, max_size=4)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=10, max_value=12), min_size=4, max_size=4))
 
         if input_shape[2] % 2 != 0:
             input_shape[2] = input_shape[2] + 1
@@ -110,9 +103,7 @@ class TestAdaptiveAvgPool2dConvert(OPConvertAutoScanTest):
         if output_type == "int":
             output_size = draw(st.integers(min_value=1, max_value=3))
         elif output_type == "list":
-            output_size = draw(
-                st.lists(st.integers(min_value=1, max_value=3), min_size=2, max_size=2)
-            )
+            output_size = draw(st.lists(st.integers(min_value=1, max_value=3), min_size=2, max_size=2))
         # tensor_attr True is not supported, because when tensor_attr is True, the output size is unknown
         tensor_attr = False
         config = {
@@ -145,9 +136,7 @@ class NetAvgPool3d(BaseNet):
         """
         output_size = self.config["output_size"]
         data_format = self.config["data_format"]
-        return paddle.nn.functional.adaptive_avg_pool3d(
-            inputs, output_size=output_size, data_format=data_format
-        )
+        return paddle.nn.functional.adaptive_avg_pool3d(inputs, output_size=output_size, data_format=data_format)
 
 
 class TestAdaptiveAvgPool3dConvert(OPConvertAutoScanTest):
@@ -157,9 +146,7 @@ class TestAdaptiveAvgPool3dConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=10, max_value=12), min_size=5, max_size=5)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=10, max_value=12), min_size=5, max_size=5))
 
         if input_shape[2] % 2 != 0:
             input_shape[2] = input_shape[2] + 1
@@ -175,9 +162,7 @@ class TestAdaptiveAvgPool3dConvert(OPConvertAutoScanTest):
         if output_type == "int":
             output_size = draw(st.integers(min_value=1, max_value=3))
         elif output_type == "list":
-            output_size = draw(
-                st.lists(st.integers(min_value=1, max_value=3), min_size=3, max_size=3)
-            )
+            output_size = draw(st.lists(st.integers(min_value=1, max_value=3), min_size=3, max_size=3))
 
         config = {
             "op_names": ["pool3d"],

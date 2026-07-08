@@ -37,8 +37,8 @@ void FftR2cMapper::Opset17() {
   AddAttribute(dft_node, "onesided", int64_t(onesided_));
   AddAttribute(dft_node, "inverse", int64_t(0));
   AddAttribute(dft_node, "axis", int64_t(2));
-  helper_->MakeNode(
-      "Squeeze", {dft_node->output(0), zero_str}, {output_info[0].name});
+  helper_->MakeNode("Squeeze", {dft_node->output(0), zero_str},
+                    {output_info[0].name});
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

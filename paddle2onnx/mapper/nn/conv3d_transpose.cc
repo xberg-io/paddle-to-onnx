@@ -31,14 +31,14 @@ void Conv3dTransposeMapper::Opset7() {
   auto input_info = GetInput("x");
   auto output_info = GetOutput("out");
 
-  auto input = helper_->AutoCast(
-      input_info[0].name, input_info[0].dtype, P2ODataType::FP32);
+  auto input = helper_->AutoCast(input_info[0].name, input_info[0].dtype,
+                                 P2ODataType::FP32);
   if (data_format_ == "NHWC") {
-    input = helper_->Transpose(input, {0, 4, 1, 2, 3});  // NDHWC -> NCDHW
+    input = helper_->Transpose(input, {0, 4, 1, 2, 3}); // NDHWC -> NCDHW
   }
 
-  auto kernel = helper_->AutoCast(
-      kernel_info[0].name, kernel_info[0].dtype, P2ODataType::FP32);
+  auto kernel = helper_->AutoCast(kernel_info[0].name, kernel_info[0].dtype,
+                                  P2ODataType::FP32);
 
   auto node = helper_->MakeNode("ConvTranspose", {input, kernel});
 
@@ -62,7 +62,7 @@ void Conv3dTransposeMapper::Opset7() {
       paddings.insert(paddings.begin(), paddings_.begin(), paddings_.end());
     } else {
       std::vector<int64_t> index = {0, 2, 4, 1, 3, 5};
-      for (auto& i : index) {
+      for (auto &i : index) {
         paddings.push_back(paddings_[i]);
       }
     }
@@ -75,9 +75,9 @@ void Conv3dTransposeMapper::Opset7() {
 
   auto output = node->output(0);
   if (data_format_ == "NHWC") {
-    output = helper_->Transpose(output, {0, 2, 3, 4, 1});  // NCDHW -> NDHWC
+    output = helper_->Transpose(output, {0, 2, 3, 4, 1}); // NCDHW -> NDHWC
   }
-  helper_->AutoCast(
-      output, output_info[0].name, P2ODataType::FP32, output_info[0].dtype);
+  helper_->AutoCast(output, output_info[0].name, P2ODataType::FP32,
+                    output_info[0].dtype);
 }
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

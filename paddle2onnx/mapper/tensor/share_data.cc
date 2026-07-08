@@ -13,10 +13,10 @@
 // limitations under the License.
 
 #include "paddle2onnx/mapper/tensor/share_data.h"
+#include "paddle2onnx/proto/p2o_paddle.pb.h"
 #include <iostream>
 #include <string>
 #include <vector>
-#include "paddle2onnx/proto/p2o_paddle.pb.h"
 
 namespace paddle2onnx {
 REGISTER_PIR_MAPPER(share_data, ShareDataMapper)
@@ -30,4 +30,4 @@ void ShareDataMapper::Opset7() {
   helper_->MakeNode("Identity", {input_info[0].name}, {output_info[0].name});
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

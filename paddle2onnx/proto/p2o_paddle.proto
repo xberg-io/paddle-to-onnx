@@ -43,7 +43,6 @@ enum AttrType {
   SCALARS = 17;
 }
 
-
 message Complex {
   required double r = 1;
   required double i = 2;
@@ -129,7 +128,7 @@ message OpProto {
     optional bool generated = 4 [ default = false ];
     optional bool extra = 5 [ default = false ];
     optional bool quant = 6 [ default = false ];
-    optional bool support_tensor = 7 [ default = false];
+    optional bool support_tensor = 7 [ default = false ];
   }
 
   required string type = 1;

@@ -44,12 +44,8 @@ if _HAS_IR_GRAPH:
     try:
         from paddle.static.quantization import quant_config
 
-        TRANSFORM_PASS_OP_TYPES = list(
-            quant_config.SUPPORT_WEIGHT_QUANTIZATION_OP_DICT.keys()
-        )
-        QUANT_DEQUANT_PASS_OP_TYPES = list(
-            quant_config.SUPPORT_ACT_QUANTIZATION_OP_DICT.keys()
-        )
+        TRANSFORM_PASS_OP_TYPES = list(quant_config.SUPPORT_WEIGHT_QUANTIZATION_OP_DICT.keys())
+        QUANT_DEQUANT_PASS_OP_TYPES = list(quant_config.SUPPORT_ACT_QUANTIZATION_OP_DICT.keys())
     except Exception:
         TRANSFORM_PASS_OP_TYPES = utils._weight_supported_quantizable_op_type
         QUANT_DEQUANT_PASS_OP_TYPES = utils._act_supported_quantizable_op_type
@@ -84,8 +80,7 @@ def post_quant_fake(
     """
     if not _HAS_IR_GRAPH:
         raise RuntimeError(
-            "post_quant_fake requires paddle.fluid.framework.IrGraph which "
-            "has been removed in PaddlePaddle 3.x"
+            "post_quant_fake requires paddle.fluid.framework.IrGraph which has been removed in PaddlePaddle 3.x"
         )
     if quantizable_op_type is None:
         quantizable_op_type = ["conv2d", "depthwise_conv2d", "mul"]
@@ -95,11 +90,7 @@ def post_quant_fake(
     _weight_supported_quantizable_op_type = TRANSFORM_PASS_OP_TYPES
     _act_supported_quantizable_op_type = QUANT_DEQUANT_PASS_OP_TYPES
     _support_quantize_op_type = list(
-        set(
-            _weight_supported_quantizable_op_type
-            + _act_supported_quantizable_op_type
-            + _dynamic_quantize_op_type
-        )
+        set(_weight_supported_quantizable_op_type + _act_supported_quantizable_op_type + _dynamic_quantize_op_type)
     )
     _place = executor.place
     _scope = paddle.static.Scope()
@@ -110,9 +101,7 @@ def post_quant_fake(
         else:
             _quantizable_op_type = quantizable_op_type
             for op_type in _quantizable_op_type:
-                assert op_type in _support_quantize_op_type, (
-                    op_type + " is not supported for quantization."
-                )
+                assert op_type in _support_quantize_op_type, op_type + " is not supported for quantization."
         _program, _feed_list, _fetch_list = load_inference_model(
             model_dir,
             executor,
@@ -206,9 +195,7 @@ def post_quant_fake(
 
         def analysis_and_save_info(op_node, out_var_name):
             argname_index = utils._get_output_name_index(op_node, out_var_name)
-            assert argname_index is not None, (
-                out_var_name + " is not the output of the op"
-            )
+            assert argname_index is not None, out_var_name + " is not the output of the op"
 
             save_info(op_node, out_var_name, "out_threshold", "post_avg")
             save_info(
@@ -220,18 +207,13 @@ def post_quant_fake(
 
         for block_id in range(len(_program.blocks)):
             for op in _program.blocks[block_id].ops:
-                if op.type in (
-                    _quantizable_op_type
-                    + list(quant_config.SUPPORT_QUANTIZATION_OP_DICT.keys())
-                ):
+                if op.type in (_quantizable_op_type + list(quant_config.SUPPORT_QUANTIZATION_OP_DICT.keys())):
                     out_var_names = utils._get_op_output_var_names(op)
                     for var_name in out_var_names:
                         analysis_and_save_info(op, var_name)
 
         feed_vars = [_program.global_block().var(name) for name in _feed_list]
-        model_name = (
-            model_filename.split(".")[0] if model_filename is not None else "model"
-        )
+        model_name = model_filename.split(".")[0] if model_filename is not None else "model"
         save_model_path = os.path.join(save_model_path, model_name)
         paddle.static.save_inference_model(
             path_prefix=save_model_path,

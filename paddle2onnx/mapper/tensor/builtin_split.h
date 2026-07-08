@@ -22,18 +22,16 @@ namespace paddle2onnx {
 
 // PIR builtin.split operation
 class BuiltinSplitMapper : public Mapper {
- public:
-  BuiltinSplitMapper(const PaddlePirParser& p,
-                     OnnxHelper* helper,
-                     int64_t op_id,
-                     bool c)
+public:
+  BuiltinSplitMapper(const PaddlePirParser &p, OnnxHelper *helper,
+                     int64_t op_id, bool c)
       : Mapper(p, helper, op_id, c) {}
 
   void Opset7() override;
 
- private:
+private:
   int64_t GetOutputNum();
   bool IsEinsumOut();
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

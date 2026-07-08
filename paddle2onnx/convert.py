@@ -19,9 +19,10 @@ import traceback
 from contextlib import contextmanager
 
 import paddle
-import paddle2onnx.paddle2onnx_cpp2py_export as c_p2o
 from paddle.base.executor import global_scope
 from paddle.decomposition import decomp
+
+import paddle2onnx.paddle2onnx_cpp2py_export as c_p2o
 from paddle2onnx.utils import logging, paddle2onnx_export_configs
 
 PADDLE2ONNX_EXPORT_TEMP_DIR = None
@@ -32,9 +33,7 @@ def get_tmp_dir_and_file(model_filename, suffix=""):
     if PADDLE2ONNX_EXPORT_TEMP_DIR is None:
         PADDLE2ONNX_EXPORT_TEMP_DIR = tempfile.mkdtemp()
     model_file_path, _ = os.path.splitext(model_filename)
-    new_model_file_path = os.path.join(
-        PADDLE2ONNX_EXPORT_TEMP_DIR, os.path.basename(model_file_path) + suffix
-    )
+    new_model_file_path = os.path.join(PADDLE2ONNX_EXPORT_TEMP_DIR, os.path.basename(model_file_path) + suffix)
     new_model_file_name = new_model_file_path + ".json"
     new_params_file_name = new_model_file_path + ".pdiparams"
     return (
@@ -64,9 +63,7 @@ def save_program(program, new_model_file_path):
         if op.name() == "pd_op.fetch" or op.name() == "builtin.shadow_output":
             fetch.extend(op.operands_source())
     with paddle.pir_utils.IrGuard():
-        paddle.static.save_inference_model(
-            new_model_file_path, feed, fetch, exe, program=program
-        )
+        paddle.static.save_inference_model(new_model_file_path, feed, fetch, exe, program=program)
 
 
 def load_parameter(program):
@@ -83,15 +80,13 @@ def load_parameter(program):
         return
     place = paddle.CPUPlace()
     exe = paddle.static.Executor(place)
-    paddle.base.libpaddle.pir.create_loaded_parameter(
-        vars, global_scope(), exe._default_executor
-    )
+    paddle.base.libpaddle.pir.create_loaded_parameter(vars, global_scope(), exe._default_executor)
 
 
 def decompose_program(model_filename):
     """Decomposes the given pir program."""
-    model_file_path, new_model_file_path, new_model_file_name, _new_params_file_name = (
-        get_tmp_dir_and_file(model_filename, "_decompose")
+    model_file_path, new_model_file_path, new_model_file_name, _new_params_file_name = get_tmp_dir_and_file(
+        model_filename, "_decompose"
     )
     model = paddle.jit.load(model_file_path)
     new_program = model.program().clone()
@@ -140,13 +135,10 @@ def export(
 ):
     global PADDLE2ONNX_EXPORT_TEMP_DIR
     # check model_filename
-    assert os.path.exists(model_filename), (
-        f"Model file {model_filename} does not exist."
-    )
+    assert os.path.exists(model_filename), f"Model file {model_filename} does not exist."
     if not os.path.exists(params_filename):
         logging.warning(
-            f"Params file {params_filename} does not exist, "
-            + "the exported onnx model will not contain weights."
+            f"Params file {params_filename} does not exist, " + "the exported onnx model will not contain weights."
         )
         params_filename = ""
 
@@ -168,8 +160,8 @@ def export(
                 place = paddle.CPUPlace()
                 exe = paddle.static.Executor(place)
                 with paddle.pir_utils.OldIrGuard():
-                    [inference_program, _feed_target_names, _fetch_targets] = (
-                        paddle.static.load_inference_model(model_file_path, exe)
+                    [inference_program, _feed_target_names, _fetch_targets] = paddle.static.load_inference_model(
+                        model_file_path, exe
                     )
                 if verbose:
                     logging.info("The original inference program is:\n")
@@ -190,18 +182,12 @@ def export(
                 with paddle.pir_utils.IrGuard():
                     paddle.save(pir_program, new_model_file_name)
             if not os.path.exists(new_model_file_name):
-                raise RuntimeError(
-                    f"Program Tranlator failed due to json file {new_model_file_name} does not exist."
-                )
+                raise RuntimeError(f"Program Tranlator failed due to json file {new_model_file_name} does not exist.")
             model_filename = new_model_file_name
             if verbose:
                 logging.info("Complete the conversion from .pdmodel to json file.")
 
-        if (
-            paddle.get_flags("FLAGS_enable_pir_api")["FLAGS_enable_pir_api"]
-            and dist_prim_all
-            and auto_upgrade_opset
-        ):
+        if paddle.get_flags("FLAGS_enable_pir_api")["FLAGS_enable_pir_api"] and dist_prim_all and auto_upgrade_opset:
             if verbose:
                 logging.info("Try to decompose program ...")
             # TODO(wangmingkai02): Do we need to update params_filename here?
@@ -210,9 +196,7 @@ def export(
                 logging.info("Complete the decomposition of combined operators.")
 
         if verbose and PADDLE2ONNX_EXPORT_TEMP_DIR is not None:
-            logging.info(
-                f"Intermediate model and param files are saved at {PADDLE2ONNX_EXPORT_TEMP_DIR}"
-            )
+            logging.info(f"Intermediate model and param files are saved at {PADDLE2ONNX_EXPORT_TEMP_DIR}")
 
         deploy_backend = deploy_backend.lower()
         if custom_op_info is None:
@@ -291,9 +275,7 @@ def export(
         #             f.write(onnx_model_str)
         if optimize_tool == "onnxoptimizer":
             try:
-                logging.info(
-                    "Try to perform optimization on the ONNX model with onnxoptimizer."
-                )
+                logging.info("Try to perform optimization on the ONNX model with onnxoptimizer.")
                 import io
 
                 import onnx
@@ -313,16 +295,12 @@ def export(
                 onnx.checker.check_model(optimized_model, full_check=True)
                 onnx.save(optimized_model, save_file)
             except Exception as error:
-                logging.warning(
-                    f"Fail to optimize onnx model with error: {error}. Skip onnxoptimizer."
-                )
+                logging.warning(f"Fail to optimize onnx model with error: {error}. Skip onnxoptimizer.")
                 with open(save_file, "wb") as f:
                     f.write(onnx_model_str)
         elif optimize_tool == "polygraphy":
             try:
-                logging.info(
-                    "Try to perform constant folding on the ONNX model with Polygraphy."
-                )
+                logging.info("Try to perform constant folding on the ONNX model with Polygraphy.")
                 os.environ["POLYGRAPHY_AUTOINSTALL_DEPS"] = "1"
                 import io
 
@@ -337,28 +315,19 @@ def export(
                 folded_rank_list = []
                 for output in onnx_model.graph.output:
                     origin_rank_list.append(
-                        len(output.type.tensor_type.shape.dim)
-                        if output.type.tensor_type.HasField("shape")
-                        else None
+                        len(output.type.tensor_type.shape.dim) if output.type.tensor_type.HasField("shape") else None
                     )
                 for output in folded_model.graph.output:
                     folded_rank_list.append(
-                        len(output.type.tensor_type.shape.dim)
-                        if output.type.tensor_type.HasField("shape")
-                        else None
+                        len(output.type.tensor_type.shape.dim) if output.type.tensor_type.HasField("shape") else None
                     )
                 if len(origin_rank_list) != len(folded_rank_list) or any(
-                    origin_rank_list[i] != folded_rank_list[i]
-                    for i in range(len(origin_rank_list))
+                    origin_rank_list[i] != folded_rank_list[i] for i in range(len(origin_rank_list))
                 ):
-                    raise ValueError(
-                        "The ranks of outputs in the original and folded model are inconsistent."
-                    )
+                    raise ValueError("The ranks of outputs in the original and folded model are inconsistent.")
                 onnx.save(folded_model, save_file)
             except Exception as error:
-                logging.warning(
-                    f"Fail to fold onnx model with error: {error}. Skip folding."
-                )
+                logging.warning(f"Fail to fold onnx model with error: {error}. Skip folding.")
                 with open(save_file, "wb") as f:
                     f.write(onnx_model_str)
         else:
@@ -378,9 +347,7 @@ def dygraph2onnx(layer, save_file, input_spec=None, opset_version=9, **configs):
             model_file = os.path.join(paddle_model_dir, "model.json")
         else:
             model_file = os.path.join(paddle_model_dir, "model.pdmodel")
-        paddle.jit.save(
-            layer, os.path.join(paddle_model_dir, "model"), input_spec, **save_configs
-        )
+        paddle.jit.save(layer, os.path.join(paddle_model_dir, "model"), input_spec, **save_configs)
         if not os.path.isfile(model_file):
             raise ValueError("Failed to save static PaddlePaddle model.")
         logging.info(f"Static PaddlePaddle model saved in {paddle_model_dir}.")

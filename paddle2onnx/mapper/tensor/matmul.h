@@ -21,10 +21,8 @@
 namespace paddle2onnx {
 
 class MatmulMapper : public Mapper {
- public:
-  MatmulMapper(const PaddleParser& p,
-               OnnxHelper* helper,
-               int64_t block_id,
+public:
+  MatmulMapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
                int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     GetAttr("transpose_X", &transpose_X_);
@@ -34,15 +32,14 @@ class MatmulMapper : public Mapper {
 
   void Opset7() override;
 
- private:
-  std::string GetTrans(const std::vector<TensorInfo>& input_info);
-  const std::unordered_set<int32_t> kNoNeedCastTypesOpSet7{P2ODataType::FP16,
-                                                           P2ODataType::FP32,
-                                                           P2ODataType::INT32,
-                                                           P2ODataType::INT64};
+private:
+  std::string GetTrans(const std::vector<TensorInfo> &input_info);
+  const std::unordered_set<int32_t> kNoNeedCastTypesOpSet7{
+      P2ODataType::FP16, P2ODataType::FP32, P2ODataType::INT32,
+      P2ODataType::INT64};
   bool transpose_X_ = false;
   bool transpose_Y_ = false;
   float alpha_ = 1.0;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

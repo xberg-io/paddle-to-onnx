@@ -15,10 +15,9 @@
 import unittest
 
 import hypothesis.strategies as st
+import paddle
 from auto_scan_test import BaseNet, OPConvertAutoScanTest
 from onnxbase import _test_only_pir
-
-import paddle
 
 
 class Net(BaseNet):
@@ -40,9 +39,7 @@ class TestFlattenConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=1, max_value=20), min_size=0, max_size=5)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=1, max_value=20), min_size=0, max_size=5))
 
         dtype = draw(st.sampled_from(["bool", "int32", "int64", "float32", "float64"]))
 

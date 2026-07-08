@@ -15,9 +15,8 @@
 import unittest
 
 import hypothesis.strategies as st
-from auto_scan_test import BaseNet, OPConvertAutoScanTest
-
 import paddle
+from auto_scan_test import BaseNet, OPConvertAutoScanTest
 
 op_api_map = {
     "hard_shrink": paddle.nn.functional.hardshrink,
@@ -37,9 +36,7 @@ class Net(BaseNet):
         if self.config["op_names"] == "tanh_shrink":
             x = op_api_map[self.config["op_names"]](inputs)
         else:
-            x = op_api_map[self.config["op_names"]](
-                inputs, threshold=self.config["threshold"]
-            )
+            x = op_api_map[self.config["op_names"]](inputs, threshold=self.config["threshold"])
         return x
 
 
@@ -50,9 +47,7 @@ class TestShrinkopsConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input1_shape = draw(
-            st.lists(st.integers(min_value=10, max_value=20), min_size=0, max_size=4)
-        )
+        input1_shape = draw(st.lists(st.integers(min_value=10, max_value=20), min_size=0, max_size=4))
 
         threshold = draw(st.floats(min_value=0.1, max_value=1.0))
 

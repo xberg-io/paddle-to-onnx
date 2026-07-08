@@ -58,10 +58,9 @@ void LayerNormMapper::Opset17() {
       bias_type = P2ODataType::FP32;
     }
 
-    auto layer_norm_node =
-        helper_->MakeNode("LayerNormalization",
-                          {input_name, scale_name, bias_name},
-                          {output_info[0].name});
+    auto layer_norm_node = helper_->MakeNode(
+        "LayerNormalization", {input_name, scale_name, bias_name},
+        {output_info[0].name});
     AddAttribute(layer_norm_node, "axis", begin_norm_axis_);
     AddAttribute(layer_norm_node, "epsilon", epsilon_);
     return;
@@ -97,22 +96,21 @@ void LayerNormMapper::Opset17() {
       bias_type = P2ODataType::FP32;
     }
 
-    std::string scale_name = helper_->Constant(normalized_shape,
-                                               GetOnnxDtype(P2ODataType::FP32),
-                                               static_cast<float>(1.0));
-    auto layer_norm_node =
-        helper_->MakeNode("LayerNormalization",
-                          {input_name, scale_name, bias_name},
-                          {output_info[0].name});
+    std::string scale_name =
+        helper_->Constant(normalized_shape, GetOnnxDtype(P2ODataType::FP32),
+                          static_cast<float>(1.0));
+    auto layer_norm_node = helper_->MakeNode(
+        "LayerNormalization", {input_name, scale_name, bias_name},
+        {output_info[0].name});
     AddAttribute(layer_norm_node, "axis", begin_norm_axis_);
     AddAttribute(layer_norm_node, "epsilon", epsilon_);
     return;
   }
 
   if (!has_input_Bias && !has_input_Scale) {
-    std::string scale_name = helper_->Constant(normalized_shape,
-                                               GetOnnxDtype(P2ODataType::FP32),
-                                               static_cast<float>(1.0));
+    std::string scale_name =
+        helper_->Constant(normalized_shape, GetOnnxDtype(P2ODataType::FP32),
+                          static_cast<float>(1.0));
     auto layer_norm_node = helper_->MakeNode(
         "LayerNormalization", {input_name, scale_name}, {output_info[0].name});
     AddAttribute(layer_norm_node, "axis", begin_norm_axis_);
@@ -139,8 +137,8 @@ void LayerNormMapper::Opset7() {
   float epsilon = epsilon_;
   std::string epsilon_node =
       helper_->Constant({}, GetOnnxDtype(P2ODataType::FP32), epsilon);
-  std::string two_node = helper_->Constant(
-      {}, GetOnnxDtype(P2ODataType::FP32), static_cast<float>(2.0));
+  std::string two_node = helper_->Constant({}, GetOnnxDtype(P2ODataType::FP32),
+                                           static_cast<float>(2.0));
 
   auto mean_node = helper_->MakeNode("ReduceMean", {input_name});
   AddAttribute(mean_node, "axes", axes);
@@ -194,10 +192,8 @@ void LayerNormMapper::Opset7() {
         helper_->MakeNode("Mul", {layer_norm_pre_node->output(0), scale_node});
     auto pre_cast_node =
         helper_->MakeNode("Add", {layer_norm_node->output(0), bias_node});
-    helper_->AutoCast(pre_cast_node->output(0),
-                      output_info[0].name,
-                      P2ODataType::FP32,
-                      output_info[0].dtype);
+    helper_->AutoCast(pre_cast_node->output(0), output_info[0].name,
+                      P2ODataType::FP32, output_info[0].dtype);
     return;
   }
   if (has_input_Bias) {
@@ -215,10 +211,8 @@ void LayerNormMapper::Opset7() {
         "Div", {numerator_node->output(0), denominator_node->output(0)});
     auto pre_cast_node =
         helper_->MakeNode("Add", {layer_norm_node->output(0), bias_node});
-    helper_->AutoCast(pre_cast_node->output(0),
-                      output_info[0].name,
-                      P2ODataType::FP32,
-                      output_info[0].dtype);
+    helper_->AutoCast(pre_cast_node->output(0), output_info[0].name,
+                      P2ODataType::FP32, output_info[0].dtype);
     return;
   }
   if (has_input_Scale) {
@@ -236,17 +230,13 @@ void LayerNormMapper::Opset7() {
         "Div", {numerator_node->output(0), denominator_node->output(0)});
     auto pre_cast_node =
         helper_->MakeNode("Mul", {layer_norm_node->output(0), scale_node});
-    helper_->AutoCast(pre_cast_node->output(0),
-                      output_info[0].name,
-                      P2ODataType::FP32,
-                      output_info[0].dtype);
+    helper_->AutoCast(pre_cast_node->output(0), output_info[0].name,
+                      P2ODataType::FP32, output_info[0].dtype);
     return;
   }
   auto pre_cast_node = helper_->MakeNode(
       "Div", {numerator_node->output(0), denominator_node->output(0)});
-  helper_->AutoCast(pre_cast_node->output(0),
-                    output_info[0].name,
-                    P2ODataType::FP32,
-                    output_info[0].dtype);
+  helper_->AutoCast(pre_cast_node->output(0), output_info[0].name,
+                    P2ODataType::FP32, output_info[0].dtype);
 }
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

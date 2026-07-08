@@ -18,10 +18,8 @@
 namespace paddle2onnx {
 
 class ShareDataMapper : public Mapper {
- public:
-  ShareDataMapper(const PaddlePirParser& p,
-                  OnnxHelper* helper,
-                  int64_t op_id,
+public:
+  ShareDataMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t op_id,
                   bool if_in_cf_block)
       : Mapper(p, helper, op_id, if_in_cf_block) {}
 
@@ -29,4 +27,4 @@ class ShareDataMapper : public Mapper {
   void Opset7() override;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

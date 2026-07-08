@@ -15,9 +15,8 @@
 import unittest
 
 import hypothesis.strategies as st
-from auto_scan_test import BaseNet, OPConvertAutoScanTest
-
 import paddle
+from auto_scan_test import BaseNet, OPConvertAutoScanTest
 
 
 class Net(BaseNet):
@@ -29,9 +28,7 @@ class Net(BaseNet):
         """
         forward
         """
-        return paddle.nn.functional.pixel_shuffle(
-            inputs, upscale_factor=self.config["upscale_factor"]
-        )
+        return paddle.nn.functional.pixel_shuffle(inputs, upscale_factor=self.config["upscale_factor"])
 
 
 class TestPixelshuffleConvert(OPConvertAutoScanTest):
@@ -41,9 +38,7 @@ class TestPixelshuffleConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=4, max_value=6), min_size=4, max_size=4)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=4, max_value=6), min_size=4, max_size=4))
 
         dtype = draw(st.sampled_from(["float32", "float64"]))
         upscale_factor = draw(st.integers(min_value=1, max_value=4))

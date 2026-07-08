@@ -33,4 +33,4 @@ void IsNaNMapper::Opset9() {
     helper_->MakeNode("IsNaN", {input_info[0].name}, {output_info[0].name});
   }
 }
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

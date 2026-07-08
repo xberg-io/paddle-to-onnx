@@ -16,10 +16,9 @@ import unittest
 
 import hypothesis.strategies as st
 import numpy as np
+import paddle
 from auto_scan_test import BaseNet, OPConvertAutoScanTest
 from onnxbase import _test_with_pir
-
-import paddle
 
 
 class Net(BaseNet):
@@ -28,9 +27,7 @@ class Net(BaseNet):
         mode = self.config["mode"]
         value = self.config["value"]
         data_format = self.config["data_format"]
-        x = paddle.nn.functional.pad(
-            inputs, pad=pad, mode=mode, value=value, data_format=data_format
-        )
+        x = paddle.nn.functional.pad(inputs, pad=pad, mode=mode, value=value, data_format=data_format)
         shape = paddle.shape(x)
         return paddle.reshape(x, shape)
 
@@ -42,9 +39,7 @@ class TestPadopsConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=10, max_value=20), min_size=4, max_size=5)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=10, max_value=20), min_size=4, max_size=5))
 
         dtype = "float32"
 
@@ -62,17 +57,11 @@ class TestPadopsConvert(OPConvertAutoScanTest):
 
         pad = None
         if len(input_shape) == 3:
-            pad = draw(
-                st.lists(st.integers(min_value=0, max_value=4), min_size=2, max_size=2)
-            )
+            pad = draw(st.lists(st.integers(min_value=0, max_value=4), min_size=2, max_size=2))
         elif len(input_shape) == 4:
-            pad = draw(
-                st.lists(st.integers(min_value=0, max_value=4), min_size=4, max_size=4)
-            )
+            pad = draw(st.lists(st.integers(min_value=0, max_value=4), min_size=4, max_size=4))
         else:
-            pad = draw(
-                st.lists(st.integers(min_value=0, max_value=4), min_size=6, max_size=6)
-            )
+            pad = draw(st.lists(st.integers(min_value=0, max_value=4), min_size=6, max_size=6))
 
         config = {
             "op_names": ["pad3d"],
@@ -104,9 +93,7 @@ class Net2(BaseNet):
         mode = self.config["mode"]
         value = self.config["value"]
         data_format = self.config["data_format"]
-        x = paddle.nn.functional.pad(
-            inputs, pad, mode=mode, value=value, data_format=data_format
-        )
+        x = paddle.nn.functional.pad(inputs, pad, mode=mode, value=value, data_format=data_format)
         shape = paddle.shape(x)
         return paddle.reshape(x, shape)
 
@@ -118,9 +105,7 @@ class TestPadopsConvert_Constanttensor(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=4, max_value=10), min_size=5, max_size=5)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=4, max_value=10), min_size=5, max_size=5))
 
         dtype = "float32"
 
@@ -131,9 +116,7 @@ class TestPadopsConvert_Constanttensor(OPConvertAutoScanTest):
         data_format = None
         data_format = draw(st.sampled_from(["NCDHW", "NDHWC"]))
 
-        pad = draw(
-            st.lists(st.integers(min_value=0, max_value=4), min_size=6, max_size=6)
-        )
+        pad = draw(st.lists(st.integers(min_value=0, max_value=4), min_size=6, max_size=6))
 
         config = {
             "op_names": ["pad3d"],

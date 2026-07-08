@@ -72,4 +72,4 @@ void Isfiniteapper::Opset20() {
         helper_->MakeNode("Not", {or_node->output(0)}, {output_info[0].name});
   }
 }
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

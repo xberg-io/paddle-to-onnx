@@ -15,10 +15,9 @@
 import unittest
 
 import hypothesis.strategies as st
+import paddle
 from auto_scan_test import BaseNet, OPConvertAutoScanTest
 from onnxbase import _test_with_pir
-
-import paddle
 from paddle import ParamAttr
 
 
@@ -84,9 +83,7 @@ class TestInstanceNormConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=4, max_value=10), min_size=3, max_size=5)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=4, max_value=10), min_size=3, max_size=5))
 
         # input_spec = [-1] * len(input_shape)
 

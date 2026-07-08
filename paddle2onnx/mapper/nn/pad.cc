@@ -18,8 +18,8 @@ namespace paddle2onnx {
 REGISTER_MAPPER(pad, PadMapper)
 REGISTER_PIR_MAPPER(pad, PadMapper)
 
-std::vector<int64_t> PadMapper::ConvertPaddingParameter(
-    const std::vector<int64_t>& paddings) {
+std::vector<int64_t>
+PadMapper::ConvertPaddingParameter(const std::vector<int64_t> &paddings) {
   std::vector<int64_t> new_paddings(paddings.size(), 0);
   Assert(paddings.size() % 2 == 0, "The size of padding should be even");
   int64_t half_paddings_len = paddings.size() / 2;
@@ -53,9 +53,9 @@ void PadMapper::Opset11() {
   }
   auto value =
       helper_->Constant({}, GetOnnxDtype(input_info[0].dtype), pad_value_);
-  auto node = helper_->MakeNode(
-      "Pad", {input_info[0].name, paddings, value}, {output_info[0].name});
+  auto node = helper_->MakeNode("Pad", {input_info[0].name, paddings, value},
+                                {output_info[0].name});
   AddAttribute(node, "mode", "constant");
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

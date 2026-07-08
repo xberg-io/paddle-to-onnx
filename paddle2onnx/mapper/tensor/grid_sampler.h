@@ -21,19 +21,15 @@
 namespace paddle2onnx {
 
 class GridSamplerMapper : public Mapper {
- public:
-  GridSamplerMapper(const PaddleParser& p,
-                    OnnxHelper* helper,
-                    int64_t block_id,
+public:
+  GridSamplerMapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
                     int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     GetAttr("padding_mode", &padding_mode_);
     GetAttr("mode", &mode_);
     GetAttr("align_corners", &align_corners_);
   }
-  GridSamplerMapper(const PaddlePirParser& p,
-                    OnnxHelper* helper,
-                    int64_t op_id,
+  GridSamplerMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t op_id,
                     bool c)
       : Mapper(p, helper, op_id, c) {
     in_pir_mode = true;
@@ -44,10 +40,10 @@ class GridSamplerMapper : public Mapper {
   int32_t GetMinOpsetVersion(bool verbose) override;
   void Opset16() override;
 
- private:
+private:
   std::string padding_mode_ = "zeros";
   std::string mode_ = "bilinear";
   bool align_corners_ = false;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

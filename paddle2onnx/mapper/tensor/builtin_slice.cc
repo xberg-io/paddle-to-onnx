@@ -21,8 +21,8 @@ void BuiltinSliceMapper::Opset7() {
   auto input_info = GetInput(0);
   auto output_info = GetOutput(0);
   GetAttr("index", &index);
-  helper_->MakeNode(
-      "Identity", {input_info[index].name}, {output_info[0].name});
+  helper_->MakeNode("Identity", {input_info[index].name},
+                    {output_info[0].name});
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

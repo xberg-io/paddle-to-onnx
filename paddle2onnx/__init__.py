@@ -24,9 +24,7 @@ try:
     )
     import paddle
 
-    lib_paddle_name = (
-        "paddlepaddle-gpu" if paddle.is_compiled_with_cuda() else "paddlepaddle"
-    )
+    lib_paddle_name = "paddlepaddle-gpu" if paddle.is_compiled_with_cuda() else "paddlepaddle"
     paddle_version = importlib.metadata.version(lib_paddle_name)
     if paddle_version == "0.0.0":
         warnings.warn(
@@ -36,13 +34,9 @@ try:
     else:
         min_version = "3.0.0"
         if pv.parse(paddle_version) < pv.parse(min_version):
-            raise ValueError(
-                f"The paddlepaddle version should not be less than {min_version}. {err_msg}"
-            )
+            raise ValueError(f"The paddlepaddle version should not be less than {min_version}. {err_msg}")
 except ImportError as exc:
-    raise ImportError(
-        f"Failed to import paddle. Please ensure paddle is installed. {err_msg}"
-    ) from exc
+    raise ImportError(f"Failed to import paddle. Please ensure paddle is installed. {err_msg}") from exc
 
 from .convert import (
     dygraph2onnx,  # noqa: F401

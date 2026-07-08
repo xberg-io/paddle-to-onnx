@@ -13,8 +13,8 @@
 // limitations under the License.
 
 #pragma once
-#include <onnx/onnx_pb.h>
 #include <map>
+#include <onnx/onnx_pb.h>
 #include <string>
 #include <vector>
 
@@ -39,22 +39,21 @@ struct OptimizerOption {
   }
 };
 
-ONNX_NAMESPACE::ModelProto OptimizeOnnxModel(
-    const ONNX_NAMESPACE::ModelProto& model);
+ONNX_NAMESPACE::ModelProto
+OptimizeOnnxModel(const ONNX_NAMESPACE::ModelProto &model);
 
-bool OptimizePaddle2ONNX(const std::string& model_path,
-                         const std::string& optimized_model_path,
-                         const OptimizerOption& option = OptimizerOption());
+bool OptimizePaddle2ONNX(const std::string &model_path,
+                         const std::string &optimized_model_path,
+                         const OptimizerOption &option = OptimizerOption());
 
 bool OptimizePaddle2ONNX(
-    const std::string& model_path,
-    const std::string& optimized_model_path,
-    const std::map<std::string, std::vector<int>>& shape_infos,
-    const OptimizerOption& option = OptimizerOption());
+    const std::string &model_path, const std::string &optimized_model_path,
+    const std::map<std::string, std::vector<int>> &shape_infos,
+    const OptimizerOption &option = OptimizerOption());
 
-bool Paddle2ONNXFP32ToFP16(const std::string& model_path,
-                           const std::string& optimized_model_path,
+bool Paddle2ONNXFP32ToFP16(const std::string &model_path,
+                           const std::string &optimized_model_path,
                            bool verbose);
 
-}  // namespace optimization
-}  // namespace ONNX_NAMESPACE
+} // namespace optimization
+} // namespace ONNX_NAMESPACE

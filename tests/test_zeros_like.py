@@ -12,9 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from onnxbase import APIOnnx, randtool
-
 import paddle
+from onnxbase import APIOnnx, randtool
 
 
 class Net(paddle.nn.Layer):
@@ -43,8 +42,6 @@ def test_zeros_like_base():
     obj = APIOnnx(op, "zeros_like", [9, 10, 11, 12])
     obj.set_input_data(
         "input_data",
-        paddle.to_tensor(
-            randtool("float", -1, 1, [3, 2, 1, 4, 6, 5]).astype("float32")
-        ),
+        paddle.to_tensor(randtool("float", -1, 1, [3, 2, 1, 4, 6, 5]).astype("float32")),
     )
     obj.run()

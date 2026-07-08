@@ -72,10 +72,8 @@ void LinspaceMapper::Opset9() {
 
   auto add_node = helper_->MakeNode("Add", {mul_node->output(0), cast_start});
 
-  helper_->AutoCast(add_node->output(0),
-                    output_info[0].name,
-                    P2ODataType::FP32,
+  helper_->AutoCast(add_node->output(0), output_info[0].name, P2ODataType::FP32,
                     output_info[0].dtype);
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

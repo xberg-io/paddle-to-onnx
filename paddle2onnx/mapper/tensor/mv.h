@@ -21,16 +21,14 @@
 namespace paddle2onnx {
 
 class MVMapper : public Mapper {
- public:
-  MVMapper(const PaddleParser& p,
-           OnnxHelper* helper,
-           int64_t block_id,
+public:
+  MVMapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
            int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {}
-  MVMapper(const PaddlePirParser& p, OnnxHelper* helper, int64_t i, bool c)
+  MVMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t i, bool c)
       : Mapper(p, helper, i, c) {}
 
   void Opset7() override;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

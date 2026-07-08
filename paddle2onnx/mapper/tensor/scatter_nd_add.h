@@ -21,21 +21,17 @@
 namespace paddle2onnx {
 
 class ScatterNdAddMapper : public Mapper {
- public:
-  ScatterNdAddMapper(const PaddleParser& p,
-                     OnnxHelper* helper,
-                     int64_t block_id,
-                     int64_t op_id)
+public:
+  ScatterNdAddMapper(const PaddleParser &p, OnnxHelper *helper,
+                     int64_t block_id, int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {}
-  ScatterNdAddMapper(const PaddlePirParser& p,
-                     OnnxHelper* helper,
-                     int64_t op_id,
-                     bool in_cf_block)
+  ScatterNdAddMapper(const PaddlePirParser &p, OnnxHelper *helper,
+                     int64_t op_id, bool in_cf_block)
       : Mapper(p, helper, op_id, in_cf_block) {}
   int32_t GetMinOpsetVersion(bool verbose) override;
   void Opset16() override;
 
- private:
+private:
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

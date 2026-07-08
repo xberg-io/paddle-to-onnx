@@ -12,9 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from onnxbase import APIOnnx, _test_only_pir, randtool
-
 import paddle
+from onnxbase import APIOnnx, _test_only_pir, randtool
 
 
 class Net(paddle.nn.Layer):
@@ -99,9 +98,7 @@ class Net2(paddle.nn.Layer):
         """
         forward
         """
-        return paddle.gather(
-            inputs, index=paddle.to_tensor([[1], [2]], dtype="int64"), axis=1
-        )
+        return paddle.gather(inputs, index=paddle.to_tensor([[1], [2]], dtype="int64"), axis=1)
 
 
 # Attention : GatherND don't have opset < 11 version, so we don't test it.
@@ -153,9 +150,7 @@ class Net3(paddle.nn.Layer):
         """
         forward
         """
-        return paddle.gather(
-            inputs, index=paddle.to_tensor([0, 1], dtype="int64"), axis=1
-        )
+        return paddle.gather(inputs, index=paddle.to_tensor([0, 1], dtype="int64"), axis=1)
 
 
 @_test_only_pir
@@ -231,9 +226,7 @@ class Net4(paddle.nn.Layer):
         """
         forward
         """
-        return paddle.gather(
-            inputs, index=paddle.to_tensor([[0], [1]], dtype="int64"), axis=2
-        )
+        return paddle.gather(inputs, index=paddle.to_tensor([[0], [1]], dtype="int64"), axis=2)
 
 
 @_test_only_pir

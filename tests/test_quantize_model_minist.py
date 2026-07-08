@@ -18,7 +18,6 @@ import time
 import unittest
 
 import numpy as np
-
 import paddle
 from paddle.static.quantization import PostTrainingQuantization
 
@@ -32,9 +31,7 @@ class TestPostTrainingQuantization(unittest.TestCase):
     def setUp(self):
         self.int8_model_path = "./post_training_quantization"
         self.download_path = "int8/download"
-        self.cache_folder = os.path.expanduser(
-            "~/.cache/paddle/dataset/" + self.download_path
-        )
+        self.cache_folder = os.path.expanduser("~/.cache/paddle/dataset/" + self.download_path)
         try:
             os.system("mkdir -p " + self.int8_model_path)
         except Exception as e:
@@ -48,13 +45,11 @@ class TestPostTrainingQuantization(unittest.TestCase):
         model_dir = input_model_path
         new_model_dir = output_model_path
         exe = paddle.static.Executor(paddle.CPUPlace())
-        [inference_program, feed_target_names, fetch_targets] = (
-            paddle.static.load_inference_model(path_prefix=model_dir, executor=exe)
+        [inference_program, feed_target_names, fetch_targets] = paddle.static.load_inference_model(
+            path_prefix=model_dir, executor=exe
         )
 
-        feed_vars = [
-            inference_program.global_block().var(name) for name in feed_target_names
-        ]
+        feed_vars = [inference_program.global_block().var(name) for name in feed_target_names]
         paddle.static.save_inference_model(
             path_prefix=os.path.join(new_model_dir, "__model__"),
             feed_vars=feed_vars,
@@ -98,12 +93,8 @@ class TestPostTrainingQuantization(unittest.TestCase):
                 enable_onnx_checker=True,
             )
             sess_options = rt.SessionOptions()
-            sess_options.graph_optimization_level = (
-                rt.GraphOptimizationLevel.ORT_DISABLE_ALL
-            )
-            sess = rt.InferenceSession(
-                onnx_model, sess_options, providers=["CPUExecutionProvider"]
-            )
+            sess_options.graph_optimization_level = rt.GraphOptimizationLevel.ORT_DISABLE_ALL
+            sess = rt.InferenceSession(onnx_model, sess_options, providers=["CPUExecutionProvider"])
             input_name = sess.get_inputs()[0].name
         else:
             new_model_path = model_path
@@ -112,14 +103,10 @@ class TestPostTrainingQuantization(unittest.TestCase):
                 self.merge_params(model_path, new_model_path)
                 model_filename = "__model__"
                 params_filename = "__params__"
-            model_prefix = os.path.join(
-                new_model_path, model_filename.replace(".pdmodel", "")
-            )
-            [infer_program, feed_dict, fetch_targets] = (
-                paddle.static.load_inference_model(
-                    path_prefix=model_prefix,
-                    executor=exe,
-                )
+            model_prefix = os.path.join(new_model_path, model_filename.replace(".pdmodel", ""))
+            [infer_program, feed_dict, fetch_targets] = paddle.static.load_inference_model(
+                path_prefix=model_prefix,
+                executor=exe,
             )
 
         val_reader = paddle.batch(paddle.dataset.mnist.test(), batch_size)
@@ -136,9 +123,7 @@ class TestPostTrainingQuantization(unittest.TestCase):
             if use_onnxruntime:
                 out = sess.run(None, {input_name: image})
             else:
-                out = exe.run(
-                    infer_program, feed={feed_dict[0]: image}, fetch_list=fetch_targets
-                )
+                out = exe.run(infer_program, feed={feed_dict[0]: image}, fetch_list=fetch_targets)
             t2 = time.time()
             period = t2 - t1
             periods.append(period)
@@ -216,23 +201,15 @@ class TestPostTrainingQuantization(unittest.TestCase):
     ):
         origin_model_path = os.path.join(self.cache_folder, model_name)
 
-        print(
-            f"Start FP32 inference for {model_name} on {infer_iterations * batch_size} images ..."
-        )
-        (fp32_throughput, fp32_latency, fp32_acc1) = self.run_program(
-            origin_model_path, batch_size, infer_iterations
-        )
+        print(f"Start FP32 inference for {model_name} on {infer_iterations * batch_size} images ...")
+        (fp32_throughput, fp32_latency, fp32_acc1) = self.run_program(origin_model_path, batch_size, infer_iterations)
 
-        print(
-            f"Start FP32 inference on onnxruntime for {model_name} on {infer_iterations * batch_size} images ..."
-        )
+        print(f"Start FP32 inference on onnxruntime for {model_name} on {infer_iterations * batch_size} images ...")
         (onnx_fp32_throughput, onnx_fp32_latency, onnx_fp32_acc1) = self.run_program(
             origin_model_path, batch_size, infer_iterations, use_onnxruntime=True
         )
 
-        print(
-            f"Start INT8 post training quantization for {model_name} on {quant_iterations * batch_size} images ..."
-        )
+        print(f"Start INT8 post training quantization for {model_name} on {quant_iterations * batch_size} images ...")
         self.generate_quantized_model(
             origin_model_path,
             algo,
@@ -246,9 +223,7 @@ class TestPostTrainingQuantization(unittest.TestCase):
             skip_tensor_list,
         )
 
-        print(
-            f"Start INT8 inference for {model_name} on {infer_iterations * batch_size} images ..."
-        )
+        print(f"Start INT8 inference for {model_name} on {infer_iterations * batch_size} images ...")
         (int8_throughput, int8_latency, int8_acc1) = self.run_program(
             self.int8_model_path,
             batch_size,
@@ -257,9 +232,7 @@ class TestPostTrainingQuantization(unittest.TestCase):
             params_filename="model.pdiparams",
         )
 
-        print(
-            f"Start INT8 inference on onnxruntime for {model_name} on {infer_iterations * batch_size} images ..."
-        )
+        print(f"Start INT8 inference on onnxruntime for {model_name} on {infer_iterations * batch_size} images ...")
         (onnx_int8_throughput, onnx_int8_latency, onnx_int8_acc1) = self.run_program(
             self.int8_model_path,
             batch_size,

@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "paddle2onnx/mapper/tensor/assign_out.h"
 #include "paddle2onnx/mapper/exporter.h"
+#include "paddle2onnx/mapper/tensor/assign_out.h"
 
 namespace paddle2onnx {
 REGISTER_PIR_MAPPER(assign_out, AssignOutMapper)
@@ -25,4 +25,4 @@ void AssignOutMapper::Opset7() {
   helper_->MakeNode("Identity", {input_info[0].name}, {output_info[0].name});
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

@@ -40,4 +40,4 @@ void Flatten2Mapper::Opset7() {
   AddAttribute(node, "axis", axis);
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

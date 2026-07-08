@@ -72,16 +72,10 @@ class logging:
         if logging.log_level >= level:
             if use_color:
                 print(
-                    f"{level_color[level]}{current_time} [{levels[level]}]\t{message}\033[0m".encode().decode(
-                        "latin1"
-                    )
+                    f"{level_color[level]}{current_time} [{levels[level]}]\t{message}\033[0m".encode().decode("latin1")
                 )
             else:
-                print(
-                    f"{current_time} [{levels[level]}]\t{message}".encode().decode(
-                        "latin1"
-                    )
-                )
+                print(f"{current_time} [{levels[level]}]\t{message}".encode().decode("latin1"))
             sys.stdout.flush()
 
     @staticmethod
@@ -119,15 +113,15 @@ def compare_value(a, b, cond):
 
 def compare_attr(actual_value, target_value, attr_name, cond="equal"):
     if not compare_value(actual_value, target_value, cond):
-        raise ValueError(
-            f"Support {attr_name} {cond} {target_value}, actually got {attr_name}=={actual_value}."
-        )
+        raise ValueError(f"Support {attr_name} {cond} {target_value}, actually got {attr_name}=={actual_value}.")
 
 
 def compare_attr_between_dims(attr, dims, attr_name, cond="equal"):
     if not compare_value(attr[dims[0]], attr[dims[1]], cond):
         expect_info = f"Support {attr_name}[{dims[0]}] {cond} {attr_name}[{dims[1]}], "
-        actual_info = f"actually got {attr_name}[{dims[0]}]=={attr[dims[0]]}, not {cond} {attr_name}[{dims[1]}]=={attr[dims[1]]}."
+        actual_info = (
+            f"actually got {attr_name}[{dims[0]}]=={attr[dims[0]]}, not {cond} {attr_name}[{dims[1]}]=={attr[dims[1]]}."
+        )
         raise ValueError(expect_info + actual_info)
 
 
@@ -158,7 +152,5 @@ def paddle2onnx_export_configs(configs):
         "enable_verbose": "verbose",
     }
     save_configs = {k: v for (k, v) in configs.items() if k in jit_save_configs}
-    export_configs = {
-        onnx_configs[k]: v for (k, v) in configs.items() if k in onnx_configs
-    }
+    export_configs = {onnx_configs[k]: v for (k, v) in configs.items() if k in onnx_configs}
     return save_configs, export_configs

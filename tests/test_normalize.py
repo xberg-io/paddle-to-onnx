@@ -12,9 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from onnxbase import APIOnnx, _test_with_pir, randtool
-
 import paddle
+from onnxbase import APIOnnx, _test_with_pir, randtool
 
 
 class Net(paddle.nn.Layer):
@@ -29,9 +28,7 @@ class Net(paddle.nn.Layer):
         """
         forward
         """
-        return paddle.nn.functional.normalize(
-            inputs, p=2, axis=1, epsilon=1e-12, name=None
-        )
+        return paddle.nn.functional.normalize(inputs, p=2, axis=1, epsilon=1e-12, name=None)
 
 
 @_test_with_pir

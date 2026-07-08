@@ -18,10 +18,8 @@
 namespace paddle2onnx {
 
 class RoiAlignMapper : public Mapper {
- public:
-  RoiAlignMapper(const PaddleParser& p,
-                 OnnxHelper* helper,
-                 int64_t block_id,
+public:
+  RoiAlignMapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
                  int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     MarkAsExperimentalOp();
@@ -32,9 +30,7 @@ class RoiAlignMapper : public Mapper {
     GetAttr("aligned", &aligned_);
   }
 
-  RoiAlignMapper(const PaddlePirParser& p,
-                 OnnxHelper* helper,
-                 int64_t op_id,
+  RoiAlignMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t op_id,
                  bool if_in_cf_block)
       : Mapper(p, helper, op_id, if_in_cf_block) {
     MarkAsExperimentalOp();
@@ -51,7 +47,7 @@ class RoiAlignMapper : public Mapper {
   }
   void Opset10() override;
 
- private:
+private:
   int64_t pooled_height_;
   int64_t pooled_width_;
   float spatial_scale_;
@@ -59,4 +55,4 @@ class RoiAlignMapper : public Mapper {
   bool aligned_;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

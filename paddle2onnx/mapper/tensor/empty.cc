@@ -41,10 +41,8 @@ void EmptyMapper::Opset11() {
     std::vector<int64_t> shape;
     GetAttr("shape", &shape);
     helper_->Constant(
-        out_info[0].name,
-        shape,
-        onnx_dtype,
-        value);  // The acceptable (shape) argument must be vector<int64_t>
+        out_info[0].name, shape, onnx_dtype,
+        value); // The acceptable (shape) argument must be vector<int64_t>
     return;
   }
   // b) If shape is tensor (variable), we should cast them to INT64.
@@ -53,9 +51,9 @@ void EmptyMapper::Opset11() {
   std::string shape_name;
   if (shape_is_tensor) {
     std::vector<TensorInfo> shape_info = GetInput("ShapeTensor");
-    shape_name = helper_->AutoCast(
-        shape_info[0].name, shape_info[0].dtype, P2ODataType::INT64);
-  } else {  // tensor list
+    shape_name = helper_->AutoCast(shape_info[0].name, shape_info[0].dtype,
+                                   P2ODataType::INT64);
+  } else { // tensor list
     std::vector<TensorInfo> shape_info = GetInput("ShapeTensorList");
     shape_name = helper_->ConcatIndices(shape_info);
   }
@@ -65,12 +63,12 @@ void EmptyMapper::Opset11() {
   // The attribute [value] of ConstantOfShape op, a one-element tensor, is the
   // value filled in output.
   auto attr = node->add_attribute();
-  attr->set_name("value");                                 // attribute name
-  attr->set_type(ONNX_NAMESPACE::AttributeProto::TENSOR);  // attribute dtype
+  attr->set_name("value");                                // attribute name
+  attr->set_type(ONNX_NAMESPACE::AttributeProto::TENSOR); // attribute dtype
   auto tensor = attr->mutable_t();
   tensor->set_name(out_info[0].name);
-  tensor->set_data_type(onnx_dtype);  // onnx dytpe, not a paddle dtype
-  tensor->add_dims(1);                // one dimension tensor with one element
+  tensor->set_data_type(onnx_dtype); // onnx dytpe, not a paddle dtype
+  tensor->add_dims(1);               // one dimension tensor with one element
   if (onnx_dtype == ONNX_NAMESPACE::TensorProto::INT32) {
     std::vector<int32_t> data(1);
     data[0] = static_cast<int32_t>(value);
@@ -82,7 +80,7 @@ void EmptyMapper::Opset11() {
     const char *ptr = reinterpret_cast<const char *>(data.data());
     tensor->set_raw_data(std::string(ptr, sizeof(int64_t)));
   } else if (onnx_dtype == ONNX_NAMESPACE::TensorProto::FLOAT) {
-    std::vector<float> data(1, value);  // float do not need to be converted.
+    std::vector<float> data(1, value); // float do not need to be converted.
     const char *ptr = reinterpret_cast<const char *>(data.data());
     tensor->set_raw_data(std::string(ptr, sizeof(float)));
   } else if (onnx_dtype == ONNX_NAMESPACE::TensorProto::DOUBLE) {
@@ -100,4 +98,4 @@ void EmptyMapper::Opset11() {
     delete[] data;
   }
 }
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

@@ -65,7 +65,7 @@ void StackMapper::Opset7() {
       aligned_inputs[i] =
           helper_->Reshape(aligned_inputs[i], std::vector<int64_t>{});
     }
-    max_rank = 0;  // All are now scalars
+    max_rank = 0; // All are now scalars
   } else {
     // Normal case: make all inputs have the same rank by unsqueezing lower-rank
     // tensors
@@ -95,4 +95,4 @@ void StackMapper::Opset7() {
   auto out = helper_->Concat(aligned_inputs, axis);
   helper_->AutoCast(out, y_info[0].name, out_dtype, y_info[0].dtype);
 }
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

@@ -21,15 +21,11 @@
 namespace paddle2onnx {
 
 class RangeMapper : public Mapper {
- public:
-  RangeMapper(const PaddleParser& p,
-              OnnxHelper* helper,
-              int64_t block_id,
+public:
+  RangeMapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
               int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {}
-  RangeMapper(const PaddlePirParser& p,
-              OnnxHelper* helper,
-              int64_t op_id,
+  RangeMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t op_id,
               bool c)
       : Mapper(p, helper, op_id, c) {
     in_pir_mode = true;
@@ -42,4 +38,4 @@ class RangeMapper : public Mapper {
   void Opset11() override;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

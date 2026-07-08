@@ -64,11 +64,9 @@ void UnfoldMapper::Opset11() {
 
   output_shape =
       _get_im2col_output_shape(input_batch, input_channel, kernel_h, kernel_w);
-  padded_input = _get_im2col_padded_input(input_info[0].name,
-                                          padding_h_start,
-                                          padding_h_end,
-                                          padding_w_start,
-                                          padding_w_end);
+  padded_input =
+      _get_im2col_padded_input(input_info[0].name, padding_h_start,
+                               padding_h_end, padding_w_start, padding_w_end);
   auto gather_node1 =
       helper_->MakeNode("Gather", {padded_input, blocks_row_indices});
   AddAttribute(gather_node1, "axis", (int64_t)2);
@@ -80,32 +78,26 @@ void UnfoldMapper::Opset11() {
       helper_->MakeNode("Transpose", {gather_node2->output(0)});
   std::vector<int64_t> perm{0, 1, 2, 4, 3, 5};
   AddAttribute(transpose_node, "perm", perm);
-  helper_->MakeNode("Reshape",
-                    {transpose_node->output(0), output_shape},
+  helper_->MakeNode("Reshape", {transpose_node->output(0), output_shape},
                     {output_info[0].name});
 }
 
-std::string UnfoldMapper::_get_im2col_indices_along_dim(std::string intput_d,
-                                                        int64_t kernel_size_d,
-                                                        int64_t dialation_d,
-                                                        int64_t padding_start_d,
-                                                        int64_t padding_end_d,
-                                                        int64_t stride_d) {
+std::string UnfoldMapper::_get_im2col_indices_along_dim(
+    std::string intput_d, int64_t kernel_size_d, int64_t dialation_d,
+    int64_t padding_start_d, int64_t padding_end_d, int64_t stride_d) {
   std::string blocks_d, blocks_d_indices, kernel_grid, kernel_mask, block_mask;
   blocks_d =
       helper_
           ->MakeNode("Add",
                      {intput_d,
-                      helper_->Constant({},
-                                        ONNX_NAMESPACE::TensorProto::INT64,
+                      helper_->Constant({}, ONNX_NAMESPACE::TensorProto::INT64,
                                         padding_start_d + padding_end_d)})
           ->output(0);
   blocks_d =
       helper_
           ->MakeNode("Sub",
                      {blocks_d,
-                      helper_->Constant({},
-                                        ONNX_NAMESPACE::TensorProto::INT64,
+                      helper_->Constant({}, ONNX_NAMESPACE::TensorProto::INT64,
                                         dialation_d * (kernel_size_d - 1))})
           ->output(0);
   blocks_d_indices =
@@ -114,15 +106,14 @@ std::string UnfoldMapper::_get_im2col_indices_along_dim(std::string intput_d,
               "Range",
               {helper_->Constant({}, ONNX_NAMESPACE::TensorProto::INT64, 0),
                blocks_d,
-               helper_->Constant(
-                   {}, ONNX_NAMESPACE::TensorProto::INT64, stride_d)})
+               helper_->Constant({}, ONNX_NAMESPACE::TensorProto::INT64,
+                                 stride_d)})
           ->output(0);
   std::vector<int64_t> kernel_grid_vec =
       arange_(0, kernel_size_d * dialation_d, dialation_d);
   kernel_grid = helper_->Constant(
       std::vector<int64_t>{1, static_cast<int64_t>(kernel_grid_vec.size())},
-      ONNX_NAMESPACE::TensorProto::INT64,
-      kernel_grid_vec);
+      ONNX_NAMESPACE::TensorProto::INT64, kernel_grid_vec);
 
   blocks_d_indices = helper_->Unsqueeze(blocks_d_indices, {0});
   kernel_mask = helper_->Reshape(kernel_grid, {-1, 1});
@@ -136,14 +127,8 @@ std::string UnfoldMapper::_get_im2col_padded_input(std::string &input_name,
                                                    int64_t padding_h_end,
                                                    int64_t padding_w_start,
                                                    int64_t padding_w_end) {
-  std::vector<int64_t> pad_constant{0,
-                                    0,
-                                    padding_h_start,
-                                    padding_w_start,
-                                    0,
-                                    0,
-                                    padding_h_end,
-                                    padding_w_end};
+  std::vector<int64_t> pad_constant{0, 0, padding_h_start, padding_w_start,
+                                    0, 0, padding_h_end,   padding_w_end};
   std::string pad =
       helper_->Constant(ONNX_NAMESPACE::TensorProto::INT64, pad_constant);
 
@@ -157,8 +142,7 @@ std::string UnfoldMapper::_get_im2col_output_shape(std::string &batch_dim,
       helper_
           ->MakeNode("Mul",
                      {channel_dim,
-                      helper_->Constant({},
-                                        ONNX_NAMESPACE::TensorProto::INT64,
+                      helper_->Constant({}, ONNX_NAMESPACE::TensorProto::INT64,
                                         kernel_h * kernel_w)})
           ->output(0);
 
@@ -170,4 +154,4 @@ std::string UnfoldMapper::_get_im2col_output_shape(std::string &batch_dim,
   AddAttribute(concat_node, "axis", (int64_t)0);
   return concat_node->output(0);
 }
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

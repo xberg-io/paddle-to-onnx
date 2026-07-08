@@ -16,13 +16,12 @@
 
 namespace paddle2onnx {
 void OtherQuantizeProcessor::ProcessQuantizeModel(
-    std::vector<std::shared_ptr<ONNX_NAMESPACE::NodeProto>>* parameters,
-    std::vector<std::shared_ptr<ONNX_NAMESPACE::ValueInfoProto>>* inputs,
-    std::vector<std::shared_ptr<ONNX_NAMESPACE::ValueInfoProto>>* outputs,
-    std::vector<std::shared_ptr<ONNX_NAMESPACE::NodeProto>>* nodes,
-    OnnxHelper* helper,
-    const PaddleParser& parser,
-    std::string* calibration_cache) {
+    std::vector<std::shared_ptr<ONNX_NAMESPACE::NodeProto>> *parameters,
+    std::vector<std::shared_ptr<ONNX_NAMESPACE::ValueInfoProto>> *inputs,
+    std::vector<std::shared_ptr<ONNX_NAMESPACE::ValueInfoProto>> *outputs,
+    std::vector<std::shared_ptr<ONNX_NAMESPACE::NodeProto>> *nodes,
+    OnnxHelper *helper, const PaddleParser &parser,
+    std::string *calibration_cache) {
   BaseQuantizeProcessor::ProcessQuantizeModel(
       parameters, inputs, outputs, nodes, helper, parser, calibration_cache);
 
@@ -38,8 +37,7 @@ void OtherQuantizeProcessor::ProcessQuantizeModel(
     return;
   }
   for (auto iter = helper_->quantize_info.begin();
-       iter != helper_->quantize_info.end();
-       iter++) {
+       iter != helper_->quantize_info.end(); iter++) {
     std::string log = iter->first;
     auto scale = iter->second.scale_;
     if (scale.size() == 1) {
@@ -49,4 +47,4 @@ void OtherQuantizeProcessor::ProcessQuantizeModel(
   }
   outfile.close();
 }
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

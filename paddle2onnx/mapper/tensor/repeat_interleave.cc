@@ -24,8 +24,8 @@ int32_t RepeatInterleaveMapper::GetMinOpsetVersion(bool verbose) {
 }
 
 void RepeatInterleaveMapper::DynamicRepeatInterleave(
-    const std::vector<TensorInfo>& x_info,
-    const std::vector<TensorInfo>& out_info) {
+    const std::vector<TensorInfo> &x_info,
+    const std::vector<TensorInfo> &out_info) {
   std::string dim_size_name = "";
 
   auto shape_node = helper_->MakeNode("Shape", {x_info[0].name}, 1);
@@ -49,8 +49,8 @@ void RepeatInterleaveMapper::DynamicRepeatInterleave(
 
   if (HasInput("RepeatTensor")) {
     auto tmp_info = GetInput("RepeatTensor");
-    repeat_info_name = helper_->AutoCast(
-        tmp_info[0].name, tmp_info[0].dtype, P2ODataType::INT64);
+    repeat_info_name = helper_->AutoCast(tmp_info[0].name, tmp_info[0].dtype,
+                                         P2ODataType::INT64);
   } else if (repeat != 0) {
     auto repeat_node =
         helper_->MakeNode("Expand",
@@ -83,8 +83,8 @@ void RepeatInterleaveMapper::DynamicRepeatInterleave(
 }
 
 void RepeatInterleaveMapper::StaticRepeatInterleave(
-    const std::vector<TensorInfo>& x_info,
-    const std::vector<TensorInfo>& out_info) {
+    const std::vector<TensorInfo> &x_info,
+    const std::vector<TensorInfo> &out_info) {
   int n = x_info[0].shape[dim_];
   int x_shape_size = x_info[0].shape.size();
 
@@ -106,8 +106,8 @@ void RepeatInterleaveMapper::StaticRepeatInterleave(
   std::string repeat_info_name = "";
   if (HasInput("RepeatTensor")) {
     auto tmp_info = GetInput("RepeatTensor");
-    repeat_info_name = helper_->AutoCast(
-        tmp_info[0].name, tmp_info[0].dtype, P2ODataType::INT64);
+    repeat_info_name = helper_->AutoCast(tmp_info[0].name, tmp_info[0].dtype,
+                                         P2ODataType::INT64);
   } else {
     repeat_info_name =
         helper_->Constant(ONNX_NAMESPACE::TensorProto::INT64, repeats);
@@ -157,4 +157,4 @@ void RepeatInterleaveMapper::Opset9() {
     StaticRepeatInterleave(x_info, out_info);
   }
 }
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

@@ -21,11 +21,9 @@
 namespace paddle2onnx {
 
 class FillConstantBatchSizeLikeMapper : public Mapper {
- public:
-  FillConstantBatchSizeLikeMapper(const PaddleParser& p,
-                                  OnnxHelper* helper,
-                                  int64_t block_id,
-                                  int64_t op_id)
+public:
+  FillConstantBatchSizeLikeMapper(const PaddleParser &p, OnnxHelper *helper,
+                                  int64_t block_id, int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     GetAttr("dtype", &dtype_);
     GetAttr("value", &value_);
@@ -38,7 +36,7 @@ class FillConstantBatchSizeLikeMapper : public Mapper {
   int32_t GetMinOpsetVersion(bool verbose);
   void Opset7() override;
 
- private:
+private:
   int64_t dtype_;
   float value_;
   std::string str_value_;
@@ -47,4 +45,4 @@ class FillConstantBatchSizeLikeMapper : public Mapper {
   std::vector<int64_t> shape_;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

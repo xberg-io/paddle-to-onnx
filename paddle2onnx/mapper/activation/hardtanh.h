@@ -22,10 +22,8 @@
 
 namespace paddle2onnx {
 class HardtanhMapper : public Mapper {
- public:
-  HardtanhMapper(const PaddlePirParser& p,
-                 OnnxHelper* helper,
-                 int64_t i,
+public:
+  HardtanhMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t i,
                  bool c)
       : Mapper(p, helper, i, c) {
     if (HasAttr("min")) {
@@ -39,8 +37,8 @@ class HardtanhMapper : public Mapper {
   int32_t GetMinOpsetVersion(bool verbose) override;
   void Opset7() override;
 
- private:
+private:
   float min_ = -1.0;
   float max_ = 1.0;
 };
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

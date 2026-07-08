@@ -21,17 +21,15 @@
 namespace paddle2onnx {
 
 class IsNaNMapper : public Mapper {
- public:
-  IsNaNMapper(const PaddleParser& p,
-              OnnxHelper* helper,
-              int64_t block_id,
+public:
+  IsNaNMapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
               int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {}
-  IsNaNMapper(const PaddlePirParser& p, OnnxHelper* helper, int64_t i, bool c)
+  IsNaNMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t i, bool c)
       : Mapper(p, helper, i, c) {}
 
   int32_t GetMinOpsetVersion(bool verbose) override;
   void Opset9() override;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

@@ -12,9 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from onnxbase import APIOnnx, _test_with_pir, randtool
-
 import paddle
+from onnxbase import APIOnnx, _test_with_pir, randtool
 
 
 class Net(paddle.nn.Layer):
@@ -89,9 +88,7 @@ class Net_mult_2(paddle.nn.Layer):
     simple Net
     """
 
-    def __init__(
-        self, return_index=False, return_inverse=False, return_counts=False, axis=None
-    ):
+    def __init__(self, return_index=False, return_inverse=False, return_counts=False, axis=None):
         super().__init__()
         self.return_index = return_index
         self.return_inverse = return_inverse
@@ -169,9 +166,7 @@ class Net_mult_3(paddle.nn.Layer):
     simple Net
     """
 
-    def __init__(
-        self, return_index=False, return_inverse=False, return_counts=False, axis=None
-    ):
+    def __init__(self, return_index=False, return_inverse=False, return_counts=False, axis=None):
         super().__init__()
         self.return_index = return_index
         self.return_inverse = return_inverse

@@ -20,18 +20,14 @@
 
 namespace paddle2onnx {
 class RepeatInterleaveMapper : public Mapper {
- public:
-  RepeatInterleaveMapper(const PaddleParser &p,
-                         OnnxHelper *helper,
-                         int64_t block_id,
-                         int64_t op_id)
+public:
+  RepeatInterleaveMapper(const PaddleParser &p, OnnxHelper *helper,
+                         int64_t block_id, int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     GetAttr("dim", &dim_);
   }
-  RepeatInterleaveMapper(const PaddlePirParser &p,
-                         OnnxHelper *helper,
-                         int64_t op_id,
-                         bool c)
+  RepeatInterleaveMapper(const PaddlePirParser &p, OnnxHelper *helper,
+                         int64_t op_id, bool c)
       : Mapper(p, helper, op_id, c) {
     in_pir_mode = true;
     GetAttr("dim", &dim_);
@@ -44,7 +40,7 @@ class RepeatInterleaveMapper : public Mapper {
   void StaticRepeatInterleave(const std::vector<TensorInfo> &x_info,
                               const std::vector<TensorInfo> &out_info);
 
- private:
+private:
   int64_t dim_;
 };
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

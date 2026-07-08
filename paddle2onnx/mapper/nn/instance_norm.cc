@@ -60,4 +60,4 @@ void InstanceNormMapper::Opset7() {
   AddAttribute(node, "epsilon", epsilon_);
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

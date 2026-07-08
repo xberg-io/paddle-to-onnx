@@ -16,10 +16,9 @@ import unittest
 
 import hypothesis.strategies as st
 import numpy as np
+import paddle
 from auto_scan_test import BaseNet, OPConvertAutoScanTest
 from onnxbase import _test_with_pir, randtool
-
-import paddle
 
 
 class Net(BaseNet):
@@ -28,9 +27,7 @@ class Net(BaseNet):
         mode = self.config["mode"]
         pad_value = self.config["pad_value"]
         data_format = self.config["data_format"]
-        return paddle.nn.functional.pad(
-            inputs, pad=paddings, mode=mode, value=pad_value, data_format=data_format
-        )
+        return paddle.nn.functional.pad(inputs, pad=paddings, mode=mode, value=pad_value, data_format=data_format)
 
 
 class TestPadopsConvert(OPConvertAutoScanTest):
@@ -40,15 +37,11 @@ class TestPadopsConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=10, max_value=20), min_size=4, max_size=4)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=10, max_value=20), min_size=4, max_size=4))
 
         dtype = "float32"
 
-        paddings = draw(
-            st.lists(st.integers(min_value=0, max_value=4), min_size=4, max_size=4)
-        )
+        paddings = draw(st.lists(st.integers(min_value=0, max_value=4), min_size=4, max_size=4))
 
         mode = draw(st.sampled_from(["constant", "reflect", "replicate", "circular"]))
 
@@ -84,9 +77,7 @@ class Net2(BaseNet):
         mode = self.config["mode"]
         pad_value = self.config["pad_value"]
         data_format = self.config["data_format"]
-        return paddle.nn.functional.pad(
-            inputs, pad=padding, mode=mode, value=pad_value, data_format=data_format
-        )
+        return paddle.nn.functional.pad(inputs, pad=padding, mode=mode, value=pad_value, data_format=data_format)
 
 
 class TestPadopsConvert_Paddingtensor(OPConvertAutoScanTest):
@@ -96,9 +87,7 @@ class TestPadopsConvert_Paddingtensor(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=10, max_value=20), min_size=4, max_size=4)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=10, max_value=20), min_size=4, max_size=4))
 
         dtype = "float32"
 
@@ -143,9 +132,7 @@ class Net3(BaseNet):
         mode = self.config["mode"]
         pad_value = self.config["pad_value"]
         data_format = self.config["data_format"]
-        return paddle.nn.functional.pad(
-            inputs, pad=padding, mode=mode, value=pad_value, data_format=data_format
-        )
+        return paddle.nn.functional.pad(inputs, pad=padding, mode=mode, value=pad_value, data_format=data_format)
 
 
 class TestPadopsConvert_Constanttensor(OPConvertAutoScanTest):
@@ -155,9 +142,7 @@ class TestPadopsConvert_Constanttensor(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=10, max_value=20), min_size=4, max_size=4)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=10, max_value=20), min_size=4, max_size=4))
 
         dtype = "float32"
 

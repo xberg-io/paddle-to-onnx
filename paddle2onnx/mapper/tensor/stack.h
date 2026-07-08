@@ -18,17 +18,13 @@
 namespace paddle2onnx {
 
 class StackMapper : public Mapper {
- public:
-  StackMapper(const PaddleParser& p,
-              OnnxHelper* helper,
-              int64_t block_id,
+public:
+  StackMapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
               int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     GetAttr("axis", &axis_);
   }
-  StackMapper(const PaddlePirParser& p,
-              OnnxHelper* helper,
-              int64_t op_id,
+  StackMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t op_id,
               bool c)
       : Mapper(p, helper, op_id, c) {
     in_pir_mode = true;
@@ -36,8 +32,8 @@ class StackMapper : public Mapper {
   }
   void Opset7() override;
 
- private:
+private:
   int64_t axis_;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

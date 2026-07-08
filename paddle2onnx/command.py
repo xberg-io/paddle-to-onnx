@@ -44,9 +44,7 @@ def arg_parser():
         default=None,
         help="PaddlePaddle model's param file name(param files combined in single file), which under directory seted by --model_dir.",
     )
-    parser.add_argument(
-        "--save_file", "-s", type=str, default=None, help="file path to save onnx model"
-    )
+    parser.add_argument("--save_file", "-s", type=str, default=None, help="file path to save onnx model")
     parser.add_argument(
         "--opset_version",
         "-ov",
@@ -144,17 +142,11 @@ def main():
     args = parser.parse_args()
 
     if args.version:
-        logging.info(
-            f"paddle2onnx-{paddle2onnx.__version__} with python>=3.8, paddlepaddle>=3.0.0"
-        )
+        logging.info(f"paddle2onnx-{paddle2onnx.__version__} with python>=3.8, paddlepaddle>=3.0.0")
         return
 
-    assert args.model_dir is not None, (
-        "--model_dir should be defined while translating paddle model to onnx"
-    )
-    assert args.save_file is not None, (
-        "--save_file should be defined while translating paddle model to onnx"
-    )
+    assert args.model_dir is not None, "--model_dir should be defined while translating paddle model to onnx"
+    assert args.save_file is not None, "--save_file should be defined while translating paddle model to onnx"
 
     model_file = os.path.join(args.model_dir, args.model_filename)
     if args.params_filename is None:

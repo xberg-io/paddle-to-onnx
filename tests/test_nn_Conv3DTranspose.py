@@ -12,9 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from onnxbase import APIOnnx, _test_with_pir, randtool
-
 import paddle
+from onnxbase import APIOnnx, _test_with_pir, randtool
 
 
 class Net(paddle.nn.Layer):
@@ -103,9 +102,7 @@ def test_Conv3DTranspose_padding_1_9_10_11_12():
     obj = APIOnnx(op, "nn_Conv3DTranspose", [9, 10, 11, 12])
     obj.set_input_data(
         "input_data",
-        paddle.to_tensor(
-            randtool("float", -1, 1, [3, 1, 10, 10, 10]).astype("float32")
-        ),
+        paddle.to_tensor(randtool("float", -1, 1, [3, 1, 10, 10, 10]).astype("float32")),
     )
     obj.run()
 
@@ -122,9 +119,7 @@ def test_Conv3DTranspose_padding_2_9_10_11_12():
     obj = APIOnnx(op, "nn_Conv3DTranspose", [9, 10, 11, 12])
     obj.set_input_data(
         "input_data",
-        paddle.to_tensor(
-            randtool("float", -1, 1, [3, 1, 10, 10, 10]).astype("float32")
-        ),
+        paddle.to_tensor(randtool("float", -1, 1, [3, 1, 10, 10, 10]).astype("float32")),
     )
     obj.run()
 
@@ -141,9 +136,7 @@ def test_Conv3DTranspose_groups_1_9_10_11_12():
     obj = APIOnnx(op, "nn_Conv3DTranspose", [9, 10, 11, 12])
     obj.set_input_data(
         "input_data",
-        paddle.to_tensor(
-            randtool("float", -1, 1, [3, 16, 10, 10, 10]).astype("float32")
-        ),
+        paddle.to_tensor(randtool("float", -1, 1, [3, 16, 10, 10, 10]).astype("float32")),
     )
     obj.run()
 
@@ -160,9 +153,7 @@ def test_Conv3DTranspose_groups_2_9_10_11_12():
     obj = APIOnnx(op, "nn_Conv3DTranspose", [9, 10, 11, 12])
     obj.set_input_data(
         "input_data",
-        paddle.to_tensor(
-            randtool("float", -1, 1, [3, 16, 10, 10, 10]).astype("float32")
-        ),
+        paddle.to_tensor(randtool("float", -1, 1, [3, 16, 10, 10, 10]).astype("float32")),
     )
     obj.run()
 
@@ -179,9 +170,7 @@ def test_Conv3DTranspose_dilation_2_9_10_11_12():
     obj = APIOnnx(op, "nn_Conv3DTranspose", [9, 10, 11, 12])
     obj.set_input_data(
         "input_data",
-        paddle.to_tensor(
-            randtool("float", -1, 1, [3, 16, 10, 10, 10]).astype("float32")
-        ),
+        paddle.to_tensor(randtool("float", -1, 1, [3, 16, 10, 10, 10]).astype("float32")),
     )
     obj.run()
 
@@ -198,9 +187,7 @@ def test_Conv3DTranspose_output_padding_2_9_10_11_12():
     obj = APIOnnx(op, "nn_Conv3DTranspose", [9, 10, 11, 12])
     obj.set_input_data(
         "input_data",
-        paddle.to_tensor(
-            randtool("float", -1, 1, [3, 16, 10, 10, 10]).astype("float32")
-        ),
+        paddle.to_tensor(randtool("float", -1, 1, [3, 16, 10, 10, 10]).astype("float32")),
     )
     obj.run()
 

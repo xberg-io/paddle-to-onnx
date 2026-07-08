@@ -21,17 +21,13 @@
 namespace paddle2onnx {
 
 class CastMapper : public Mapper {
- public:
-  CastMapper(const PaddleParser& p,
-             OnnxHelper* helper,
-             int64_t block_id,
+public:
+  CastMapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
              int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     GetAttr("out_dtype", &out_dtype_);
   }
-  CastMapper(const PaddlePirParser& p,
-             OnnxHelper* helper,
-             int64_t op_id,
+  CastMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t op_id,
              bool c)
       : Mapper(p, helper, op_id, c) {
     in_pir_mode = true;
@@ -39,8 +35,8 @@ class CastMapper : public Mapper {
   }
   void Opset7() override;
 
- private:
+private:
   int64_t out_dtype_;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

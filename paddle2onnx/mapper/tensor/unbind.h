@@ -21,18 +21,14 @@
 namespace paddle2onnx {
 
 class UnbindMapper : public Mapper {
- public:
-  UnbindMapper(const PaddleParser& p,
-               OnnxHelper* helper,
-               int64_t block_id,
+public:
+  UnbindMapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
                int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     GetAttr("axis", &axis_);
   }
 
-  UnbindMapper(const PaddlePirParser& p,
-               OnnxHelper* helper,
-               int64_t op_id,
+  UnbindMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t op_id,
                bool if_in_cf_block)
       : Mapper(p, helper, op_id, if_in_cf_block) {
     GetAttr("axis", &axis_);
@@ -41,4 +37,4 @@ class UnbindMapper : public Mapper {
   int64_t axis_;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

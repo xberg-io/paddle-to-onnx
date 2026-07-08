@@ -40,4 +40,4 @@ void MultinomialMapper::Opset7() {
   AddAttribute(node, "seed", static_cast<float>(0.0));
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

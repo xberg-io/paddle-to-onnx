@@ -16,10 +16,9 @@ import unittest
 
 import hypothesis.strategies as st
 import numpy as np
+import paddle
 from auto_scan_test import BaseNet, OPConvertAutoScanTest
 from onnxbase import _test_only_pir
-
-import paddle
 
 op_api_map = {
     "linear": "linear_interp_v2",
@@ -57,9 +56,7 @@ class Net(BaseNet):
         """
         scale_factor = self.config["scale_factor"]
         if self.config["is_scale_tensor"] and scale_factor is not None:
-            scale_factor = paddle.to_tensor(
-                scale_factor, dtype=self.config["scale_dtype"]
-            )
+            scale_factor = paddle.to_tensor(scale_factor, dtype=self.config["scale_dtype"])
         size = self.config["size"]
         if self.config["is_size_tensor"] and size is not None:
             size = paddle.to_tensor(size, self.config["size_dtype"])
@@ -89,9 +86,7 @@ class TestInterpolateConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=2, max_value=8), min_size=5, max_size=6)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=2, max_value=8), min_size=5, max_size=6))
 
         dtype = draw(st.sampled_from(["float32"]))
         size_dtype = draw(st.sampled_from(["int32", "int64"]))
@@ -101,9 +96,7 @@ class TestInterpolateConvert(OPConvertAutoScanTest):
         # mode = draw(st.sampled_from(["bilinear"]))
         # mode = draw(st.sampled_from(["bicubic"]))
         # mode = draw(st.sampled_from(["trilinear"]))
-        mode = draw(
-            st.sampled_from(["linear", "nearest", "bilinear", "bicubic", "trilinear"])
-        )
+        mode = draw(st.sampled_from(["linear", "nearest", "bilinear", "bicubic", "trilinear"]))
         align_corners = draw(st.booleans())
         align_mode = draw(st.integers(min_value=0, max_value=1))
         data_format = data_format_map[mode]
@@ -139,11 +132,7 @@ class TestInterpolateConvert(OPConvertAutoScanTest):
             scale_factor = None
             # list
             is_size_tensor = draw(st.booleans())
-            size = draw(
-                st.lists(
-                    st.integers(min_value=12, max_value=30), min_size=num, max_size=num
-                )
-            )
+            size = draw(st.lists(st.integers(min_value=12, max_value=30), min_size=num, max_size=num))
 
         op_name = op_api_map[mode]
         opset_version = op_set_map[mode]
@@ -223,9 +212,7 @@ class TestInterpolateConvert1(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=2, max_value=8), min_size=5, max_size=6)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=2, max_value=8), min_size=5, max_size=6))
 
         dtype = draw(st.sampled_from(["float32"]))
         size_dtype = draw(st.sampled_from(["int32", "int64"]))
@@ -235,9 +222,7 @@ class TestInterpolateConvert1(OPConvertAutoScanTest):
         # mode = draw(st.sampled_from(["bilinear"]))
         # mode = draw(st.sampled_from(["bicubic"]))
         # mode = draw(st.sampled_from(["trilinear"]))
-        mode = draw(
-            st.sampled_from(["linear", "nearest", "bilinear", "bicubic", "trilinear"])
-        )
+        mode = draw(st.sampled_from(["linear", "nearest", "bilinear", "bicubic", "trilinear"]))
         align_corners = draw(st.booleans())
         align_mode = draw(st.integers(min_value=0, max_value=1))
         data_format = data_format_map[mode]
@@ -273,11 +258,7 @@ class TestInterpolateConvert1(OPConvertAutoScanTest):
             scale_factor = None
             # list
             is_size_tensor = draw(st.booleans())
-            size = draw(
-                st.lists(
-                    st.integers(min_value=12, max_value=30), min_size=num, max_size=num
-                )
-            )
+            size = draw(st.lists(st.integers(min_value=12, max_value=30), min_size=num, max_size=num))
 
         op_name = op_api_map[mode]
         opset_version = op_set_map[mode]

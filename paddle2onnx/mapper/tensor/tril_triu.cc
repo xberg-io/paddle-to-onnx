@@ -79,4 +79,4 @@ void TriuMapper::Opset14() {
   AddAttribute(output_node, "upper", upper);
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

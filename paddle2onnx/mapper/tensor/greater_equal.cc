@@ -49,4 +49,4 @@ void GreaterEqualMapper::Opset12() {
 
   helper_->MakeNode("GreaterOrEqual", aligned_inputs, {out_info[0].name});
 }
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

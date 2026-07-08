@@ -21,10 +21,8 @@
 namespace paddle2onnx {
 
 class ElementwiseMapper : public Mapper {
- public:
-  ElementwiseMapper(const PaddleParser& p,
-                    OnnxHelper* helper,
-                    int64_t block_id,
+public:
+  ElementwiseMapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
                     int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     GetAttr("axis", &axis_);
@@ -36,9 +34,7 @@ class ElementwiseMapper : public Mapper {
     op_mapper_["elementwise_pow"] = "Pow";
   }
 
-  ElementwiseMapper(const PaddlePirParser& p,
-                    OnnxHelper* helper,
-                    int64_t op_id,
+  ElementwiseMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t op_id,
                     bool c)
       : Mapper(p, helper, op_id, c) {
     // TODO(wangmingkai): no axis in PIR
@@ -57,23 +53,19 @@ class ElementwiseMapper : public Mapper {
   int32_t GetMinOpsetVersion(bool verbose) override;
   void Opset7() override;
 
- private:
+private:
   std::map<std::string, std::string> op_mapper_;
   int64_t axis_;
 };
 
 class ElementWiseModMapper : public Mapper {
- public:
-  ElementWiseModMapper(const PaddleParser& p,
-                       OnnxHelper* helper,
-                       int64_t block_id,
-                       int64_t op_id)
+public:
+  ElementWiseModMapper(const PaddleParser &p, OnnxHelper *helper,
+                       int64_t block_id, int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {}
 
-  ElementWiseModMapper(const PaddlePirParser& p,
-                       OnnxHelper* helper,
-                       int64_t op_id,
-                       bool c)
+  ElementWiseModMapper(const PaddlePirParser &p, OnnxHelper *helper,
+                       int64_t op_id, bool c)
       : Mapper(p, helper, op_id, c) {}
 
   int32_t GetMinOpsetVersion(bool verbose) override {
@@ -85,26 +77,22 @@ class ElementWiseModMapper : public Mapper {
 };
 
 class ElementWiseFloordivMapper : public Mapper {
- public:
-  ElementWiseFloordivMapper(const PaddleParser& p,
-                            OnnxHelper* helper,
-                            int64_t block_id,
-                            int64_t op_id)
+public:
+  ElementWiseFloordivMapper(const PaddleParser &p, OnnxHelper *helper,
+                            int64_t block_id, int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     GetAttr("axis", &axis_);
   }
 
-  ElementWiseFloordivMapper(const PaddlePirParser& p,
-                            OnnxHelper* helper,
-                            int64_t op_id,
-                            bool c)
+  ElementWiseFloordivMapper(const PaddlePirParser &p, OnnxHelper *helper,
+                            int64_t op_id, bool c)
       : Mapper(p, helper, op_id, c) {
     in_pir_mode = true;
   }
   void Opset7() override;
 
- private:
+private:
   int64_t axis_ = -1;
 };
 
-};  // namespace paddle2onnx
+}; // namespace paddle2onnx

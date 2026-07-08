@@ -21,15 +21,11 @@
 namespace paddle2onnx {
 
 class ReduceMeanMapper : public Mapper {
- public:
-  ReduceMeanMapper(const PaddleParser& p,
-                   OnnxHelper* helper,
-                   int64_t block_id,
+public:
+  ReduceMeanMapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
                    int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {}
-  ReduceMeanMapper(const PaddlePirParser& p,
-                   OnnxHelper* helper,
-                   int64_t op_id,
+  ReduceMeanMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t op_id,
                    bool c)
       : Mapper(p, helper, op_id, c) {
     in_pir_mode = true;
@@ -39,7 +35,7 @@ class ReduceMeanMapper : public Mapper {
   void Opset11() override;
   int32_t GetMinOpsetVersion(bool verbose) override;
 
- private:
+private:
   bool keep_dim_;
   bool reduce_all_;
   int64_t in_dtype_;
@@ -47,4 +43,4 @@ class ReduceMeanMapper : public Mapper {
   std::vector<int64_t> dim_;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

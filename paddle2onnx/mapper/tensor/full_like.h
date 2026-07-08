@@ -21,10 +21,8 @@
 namespace paddle2onnx {
 
 class FullLikeMapper : public Mapper {
- public:
-  FullLikeMapper(const PaddlePirParser& p,
-                 OnnxHelper* helper,
-                 int64_t op_id,
+public:
+  FullLikeMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t op_id,
                  bool if_in_cf_block)
       : Mapper(p, helper, op_id, if_in_cf_block) {
     GetAttr("dtype", &dtype_);
@@ -36,8 +34,8 @@ class FullLikeMapper : public Mapper {
   }
   void Opset8() override;
 
- private:
+private:
   int64_t dtype_;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

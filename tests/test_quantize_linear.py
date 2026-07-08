@@ -17,11 +17,11 @@ import unittest
 
 import numpy as np
 import onnxruntime as ort
-from onnxbase import _test_only_pir
-
 import paddle
-import paddle2onnx
+from onnxbase import _test_only_pir
 from paddle.base import unique_name
+
+import paddle2onnx
 
 
 def convert_scale_to_paddle(onnx_scale, qmax):
@@ -37,9 +37,7 @@ def build_static_net(input_shape, quant_axis, scale_shape, qmin, qmax, type):
         x = paddle.static.data(name="x", shape=input_shape, dtype="float32")
 
         scale = paddle.static.data(name="scale", shape=scale_shape, dtype="float32")
-        zero_points = paddle.static.data(
-            name="zero_points", shape=scale_shape, dtype="float32"
-        )
+        zero_points = paddle.static.data(name="zero_points", shape=scale_shape, dtype="float32")
         accum = paddle.static.data(name="accum", shape=scale_shape, dtype="float32")
         state = paddle.static.data(name="state", shape=scale_shape, dtype="float32")
 
@@ -80,13 +78,11 @@ def build_static_net(input_shape, quant_axis, scale_shape, qmin, qmax, type):
     return model_dir
 
 
-def compare_paddle_and_onnx(
-    model_dir, input_data, scale, zero_points, accum, state, opset_version=19
-):
+def compare_paddle_and_onnx(model_dir, input_data, scale, zero_points, accum, state, opset_version=19):
     exe = paddle.static.Executor(paddle.CPUPlace())
     paddle.enable_static()
-    [inference_program, feed_target_names, fetch_targets] = (
-        paddle.static.load_inference_model(os.path.join(model_dir, "model"), exe)
+    [inference_program, feed_target_names, fetch_targets] = paddle.static.load_inference_model(
+        os.path.join(model_dir, "model"), exe
     )
     paddle_result = exe.run(
         inference_program,
@@ -156,9 +152,7 @@ class TestQuantizeLinear(unittest.TestCase):
         accum = np.zeros(scale_shape, dtype="float32")
         state = np.zeros(scale_shape, dtype="float32")
 
-        model_dir = build_static_net(
-            input_shape, quant_axis, scale_shape, qmin, qmax, "float8_e4m3fn"
-        )
+        model_dir = build_static_net(input_shape, quant_axis, scale_shape, qmin, qmax, "float8_e4m3fn")
         compare_paddle_and_onnx(
             model_dir,
             input_data,
@@ -184,9 +178,7 @@ class TestQuantizeLinear(unittest.TestCase):
         accum = np.zeros(scale_shape, dtype="float32")
         state = np.zeros(scale_shape, dtype="float32")
 
-        model_dir = build_static_net(
-            input_shape, quant_axis, scale_shape, qmin, qmax, "float8_e5m2"
-        )
+        model_dir = build_static_net(input_shape, quant_axis, scale_shape, qmin, qmax, "float8_e5m2")
         compare_paddle_and_onnx(
             model_dir,
             input_data,

@@ -12,9 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from onnxbase import APIOnnx, _test_with_pir, randtool
-
 import paddle
+from onnxbase import APIOnnx, _test_with_pir, randtool
 
 
 class Net(paddle.nn.Layer):
@@ -133,9 +132,7 @@ def test_Upsample_size_linear():
     api: paddle.nn.functional.upsample
     op version: 11, 12
     """
-    op = Net(
-        size=[12], mode="linear", align_corners=False, align_mode=1, data_format="NCW"
-    )
+    op = Net(size=[12], mode="linear", align_corners=False, align_mode=1, data_format="NCW")
 
     op.eval()
     # net, name, ver_list, delta=1e-6, rtol=1e-5
@@ -334,9 +331,7 @@ def test_Upsample_size_trilinear():
     obj = APIOnnx(op, "nn_Upsample", [11, 12])
     obj.set_input_data(
         "input_data",
-        paddle.to_tensor(
-            randtool("float", -1, 1, [3, 1, 10, 10, 10]).astype("float32")
-        ),
+        paddle.to_tensor(randtool("float", -1, 1, [3, 1, 10, 10, 10]).astype("float32")),
     )
     obj.run()
 
@@ -360,9 +355,7 @@ def test_Upsample_scale_factor_trilinear():
     obj = APIOnnx(op, "nn_Upsample", [11, 12])
     obj.set_input_data(
         "input_data",
-        paddle.to_tensor(
-            randtool("float", -1, 1, [3, 1, 10, 10, 10]).astype("float32")
-        ),
+        paddle.to_tensor(randtool("float", -1, 1, [3, 1, 10, 10, 10]).astype("float32")),
     )
     obj.run()
 

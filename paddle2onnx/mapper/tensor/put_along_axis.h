@@ -21,11 +21,9 @@
 namespace paddle2onnx {
 
 class PutAlongAxisMapper : public Mapper {
- public:
-  PutAlongAxisMapper(const PaddlePirParser& p,
-                     OnnxHelper* helper,
-                     int64_t op_id,
-                     bool if_in_cf_block)
+public:
+  PutAlongAxisMapper(const PaddlePirParser &p, OnnxHelper *helper,
+                     int64_t op_id, bool if_in_cf_block)
       : Mapper(p, helper, op_id, if_in_cf_block) {
     GetAttr("axis", &axis_);
     GetAttr("reduce", &reduce_);
@@ -37,9 +35,9 @@ class PutAlongAxisMapper : public Mapper {
   void Opset16() override;
   void Opset18() override;
 
- private:
+private:
   int64_t axis_;
   std::string reduce_;
   bool include_self_;
 };
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

@@ -17,12 +17,14 @@ PaddlePaddle publishes inference models in their native format (`.json` + `.pdip
 All models are Apache 2.0 licensed, exported with ONNX opset 17.
 
 ### Text Detection
+
 | Model | Size | Description |
 |-------|------|-------------|
 | `PP-OCRv5_server_det` | 84 MB | High-accuracy text region detection. Outputs bounding polygons around text areas. For server-side batch processing. |
 | `PP-OCRv5_mobile_det` | 4.5 MB | Lightweight text detection. Same function, optimized for speed and edge deployment. |
 
 ### Text Recognition
+
 | Model | Size | Description |
 |-------|------|-------------|
 | `PP-OCRv5_server_rec` | 81 MB | Multilingual text recognition (Chinese, English, Japanese, Traditional Chinese). Reads characters from cropped text regions. |
@@ -30,11 +32,13 @@ All models are Apache 2.0 licensed, exported with ONNX opset 17.
 | `en_PP-OCRv5_mobile_rec` | 7.5 MB | English/Latin-only recognition. Smallest and fastest for English workloads. |
 
 ### Document Layout Analysis
+
 | Model | Size | Description |
 |-------|------|-------------|
 | `PP-DocLayoutV3` | 126 MB | Classifies document regions into 23 categories (title, paragraph, table, figure, header, footer, etc.). Used to understand page structure before content extraction. |
 
 ### Table Structure Recognition
+
 | Model | Size | Description |
 |-------|------|-------------|
 | `SLANet_plus` | 7.4 MB | General-purpose table structure recognition. Outputs HTML structure tokens and cell bounding boxes. Good balance of speed and accuracy. |
@@ -42,12 +46,14 @@ All models are Apache 2.0 licensed, exported with ONNX opset 17.
 | `SLANeXt_wireless` | 348 MB | Optimized for borderless tables (whitespace-separated columns). Higher accuracy on unbordered tables. |
 
 ### Table Cell Detection
+
 | Model | Size | Description |
 |-------|------|-------------|
 | `RT-DETR-L_wired_table_cell_det` | 123 MB | Object detection for individual cell bounding boxes in bordered tables. |
 | `RT-DETR-L_wireless_table_cell_det` | 123 MB | Cell bounding box detection for borderless tables. |
 
 ### Utility Classifiers
+
 | Model | Size | Description |
 |-------|------|-------------|
 | `PP-LCNet_x1_0_doc_ori` | 6.5 MB | Document orientation classifier (0/90/180/270 degrees). Run before OCR to auto-rotate pages. |
@@ -56,7 +62,7 @@ All models are Apache 2.0 licensed, exported with ONNX opset 17.
 
 ### Typical OCR Pipeline
 
-```
+```text
 doc_ori → layout analysis → ┬─ text regions:  det → rec
                              └─ table regions: table_cls → SLANeXt + cell_det → rec
 ```

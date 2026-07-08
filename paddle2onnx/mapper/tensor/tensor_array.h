@@ -21,10 +21,8 @@
 namespace paddle2onnx {
 
 class CreateArrayMapper : public Mapper {
- public:
-  CreateArrayMapper(const PaddlePirParser& p,
-                    OnnxHelper* helper,
-                    int64_t op_id,
+public:
+  CreateArrayMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t op_id,
                     bool if_in_cf_block)
       : Mapper(p, helper, op_id, if_in_cf_block) {
     GetAttr("dtype", &dtype_);
@@ -33,15 +31,13 @@ class CreateArrayMapper : public Mapper {
   int32_t GetMinOpsetVersion(bool verbose) override;
   void Opset11() override;
 
- private:
+private:
   int64_t dtype_;
 };
 
 class ArrayLengthMapper : public Mapper {
- public:
-  ArrayLengthMapper(const PaddlePirParser& p,
-                    OnnxHelper* helper,
-                    int64_t op_id,
+public:
+  ArrayLengthMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t op_id,
                     bool if_in_cf_block)
       : Mapper(p, helper, op_id, if_in_cf_block) {}
 
@@ -50,10 +46,8 @@ class ArrayLengthMapper : public Mapper {
 };
 
 class ArrayWriteMapper : public Mapper {
- public:
-  ArrayWriteMapper(const PaddlePirParser& p,
-                   OnnxHelper* helper,
-                   int64_t op_id,
+public:
+  ArrayWriteMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t op_id,
                    bool if_in_cf_block)
       : Mapper(p, helper, op_id, if_in_cf_block) {}
 
@@ -62,10 +56,8 @@ class ArrayWriteMapper : public Mapper {
 };
 
 class ArrayReadMapper : public Mapper {
- public:
-  ArrayReadMapper(const PaddlePirParser& p,
-                  OnnxHelper* helper,
-                  int64_t op_id,
+public:
+  ArrayReadMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t op_id,
                   bool if_in_cf_block)
       : Mapper(p, helper, op_id, if_in_cf_block) {}
 
@@ -73,4 +65,4 @@ class ArrayReadMapper : public Mapper {
   void Opset11() override;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

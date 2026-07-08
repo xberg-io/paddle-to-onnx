@@ -25,10 +25,8 @@ void FullLikeMapper::Opset8() {
   auto shape_node = helper_->MakeNode("Shape", {input_info[0].name});
   auto expand_node =
       helper_->MakeNode("Expand", {value_info[0].name, shape_node->output(0)});
-  helper_->AutoCast(expand_node->output(0),
-                    output_info[0].name,
-                    value_info[0].dtype,
-                    output_info[0].dtype);
+  helper_->AutoCast(expand_node->output(0), output_info[0].name,
+                    value_info[0].dtype, output_info[0].dtype);
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

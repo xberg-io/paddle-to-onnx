@@ -21,12 +21,10 @@
 namespace paddle2onnx {
 
 class FullIntArrayMapper : public Mapper {
- public:
+public:
   // Only for PIR
-  FullIntArrayMapper(const PaddlePirParser& p,
-                     OnnxHelper* helper,
-                     int64_t op_id,
-                     bool c)
+  FullIntArrayMapper(const PaddlePirParser &p, OnnxHelper *helper,
+                     int64_t op_id, bool c)
       : Mapper(p, helper, op_id, c) {
     GetAttr("dtype", &dtype_);
     GetAttr("value", &shape_values_);
@@ -34,9 +32,9 @@ class FullIntArrayMapper : public Mapper {
 
   void Opset7() override;
 
- private:
+private:
   std::string dtype_;
   std::vector<int64_t> shape_values_;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

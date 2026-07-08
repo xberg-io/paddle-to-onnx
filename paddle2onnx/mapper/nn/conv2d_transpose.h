@@ -21,11 +21,9 @@
 namespace paddle2onnx {
 
 class Conv2dTransposeMapper : public Mapper {
- public:
-  Conv2dTransposeMapper(const PaddleParser& p,
-                        OnnxHelper* helper,
-                        int64_t block_id,
-                        int64_t op_id)
+public:
+  Conv2dTransposeMapper(const PaddleParser &p, OnnxHelper *helper,
+                        int64_t block_id, int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     GetAttr("groups", &groups_);
     GetAttr("dilations", &dilations_);
@@ -54,10 +52,8 @@ class Conv2dTransposeMapper : public Mapper {
     }
   }
 
-  Conv2dTransposeMapper(const PaddlePirParser& p,
-                        OnnxHelper* helper,
-                        int64_t op_id,
-                        bool c)
+  Conv2dTransposeMapper(const PaddlePirParser &p, OnnxHelper *helper,
+                        int64_t op_id, bool c)
       : Mapper(p, helper, op_id, c) {
     in_pir_mode = true;
     GetAttr("groups", &groups_);
@@ -86,7 +82,7 @@ class Conv2dTransposeMapper : public Mapper {
   int32_t GetMinOpsetVersion(bool verbose) override;
   void Opset7() override;
 
- private:
+private:
   std::vector<int64_t> dilations_;
   std::vector<int64_t> strides_;
   std::vector<int64_t> paddings_;
@@ -97,4 +93,4 @@ class Conv2dTransposeMapper : public Mapper {
   int64_t groups_;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

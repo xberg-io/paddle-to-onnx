@@ -21,19 +21,15 @@
 namespace paddle2onnx {
 
 class ArgMinMapper : public Mapper {
- public:
-  ArgMinMapper(const PaddleParser& p,
-               OnnxHelper* helper,
-               int64_t block_id,
+public:
+  ArgMinMapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
                int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     GetAttr("flatten", &flatten_);
     GetAttr("keepdims", &keepdims_);
     GetAttr("dtype", &dtype_);
   }
-  ArgMinMapper(const PaddlePirParser& p,
-               OnnxHelper* helper,
-               int64_t op_id,
+  ArgMinMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t op_id,
                bool if_in_cf_block)
       : Mapper(p, helper, op_id, if_in_cf_block) {
     GetAttr("flatten", &flatten_);
@@ -43,11 +39,11 @@ class ArgMinMapper : public Mapper {
   int32_t GetMinOpsetVersion(bool verbose) override;
   void Opset7() override;
 
- private:
+private:
   bool flatten_;
   bool keepdims_;
   int64_t axis_;
   int64_t dtype_;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

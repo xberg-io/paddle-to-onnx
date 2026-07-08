@@ -21,19 +21,15 @@
 namespace paddle2onnx {
 
 class ArgMaxMapper : public Mapper {
- public:
-  ArgMaxMapper(const PaddleParser& p,
-               OnnxHelper* helper,
-               int64_t block_id,
+public:
+  ArgMaxMapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
                int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     GetAttr("flatten", &flatten_);
     GetAttr("keepdims", &keepdims_);
     GetAttr("dtype", &dtype_);
   }
-  ArgMaxMapper(const PaddlePirParser& p,
-               OnnxHelper* helper,
-               int64_t op_id,
+  ArgMaxMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t op_id,
                bool c)
       : Mapper(p, helper, op_id, c) {
     in_pir_mode = true;
@@ -44,11 +40,11 @@ class ArgMaxMapper : public Mapper {
   int32_t GetMinOpsetVersion(bool verbose) override;
   void Opset7() override;
 
- private:
+private:
   bool flatten_;
   bool keepdims_;
   int64_t axis_;
   int64_t dtype_;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

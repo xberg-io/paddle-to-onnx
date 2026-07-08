@@ -77,13 +77,13 @@ def _rename_edges_helper(
                 for init_desc in new_graph.initializer:
                     sg_rename[init_desc.name] = init_desc.name = prefix + init_desc.name
                 for sparse_init_desc in new_graph.sparse_initializer:
-                    sg_rename[sparse_init_desc.values.name] = (
-                        sparse_init_desc.values.name
-                    ) = prefix + sparse_init_desc.values.name
+                    sg_rename[sparse_init_desc.values.name] = sparse_init_desc.values.name = (
+                        prefix + sparse_init_desc.values.name
+                    )
                 for sparse_init_desc in new_graph.sparse_initializer:
-                    sg_rename[sparse_init_desc.indices.name] = (
-                        sparse_init_desc.indices.name
-                    ) = prefix + sparse_init_desc.indices.name
+                    sg_rename[sparse_init_desc.indices.name] = sparse_init_desc.indices.name = (
+                        prefix + sparse_init_desc.indices.name
+                    )
 
                 def subgraph_rename_helper(name: str) -> Any:
                     if name in sg_rename:  # noqa: B023
@@ -91,9 +91,7 @@ def _rename_edges_helper(
                     return rename_helper(name)
 
                 new_nodes = [
-                    _rename_edges_helper(
-                        node_desc, subgraph_rename_helper, attribute_map, prefix
-                    )
+                    _rename_edges_helper(node_desc, subgraph_rename_helper, attribute_map, prefix)
                     for node_desc in new_graph.node
                 ]
                 new_graph.ClearField("node")
@@ -103,16 +101,12 @@ def _rename_edges_helper(
 
 
 # FIXME(TMVector): Any reason we can't get rid of this and use the C++ helper directly?
-def function_expand_helper(
-    node: NodeProto, function_proto: FunctionProto, op_prefix: str
-) -> list[NodeProto]:
+def function_expand_helper(node: NodeProto, function_proto: FunctionProto, op_prefix: str) -> list[NodeProto]:
     io_names_map = {}
     attribute_map = {a.name: a for a in node.attribute}
 
     for idx in range(len(function_proto.input)):
-        io_names_map[function_proto.input[idx]] = (
-            node.input[idx] if idx in range(len(node.input)) else ""
-        )
+        io_names_map[function_proto.input[idx]] = node.input[idx] if idx in range(len(node.input)) else ""
 
     for idx in range(len(function_proto.output)):
         # Even if the node has been created with optional outputs missing, we
@@ -185,9 +179,7 @@ def _extract_value_info(
 ) -> onnx.ValueInfoProto:
     if type_proto is None:
         if input is None:
-            raise NotImplementedError(
-                "_extract_value_info: both input and type_proto arguments cannot be None."
-            )
+            raise NotImplementedError("_extract_value_info: both input and type_proto arguments cannot be None.")
         if isinstance(input, list):
             elem_type = onnx.helper.np_dtype_to_tensor_dtype(input[0].dtype)
             shape = None
@@ -216,19 +208,10 @@ def _make_test_model_gen_version(graph: GraphProto, **kwargs: Any) -> ModelProto
             # If the test model uses an unreleased opset version (latest_version+1),
             # directly use make_model to create a model with the latest ir version
             if (
-                (
-                    (opset.domain in {"", "ai.onnx"})
-                    and opset.version == latest_onnx_version + 1
-                )
+                ((opset.domain in {"", "ai.onnx"}) and opset.version == latest_onnx_version + 1)
+                or (opset.domain == "ai.onnx.ml" and opset.version == latest_ml_version + 1)
                 or (
-                    opset.domain == "ai.onnx.ml"
-                    and opset.version == latest_ml_version + 1
-                )
-                or (
-                    (
-                        opset.domain
-                        in {"ai.onnx.training version", "ai.onnx.preview.training"}
-                    )
+                    (opset.domain in {"ai.onnx.training version", "ai.onnx.preview.training"})
                     and opset.version == latest_training_version + 1
                 )
             ):
@@ -261,9 +244,7 @@ def expect(
     if _DiffOpTypes is not None and node_op.op_type.lower() not in _DiffOpTypes:
         return
     if name in _existing_names:
-        raise ValueError(
-            f"Name {name!r} is already using by one test case for node type {node_op.op_type!r}."
-        )
+        raise ValueError(f"Name {name!r} is already using by one test case for node type {node_op.op_type!r}.")
     _existing_names[name] = node_op
 
     # in case node_op is modified
@@ -280,30 +261,20 @@ def expect(
         del kwargs["output_type_protos"]
     inputs_vi = [
         _extract_value_info(arr, arr_name, input_type)
-        for arr, arr_name, input_type in zip(
-            inputs, present_inputs, input_type_protos, strict=False
-        )
+        for arr, arr_name, input_type in zip(inputs, present_inputs, input_type_protos, strict=False)
     ]
     outputs_vi = [
         _extract_value_info(arr, arr_name, output_type)
-        for arr, arr_name, output_type in zip(
-            outputs, present_outputs, output_type_protos, strict=False
-        )
+        for arr, arr_name, output_type in zip(outputs, present_outputs, output_type_protos, strict=False)
     ]
-    graph = onnx.helper.make_graph(
-        nodes=[node], name=name, inputs=inputs_vi, outputs=outputs_vi
-    )
+    graph = onnx.helper.make_graph(nodes=[node], name=name, inputs=inputs_vi, outputs=outputs_vi)
     kwargs["producer_name"] = "backend-test"
 
     if "opset_imports" not in kwargs:
         # To make sure the model will be produced with the same opset_version after opset changes
         # By default, it uses since_version as opset_version for produced models
-        produce_opset_version = onnx.defs.get_schema(
-            node.op_type, domain=node.domain
-        ).since_version
-        kwargs["opset_imports"] = [
-            onnx.helper.make_operatorsetid(node.domain, produce_opset_version)
-        ]
+        produce_opset_version = onnx.defs.get_schema(node.op_type, domain=node.domain).since_version
+        kwargs["opset_imports"] = [onnx.helper.make_operatorsetid(node.domain, produce_opset_version)]
 
     model = _make_test_model_gen_version(graph, **kwargs)
     onnx.save(model, save_path)

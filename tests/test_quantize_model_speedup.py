@@ -18,9 +18,8 @@ import time
 import unittest
 
 import numpy as np
-from fake_quant import _HAS_IR_GRAPH, post_quant_fake
-
 import paddle
+from fake_quant import _HAS_IR_GRAPH, post_quant_fake
 
 paddle.enable_static()
 
@@ -54,9 +53,7 @@ class TestPostTrainingQuantization(unittest.TestCase):
         sess_options = rt.SessionOptions()
         if threads_num is not None:
             sess_options.intra_op_num_threads = threads_num
-        sess = rt.InferenceSession(
-            onnx_model, sess_options, providers=["CPUExecutionProvider"]
-        )
+        sess = rt.InferenceSession(onnx_model, sess_options, providers=["CPUExecutionProvider"])
 
         input_names = [input.name for input in sess.get_inputs()]
         input_shape = [input.shape for input in sess.get_inputs()]
@@ -114,23 +111,15 @@ class TestPostTrainingQuantization(unittest.TestCase):
         origin_model_path = os.path.join(self.quantize_model_dir, model_name)
 
         print(f"Start FP32 inference for {model_name}  ...")
-        fp32_latency = self.run_program(
-            origin_model_path, model_filename, params_filename, threads_num
-        )
+        fp32_latency = self.run_program(origin_model_path, model_filename, params_filename, threads_num)
 
         print(f"Start INT8 post training quantization for {model_name} ...")
-        quantize_model_path = os.path.join(
-            self.quantize_model_dir, model_name + "_quantized"
-        )
-        self.generate_quantized_model(
-            origin_model_path, quantize_model_path, model_filename, params_filename
-        )
+        quantize_model_path = os.path.join(self.quantize_model_dir, model_name + "_quantized")
+        self.generate_quantized_model(origin_model_path, quantize_model_path, model_filename, params_filename)
 
         print(f"Start INT8 inference for {model_name}  ...")
         if ".pdmodel" in model_filename:
-            int8_latency = self.run_program(
-                quantize_model_path, model_filename, params_filename, threads_num
-            )
+            int8_latency = self.run_program(quantize_model_path, model_filename, params_filename, threads_num)
         else:
             int8_latency = self.run_program(
                 quantize_model_path,

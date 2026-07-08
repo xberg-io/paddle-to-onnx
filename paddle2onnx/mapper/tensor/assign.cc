@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "paddle2onnx/mapper/tensor/assign.h"
 #include "paddle2onnx/mapper/exporter.h"
+#include "paddle2onnx/mapper/tensor/assign.h"
 
 namespace paddle2onnx {
 REGISTER_MAPPER(assign, AssignMapper)
@@ -31,12 +31,10 @@ void AssignMapper::Opset7() {
     if (input_info[0].dtype == P2ODataType::BOOL) {
       auto zero = helper_->Constant(ONNX_NAMESPACE::TensorProto::INT64,
                                     std::vector<int64_t>(1, 0));
-      auto cast_input = helper_->AutoCast(
-          input_info[0].name, P2ODataType::BOOL, P2ODataType::INT64);
+      auto cast_input = helper_->AutoCast(input_info[0].name, P2ODataType::BOOL,
+                                          P2ODataType::INT64);
       auto result = helper_->MakeNode("Add", {cast_input, zero})->output(0);
-      helper_->AutoCast(result,
-                        output_info[0].name,
-                        P2ODataType::INT64,
+      helper_->AutoCast(result, output_info[0].name, P2ODataType::INT64,
                         output_info[0].dtype);
     } else {
       auto zero = helper_->Constant(GetOnnxDtype(input_info[0].dtype),
@@ -51,4 +49,4 @@ void AssignMapper::Opset7() {
   }
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

@@ -15,10 +15,9 @@
 import unittest
 
 import hypothesis.strategies as st
+import paddle
 from auto_scan_test import BaseNet, OPConvertAutoScanTest
 from onnxbase import _test_only_pir
-
-import paddle
 
 op_api_map = {
     "arg_min": paddle.argmin,
@@ -59,15 +58,11 @@ class TestArgMinMaxConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        input_shape = draw(
-            st.lists(st.integers(min_value=2, max_value=10), min_size=1, max_size=4)
-        )
+        input_shape = draw(st.lists(st.integers(min_value=2, max_value=10), min_size=1, max_size=4))
 
         dtype = draw(st.sampled_from(["float32", "float64", "int32", "int64"]))
 
-        axis = draw(
-            st.integers(min_value=-len(input_shape), max_value=len(input_shape) - 1)
-        )
+        axis = draw(st.integers(min_value=-len(input_shape), max_value=len(input_shape) - 1))
 
         keep_dim = draw(st.booleans())
 

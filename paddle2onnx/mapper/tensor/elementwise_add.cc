@@ -70,9 +70,7 @@ void ElementwiseAddMapper::ExportForONNX() {
 
   if (input_x_info[0].dtype == P2ODataType::BOOL &&
       input_y_info[0].dtype == P2ODataType::BOOL) {
-    helper_->AutoCast(output_name,
-                      output_info[0].name,
-                      P2ODataType::INT32,
+    helper_->AutoCast(output_name, output_info[0].name, P2ODataType::INT32,
                       P2ODataType::BOOL);
   } else {
     helper_->MakeNode("Identity", {output_name}, {output_info[0].name});
@@ -105,8 +103,8 @@ void ElementwiseAddMapper::ExportForRKNN() {
       }
       std::vector<float> values;
       if (TryGetValue(input_y_info[0], &values)) {
-        y_name = helper_->Constant(
-            broadcast_shape, GetOnnxDtype(P2ODataType::FP32), values);
+        y_name = helper_->Constant(broadcast_shape,
+                                   GetOnnxDtype(P2ODataType::FP32), values);
         output_name = helper_->MakeNode("Add", {x_name, y_name})->output(0);
         break;
       }
@@ -131,9 +129,7 @@ void ElementwiseAddMapper::ExportForRKNN() {
 
   if (input_x_info[0].dtype == P2ODataType::BOOL &&
       input_y_info[0].dtype == P2ODataType::BOOL) {
-    helper_->AutoCast(output_name,
-                      output_info[0].name,
-                      P2ODataType::INT32,
+    helper_->AutoCast(output_name, output_info[0].name, P2ODataType::INT32,
                       P2ODataType::BOOL);
   } else {
     helper_->MakeNode("Identity", {output_name}, {output_info[0].name});
@@ -147,4 +143,4 @@ void ElementwiseAddMapper::Opset7() {
     return ExportForONNX();
   }
 }
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

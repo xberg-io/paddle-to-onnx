@@ -18,17 +18,15 @@
 namespace paddle2onnx {
 
 class Atan2Mapper : public Mapper {
- public:
-  Atan2Mapper(const PaddleParser& p,
-              OnnxHelper* helper,
-              int64_t block_id,
+public:
+  Atan2Mapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
               int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {}
 
-  Atan2Mapper(const PaddlePirParser& p, OnnxHelper* helper, int64_t i, bool c)
+  Atan2Mapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t i, bool c)
       : Mapper(p, helper, i, c) {}
   void Opset9() override;
   int32_t GetMinOpsetVersion(bool verbose) override;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

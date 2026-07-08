@@ -21,8 +21,8 @@
 namespace paddle2onnx {
 
 class UniformMapper : public Mapper {
- public:
-  UniformMapper(const PaddlePirParser& p, OnnxHelper* helper, int64_t i, bool c)
+public:
+  UniformMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t i, bool c)
       : Mapper(p, helper, i, c) {
     GetAttr("dtype", &dtype_);
     GetAttr("seed", &seed_);
@@ -31,9 +31,9 @@ class UniformMapper : public Mapper {
   int32_t GetMinOpsetVersion(bool verbose) override;
   void Opset7() override;
 
- private:
+private:
   int64_t dtype_;
   int64_t seed_;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

@@ -19,10 +19,10 @@
 #define PADDLE2ONNX_DECL __declspec(dllexport)
 #else
 #define PADDLE2ONNX_DECL __declspec(dllimport)
-#endif  // PADDLE2ONNX_LIB
+#endif // PADDLE2ONNX_LIB
 #else
 #define PADDLE2ONNX_DECL __attribute__((visibility("default")))
-#endif  // _WIN32
+#endif // _WIN32
 
 namespace paddle2onnx {
 
@@ -33,60 +33,38 @@ struct PADDLE2ONNX_DECL CustomOp {
   char export_op_name[100] = "paddle2onnx_null";
 };
 
-PADDLE2ONNX_DECL bool Export(const char *model,
-                             const char *params,
-                             char **out,
-                             int *out_size,
-                             int32_t opset_version = 7,
-                             bool auto_upgrade_opset = true,
-                             bool verbose = false,
-                             bool enable_onnx_checker = true,
-                             bool enable_experimental_op = false,
-                             bool enable_optimize = true,
-                             CustomOp *ops = nullptr,
-                             int op_count = 0,
-                             const char *deploy_backend = "onnxruntime",
-                             char **calibration_cache = nullptr,
-                             int *calibration_size = 0,
-                             const char *external_file = "",
-                             bool *save_external = nullptr,
-                             bool export_fp16_model = false,
-                             char **disable_fp16_op_types = nullptr,
-                             int disable_fp16_op_types_count = 0);
+PADDLE2ONNX_DECL bool
+Export(const char *model, const char *params, char **out, int *out_size,
+       int32_t opset_version = 7, bool auto_upgrade_opset = true,
+       bool verbose = false, bool enable_onnx_checker = true,
+       bool enable_experimental_op = false, bool enable_optimize = true,
+       CustomOp *ops = nullptr, int op_count = 0,
+       const char *deploy_backend = "onnxruntime",
+       char **calibration_cache = nullptr, int *calibration_size = 0,
+       const char *external_file = "", bool *save_external = nullptr,
+       bool export_fp16_model = false, char **disable_fp16_op_types = nullptr,
+       int disable_fp16_op_types_count = 0);
 
-PADDLE2ONNX_DECL bool Export(const void *model_buffer,
-                             int64_t model_size,
-                             const void *params_buffer,
-                             int64_t params_size,
-                             char **out,
-                             int *out_size,
-                             int32_t opset_version = 7,
-                             bool auto_upgrade_opset = true,
-                             bool verbose = false,
-                             bool enable_onnx_checker = true,
-                             bool enable_experimental_op = false,
-                             bool enable_optimize = true,
-                             CustomOp *ops = nullptr,
-                             int op_count = 0,
-                             const char *deploy_backend = "onnxruntime",
-                             char **calibration_cache = nullptr,
-                             int *calibration_size = 0,
-                             const char *external_file = "",
-                             bool *save_external = nullptr,
-                             bool export_fp16_model = false,
-                             char **disable_fp16_op_types = nullptr,
-                             int disable_fp16_op_types_count = 0);
+PADDLE2ONNX_DECL bool
+Export(const void *model_buffer, int64_t model_size, const void *params_buffer,
+       int64_t params_size, char **out, int *out_size,
+       int32_t opset_version = 7, bool auto_upgrade_opset = true,
+       bool verbose = false, bool enable_onnx_checker = true,
+       bool enable_experimental_op = false, bool enable_optimize = true,
+       CustomOp *ops = nullptr, int op_count = 0,
+       const char *deploy_backend = "onnxruntime",
+       char **calibration_cache = nullptr, int *calibration_size = 0,
+       const char *external_file = "", bool *save_external = nullptr,
+       bool export_fp16_model = false, char **disable_fp16_op_types = nullptr,
+       int disable_fp16_op_types_count = 0);
 
 // Following are inside usage, will remove it maybe
 PADDLE2ONNX_DECL bool RemoveMultiClassNMS(const char *onnx_model,
-                                          int model_size,
-                                          char **out_model,
+                                          int model_size, char **out_model,
                                           int *out_model_size);
 
-PADDLE2ONNX_DECL bool ConvertFP32ToFP16(const char *onnx_model,
-                                        int model_size,
-                                        char **out_model,
-                                        int *out_model_size,
+PADDLE2ONNX_DECL bool ConvertFP32ToFP16(const char *onnx_model, int model_size,
+                                        char **out_model, int *out_model_size,
                                         bool verbose);
 
 struct PADDLE2ONNX_DECL ModelTensorInfo {
@@ -138,4 +116,4 @@ struct PADDLE2ONNX_DECL PaddleReader {
   NMSParameters nms_params;
 };
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

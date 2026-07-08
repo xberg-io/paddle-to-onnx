@@ -67,8 +67,8 @@ void ArrayToTensorMapper::Opset17() {
   auto gather_node =
       temp_helper.MakeNode("Gather", {shape_node->output(0), axis_node_name});
   AddAttribute(gather_node, "axis", (int64_t)0);
-  auto cast_node = temp_helper.MakeNode(
-      "Cast", {gather_node->output(0)}, {seq_map_out_name});
+  auto cast_node = temp_helper.MakeNode("Cast", {gather_node->output(0)},
+                                        {seq_map_out_name});
   AddAttribute(cast_node, "to", GetOnnxDtype(out_index_info[0].dtype));
   for (auto &item : temp_helper.nodes) {
     *(graph.add_node()) = (*item.get());
@@ -76,10 +76,10 @@ void ArrayToTensorMapper::Opset17() {
   // ===== get out_index =====
   auto seq_map_node = helper_->MakeNode("SequenceMap", {arr_name});
   AddAttribute(seq_map_node, "body", graph);
-  auto out_index_node = helper_->MakeNode("ConcatFromSequence",
-                                          {seq_map_node->output(0)},
-                                          {out_index_info[0].name});
+  auto out_index_node =
+      helper_->MakeNode("ConcatFromSequence", {seq_map_node->output(0)},
+                        {out_index_info[0].name});
   AddAttribute(out_index_node, "axis", (int64_t)0);
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

@@ -48,4 +48,4 @@ void PNormMapper::Opset7() {
   helper_->MakeNode("Pow", {reducesum_node, pnode1}, {output_info[0].name});
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

@@ -22,9 +22,9 @@ namespace paddle2onnx {
 void TensorRTQuantizeProcessor::AddQDQ() {
   BaseQuantizeProcessor::AddQDQ();
   std::vector<std::string>
-      quantize_tensors;  // save the tensor names that need add quantize ops
-  std::vector<std::string> pool_types = {
-      "MaxPool", "AvgPool", "AdaptiveAvgPool"};
+      quantize_tensors; // save the tensor names that need add quantize ops
+  std::vector<std::string> pool_types = {"MaxPool", "AvgPool",
+                                         "AdaptiveAvgPool"};
   for (auto iter = nodes_->begin(); iter < nodes_->end(); iter++) {
     quantize_tensors.clear();
     auto node = *iter;
@@ -37,7 +37,7 @@ void TensorRTQuantizeProcessor::AddQDQ() {
     }
     if (node->op_type() == "MatMul") {
       std::vector<std::string> tensor_names = {node->input(0), node->input(1)};
-      for (auto& name : tensor_names) {
+      for (auto &name : tensor_names) {
         if (helper_->quantize_info.find(name) != helper_->quantize_info.end()) {
           continue;
         }
@@ -52,14 +52,14 @@ void TensorRTQuantizeProcessor::AddQDQ() {
         int64_t quantize_axis = 1;
         std::vector<float> scale;
         std::vector<int64_t> zeros;
-        GetChannelWiseQuantizeInfo(
-            matmul_weight, matmul_weight_shape, quantize_axis, &scale, &zeros);
+        GetChannelWiseQuantizeInfo(matmul_weight, matmul_weight_shape,
+                                   quantize_axis, &scale, &zeros);
         auto scale_node =
             helper_->Constant(ONNX_NAMESPACE::TensorProto::FLOAT, scale);
         auto zero_node =
             helper_->Constant(ONNX_NAMESPACE::TensorProto::INT8, zeros);
-        QuantizeInfo matmul_weight_quantize_info(
-            scale, zeros, scale_node, zero_node, quantize_axis);
+        QuantizeInfo matmul_weight_quantize_info(scale, zeros, scale_node,
+                                                 zero_node, quantize_axis);
         helper_->quantize_info[name] = matmul_weight_quantize_info;
       }
       if (!CanBeQuantize(tensor_names)) {
@@ -78,13 +78,13 @@ void TensorRTQuantizeProcessor::AddQDQ() {
     }
 
     std::string negative_scale_tensor = "";
-    for (std::string& name : quantize_tensors) {
+    for (std::string &name : quantize_tensors) {
       Assert(helper_->quantize_info.find(name) != helper_->quantize_info.end(),
              "[BaseQuantizeProcessor] Can not find quantize info for tensor: " +
                  name);
       QuantizeInfo quantize_info = helper_->quantize_info[name];
       std::vector<float> scales = quantize_info.scale_;
-      for (auto& i : scales) {
+      for (auto &i : scales) {
         if (i <= 1e-10) {
           negative_scale_tensor = negative_scale_tensor + " " + name;
         }
@@ -98,7 +98,7 @@ void TensorRTQuantizeProcessor::AddQDQ() {
       continue;
     }
     // An OP requires a separate quantize op
-    for (std::string& name : quantize_tensors) {
+    for (std::string &name : quantize_tensors) {
       if (IsGraphOutput(name)) {
         continue;
       }
@@ -125,15 +125,14 @@ void TensorRTQuantizeProcessor::AddQDQ() {
   }
 }
 
-void TensorRTQuantizeProcessor::GenerateCache(std::string* calibration_cache) {
+void TensorRTQuantizeProcessor::GenerateCache(std::string *calibration_cache) {
   union {
     float f;
     unsigned char farray[4];
   } un;
   *calibration_cache += "TRT-8XXX-EntropyCalibration2 \n";
   for (auto iter = helper_->quantize_info.rbegin();
-       iter != helper_->quantize_info.rend();
-       iter++) {
+       iter != helper_->quantize_info.rend(); iter++) {
     std::string tensor_name = iter->first;
     QuantizeInfo quantize_info = iter->second;
     if (quantize_info.scale_.size() == 1) {
@@ -151,13 +150,12 @@ void TensorRTQuantizeProcessor::GenerateCache(std::string* calibration_cache) {
 }
 
 void TensorRTQuantizeProcessor::ProcessQuantizeModel(
-    std::vector<std::shared_ptr<ONNX_NAMESPACE::NodeProto>>* parameters,
-    std::vector<std::shared_ptr<ONNX_NAMESPACE::ValueInfoProto>>* inputs,
-    std::vector<std::shared_ptr<ONNX_NAMESPACE::ValueInfoProto>>* outputs,
-    std::vector<std::shared_ptr<ONNX_NAMESPACE::NodeProto>>* nodes,
-    OnnxHelper* helper,
-    const PaddleParser& parser,
-    std::string* calibration_cache) {
+    std::vector<std::shared_ptr<ONNX_NAMESPACE::NodeProto>> *parameters,
+    std::vector<std::shared_ptr<ONNX_NAMESPACE::ValueInfoProto>> *inputs,
+    std::vector<std::shared_ptr<ONNX_NAMESPACE::ValueInfoProto>> *outputs,
+    std::vector<std::shared_ptr<ONNX_NAMESPACE::NodeProto>> *nodes,
+    OnnxHelper *helper, const PaddleParser &parser,
+    std::string *calibration_cache) {
   BaseQuantizeProcessor::ProcessQuantizeModel(
       parameters, inputs, outputs, nodes, helper, parser, calibration_cache);
 
@@ -182,4 +180,4 @@ void TensorRTQuantizeProcessor::ProcessQuantizeModel(
   // convert float to hex
   GenerateCache(calibration_cache);
 }
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

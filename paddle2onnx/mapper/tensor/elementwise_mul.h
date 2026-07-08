@@ -21,11 +21,9 @@
 namespace paddle2onnx {
 
 class ElementwiseMulMapper : public Mapper {
- public:
-  ElementwiseMulMapper(const PaddleParser& p,
-                       OnnxHelper* helper,
-                       int64_t block_id,
-                       int64_t op_id)
+public:
+  ElementwiseMulMapper(const PaddleParser &p, OnnxHelper *helper,
+                       int64_t block_id, int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
     GetAttr("axis", &axis_);
   }
@@ -36,8 +34,8 @@ class ElementwiseMulMapper : public Mapper {
   void ExportForONNX();
   void ExportForRKNN();
 
- private:
+private:
   std::map<std::string, std::string> op_mapper_;
   int64_t axis_;
 };
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

@@ -38,8 +38,8 @@ void ExpandMapper::Opset7() {
         helper_->Constant(ONNX_NAMESPACE::TensorProto::INT64, expand_times_);
   }
 
-  helper_->MakeNode(
-      "Tile", {input_info[0].name, expand_times}, {output_info[0].name});
+  helper_->MakeNode("Tile", {input_info[0].name, expand_times},
+                    {output_info[0].name});
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

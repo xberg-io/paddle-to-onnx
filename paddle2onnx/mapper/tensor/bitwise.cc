@@ -38,12 +38,11 @@ void BitWiseMapper::Opset7() {
   auto x_info = GetInput("X");
   auto out_info = GetOutput("Out");
   if (paddle_type_ == "bitwise_not") {
-    helper_->MakeNode(
-        onnx_elemwise_type_, {x_info[0].name}, {out_info[0].name});
+    helper_->MakeNode(onnx_elemwise_type_, {x_info[0].name},
+                      {out_info[0].name});
   } else {
     auto y_info = GetInput("Y");
-    helper_->MakeNode(onnx_elemwise_type_,
-                      {x_info[0].name, y_info[0].name},
+    helper_->MakeNode(onnx_elemwise_type_, {x_info[0].name, y_info[0].name},
                       {out_info[0].name});
   }
 }
@@ -58,8 +57,8 @@ void BitWiseMapper::Opset18() {
     helper_->MakeNode(node_name, {x_info[0].name}, {out_info[0].name});
   } else {
     auto y_info = GetInput("Y");
-    helper_->MakeNode(
-        node_name, {x_info[0].name, y_info[0].name}, {out_info[0].name});
+    helper_->MakeNode(node_name, {x_info[0].name, y_info[0].name},
+                      {out_info[0].name});
   }
 }
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

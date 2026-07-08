@@ -27,4 +27,4 @@ void BmmMapper::Opset7() {
   helper_->MakeNode("MatMul", {x_info[0].name, y}, {out_info[0].name});
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx

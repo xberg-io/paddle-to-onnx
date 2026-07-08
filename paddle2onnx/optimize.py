@@ -19,9 +19,7 @@ from paddle2onnx.utils import logging
 
 def parse_arguments():
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--input_model", required=True, help="The path of input onnx model file."
-    )
+    parser.add_argument("--input_model", required=True, help="The path of input onnx model file.")
     parser.add_argument(
         "--output_model",
         required=True,

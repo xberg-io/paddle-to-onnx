@@ -26,4 +26,4 @@ void MeanMapper::Opset7() {
   AddAttribute(node, "keepdims", int64_t(1));
 }
 
-}  // namespace paddle2onnx
+} // namespace paddle2onnx
