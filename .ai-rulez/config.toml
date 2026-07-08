@@ -5,7 +5,7 @@ version = '4.0'
 name = 'Paddle2ONNX'
 description = 'Convert PaddlePaddle models to ONNX format'
 gitignore = true
-presets = ['claude', 'copilot', 'cursor', 'antigravity', 'codex']
+presets = ["claude", "codex"]
 builtins = ['python', 'default-commands']
 
 [header]
