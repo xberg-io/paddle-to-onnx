@@ -59,16 +59,12 @@ class TestReshapeConvert0(OPConvertAutoScanTest):
 
         if len(input_shape) == 0:
             if draw(st.booleans()):
-                # reshape from [] to [1]
                 shape = [1]
             else:
-                # reshape from [] to []
                 shape = []
         else:
-            # reshape from [N] to [1 N]
             shape = [1, -1]
 
-        # reshape from [1] to []
         if len(input_shape) == 1 and input_shape[0] == 1 and draw(st.booleans()):
             shape = []
 
@@ -104,7 +100,6 @@ class TestReshapeConvert1(OPConvertAutoScanTest):
         if len(input_shape) == 0:
             shape = [1]
         else:
-            # reshape from [N] to [1 N]
             shape = [1, -1]
 
         def generator_shape():

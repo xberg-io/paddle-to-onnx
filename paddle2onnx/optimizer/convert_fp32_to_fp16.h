@@ -26,7 +26,7 @@ namespace paddle2onnx {
 
 struct proto_node {
 public:
-  std::string node_type; // model, graph, node, arribute
+  std::string node_type;
   ONNX_NAMESPACE::ModelProto *model;
   ONNX_NAMESPACE::GraphProto *graph;
   ONNX_NAMESPACE::NodeProto *node;
@@ -105,29 +105,22 @@ public:
 
   void ConvertTensorFloatToFloat16(ONNX_NAMESPACE::TensorProto *tensor);
 
-  // return if keep the type of node
   bool KeepNodeType(ONNX_NAMESPACE::NodeProto *node);
 
   bool GetTensorValue(const ONNX_NAMESPACE::TensorProto &tensor,
                       std::vector<float> *value);
 
-  // topo sort
   void SortNodes(ONNX_NAMESPACE::ModelProto *model);
 
   void ConvertValToFloat16(float val, uint16_t *x);
 
-  // return if the next node of name is Cast and its attr type is dtype.
   bool CastedTo(const std::string &name, ONNX_NAMESPACE::ModelProto *model,
                 int64_t dtype);
-  // return if the pre node of name is Cast and its attr type is dtype.
   bool CastedFrom(const std::string &name, ONNX_NAMESPACE::ModelProto *model,
                   int64_t dtype);
-  // return if the name is the input of DEFAULT_OP_BLOCK_LIST
   bool IsInputOfOpBlock(const std::string &name,
                         ONNX_NAMESPACE::ModelProto *model);
 
-  // return if the name is the input of DEFAULT_OP_BLOCK_LIST and
-  // fp32_output_op_list
   bool IsOutputOfOpBlockAndFP32Out(const std::string &name,
                                    ONNX_NAMESPACE::ModelProto *model);
 
@@ -144,7 +137,6 @@ public:
     op_block_list_.insert(op_block_list_.end(), disable_fp16_ops.begin(),
                           disable_fp16_ops.end());
   }
-  // If the input ONNX model is a FP16 model, return True
   bool IsFP16Model(const ONNX_NAMESPACE::ModelProto &model);
 
 private:
@@ -157,21 +149,20 @@ private:
   static const int shiftSign = 16;
 
   static const int32_t infN = 0x7F800000;
-  static const int32_t maxN = 0x477FE000; // max flt16 as flt32
-  static const int32_t minN = 0x38800000; // min flt16 normal as flt32
-  static const int32_t sigN = 0x80000000; // sign bit
+  static const int32_t maxN = 0x477FE000;
+  static const int32_t minN = 0x38800000;
+  static const int32_t sigN = 0x80000000;
 
   static constexpr int32_t infC = infN >> shift;
-  static constexpr int32_t nanN = (infC + 1)
-                                  << shift; // minimum flt16 nan as float32
+  static constexpr int32_t nanN = (infC + 1) << shift;
   static constexpr int32_t maxC = maxN >> shift;
   static constexpr int32_t minC = minN >> shift;
   static constexpr int32_t sigC = sigN >> shiftSign;
 
-  static const int32_t mulN = 0x52000000; // (1 << 23) / minN
-  static const int32_t mulC = 0x33800000; // minN / (1 << (23 - shift))
-  static const int32_t subC = 0x003FF;    // max flt32 subnormal downshifted
-  static const int32_t norC = 0x00400;    // min flt32 normal downshifted
+  static const int32_t mulN = 0x52000000;
+  static const int32_t mulC = 0x33800000;
+  static const int32_t subC = 0x003FF;
+  static const int32_t norC = 0x00400;
 
   static constexpr int32_t maxD = infC - maxC - 1;
   static constexpr int32_t minD = minC - subC - 1;
@@ -199,45 +190,41 @@ private:
   std::vector<proto_node> next_level;
 
   std::map<std::string, int64_t> name_index_mapper;
-  // int64_t name_index = 0;
   std::string GenName(const std::string &prefix);
 
-  // save the tensor names that should keep data type
   std::vector<std::string> keep_type_tensors;
 
-  // The input can be FP16, but the output can only be fp32
   std::vector<std::string> fp32_output_op_list = {"RandomNormalLike"};
 
-  std::vector<std::string> DEFAULT_OP_BLOCK_LIST = {
-      "ArrayFeatureExtractor",
-      "ReduceMean", // this op may cause wrong results on FP16
-      "Binarizer",
-      "CastMap",
-      "CategoryMapper",
-      "DictVectorizer",
-      "FeatureVectorizer",
-      "Imputer",
-      "LabelEncoder",
-      "LinearClassifier",
-      "LinearRegressor",
-      "Normalizer",
-      "OneHotEncoder",
-      "RandomUniformLike",
-      "SVMClassifier",
-      "SVMRegressor",
-      "Scaler",
-      "TreeEnsembleClassifier",
-      "TreeEnsembleRegressor",
-      "ZipMap",
-      "NonMaxSuppression",
-      "TopK",
-      "RoiAlign",
-      "Resize",
-      "Range",
-      "CumSum",
-      "Min",
-      "Max",
-      "Upsample", // The following OP is added by Paddle developer
-      "EyeLike"};
+  std::vector<std::string> DEFAULT_OP_BLOCK_LIST = {"ArrayFeatureExtractor",
+                                                    "ReduceMean",
+                                                    "Binarizer",
+                                                    "CastMap",
+                                                    "CategoryMapper",
+                                                    "DictVectorizer",
+                                                    "FeatureVectorizer",
+                                                    "Imputer",
+                                                    "LabelEncoder",
+                                                    "LinearClassifier",
+                                                    "LinearRegressor",
+                                                    "Normalizer",
+                                                    "OneHotEncoder",
+                                                    "RandomUniformLike",
+                                                    "SVMClassifier",
+                                                    "SVMRegressor",
+                                                    "Scaler",
+                                                    "TreeEnsembleClassifier",
+                                                    "TreeEnsembleRegressor",
+                                                    "ZipMap",
+                                                    "NonMaxSuppression",
+                                                    "TopK",
+                                                    "RoiAlign",
+                                                    "Resize",
+                                                    "Range",
+                                                    "CumSum",
+                                                    "Min",
+                                                    "Max",
+                                                    "Upsample",
+                                                    "EyeLike"};
 };
 } // namespace paddle2onnx

@@ -20,9 +20,6 @@ ONNX_NAMESPACE::GraphProto ModelExporter::ExportFillConstant(
   ONNX_NAMESPACE::GraphProto graph;
   graph.set_name("PaddlePaddle fill_constant Graph " + std::to_string(op_id));
 
-  // Add input
-
-  // Add node
   auto &nodes = temp_helper->nodes;
   for (int i = 0; i < nodes.size(); i++) {
     auto &item = nodes[i];
@@ -33,7 +30,6 @@ ONNX_NAMESPACE::GraphProto ModelExporter::ExportFillConstant(
     }
   }
 
-  // Add output
   auto out_info = parser.GetOpOutput(block_id, op_id, "Out");
   *(graph.add_output()) = (*MakeValueInfo(out_info[0]));
   return std::move(graph);
@@ -44,7 +40,6 @@ ONNX_NAMESPACE::GraphProto ModelExporter::ExportConditionalBlock(
     int32_t op_id, const std::string &output_name) {
   auto op = parser.GetOpDesc(block_id, op_id);
 
-  // Get sub_block_idx
   int32_t sub_block_idx = -1;
   for (size_t i = 0; i < op.attrs_size(); ++i) {
     if (op.attrs(i).name() == "sub_block") {
@@ -55,7 +50,6 @@ ONNX_NAMESPACE::GraphProto ModelExporter::ExportConditionalBlock(
   Assert(sub_block_idx != -1,
          "Due to the unsupported sub_block_idx, the conversion is aborted.");
 
-  // Export sub_block
   std::vector<std::shared_ptr<ONNX_NAMESPACE::NodeProto>> temp_parameters;
   std::vector<std::shared_ptr<ONNX_NAMESPACE::ValueInfoProto>> temp_inputs;
   std::vector<std::shared_ptr<ONNX_NAMESPACE::ValueInfoProto>> temp_outputs;

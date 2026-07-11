@@ -48,9 +48,6 @@ void RollMapper::Opset7() {
       result_name = temp_node->output(0);
     }
     helper_->Reshape(result_name, output_info[0].name, input_info[0].shape);
-    // helper_->MakeNode("Reshape",
-    //                   {result_name, input_info[0].shape},
-    //                   {output_info[0].name});
   } else {
     for (int i = 0; i < shifts.size(); i++) {
       auto shift = shifts[i];

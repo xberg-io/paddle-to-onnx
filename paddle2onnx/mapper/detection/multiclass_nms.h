@@ -25,19 +25,11 @@ public:
   NMSMapper(const PaddleParser &p, OnnxHelper *helper, int64_t block_id,
             int64_t op_id)
       : Mapper(p, helper, block_id, op_id) {
-    // NMS is a post process operators for object detection
-    // We have found there're difference between `multi_class_nms3` in
-    // PaddlePaddle and `NonMaxSuppresion` in ONNX
     MarkAsExperimentalOp();
     GetAttr("normalized", &normalized_);
     GetAttr("nms_threshold", &nms_threshold_);
     GetAttr("score_threshold", &score_threshold_);
     GetAttr("nms_eta", &nms_eta_);
-    // The `nms_top_k` in Paddle and `max_output_boxes_per_class` in ONNX share
-    // the same meaning But the filter process may not be same Since NMS is just
-    // a post process for Detection, we are not going to export it with exactly
-    // same result. We will make a precision performance in COCO or Pascal VOC
-    // data later.
     GetAttr("nms_top_k", &nms_top_k_);
     GetAttr("background_label", &background_label_);
     GetAttr("keep_top_k", &keep_top_k_);
@@ -46,19 +38,11 @@ public:
   NMSMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t op_id,
             bool if_in_cf_block)
       : Mapper(p, helper, op_id, if_in_cf_block) {
-    // NMS is a post process operators for object detection
-    // We have found there're difference between `multi_class_nms3` in
-    // PaddlePaddle and `NonMaxSuppresion` in ONNX
     MarkAsExperimentalOp();
     GetAttr("normalized", &normalized_);
     GetAttr("nms_threshold", &nms_threshold_);
     GetAttr("score_threshold", &score_threshold_);
     GetAttr("nms_eta", &nms_eta_);
-    // The `nms_top_k` in Paddle and `max_output_boxes_per_class` in ONNX share
-    // the same meaning But the filter process may not be same Since NMS is just
-    // a post process for Detection, we are not going to export it with exactly
-    // same result. We will make a precision performance in COCO or Pascal VOC
-    // data later.
     GetAttr("nms_top_k", &nms_top_k_);
     GetAttr("background_label", &background_label_);
     GetAttr("keep_top_k", &keep_top_k_);

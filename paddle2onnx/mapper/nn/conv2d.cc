@@ -24,7 +24,6 @@ REGISTER_PIR_MAPPER(conv2d, Conv2dMapper)
 REGISTER_PIR_MAPPER(depthwise_conv2d, Conv2dMapper)
 
 int32_t Conv2dMapper::GetMinOpsetVersion(bool verbose) {
-  // NHWC is not supported
   if (data_format_ == "NHWC") {
     Error() << "Cannot support input with NHWC format." << std::endl;
     return -1;

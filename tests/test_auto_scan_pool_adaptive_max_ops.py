@@ -68,7 +68,7 @@ class TestAdaptiveAvgPool1dConvert(OPConvertAutoScanTest):
         self.run_and_statis(max_examples=30)
 
 
-# TODO max_pool2d_with_index not supported yet
+# ~keep TODO: max_pool2d_with_index is not supported yet.
 class NetAvgPool2d(BaseNet):
     """
     simple Net
@@ -123,7 +123,6 @@ class TestAdaptiveAvgPool2dConvert(OPConvertAutoScanTest):
         self.run_and_statis(max_examples=30)
 
 
-# pool3d not supported yet
 class NetAvgPool3d(BaseNet):
     """
     simple Net

@@ -40,7 +40,6 @@ def test_squeeze_9():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "squeeze", [9])
     obj.set_input_data(
         "input_data",
@@ -56,7 +55,6 @@ def test_squeeze_10():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "squeeze", [10])
     obj.set_input_data(
         "input_data",
@@ -72,7 +70,6 @@ def test_squeeze_11():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "squeeze", [11])
     obj.set_input_data(
         "input_data",
@@ -88,7 +85,6 @@ def test_squeeze_12():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "squeeze", [12])
     obj.set_input_data(
         "input_data",
@@ -104,29 +100,12 @@ def test_squeeze_9_None():
     """
     op = Net(axis=None)
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "squeeze", [9, 10, 11, 12, 13])
     obj.set_input_data(
         "input_data",
         paddle.to_tensor(randtool("float", -1, 1, [1, 3, 10, 1]).astype("float32")),
     )
     obj.run()
-
-
-# def test_squeeze_9_None_no_one():
-#     """
-#     api: paddle.squeeze
-#     op version: 12
-#     """
-#     op = Net(axis=None)
-#     op.eval()
-#     # net, name, ver_list, delta=1e-6, rtol=1e-5
-#     obj = APIOnnx(op, 'squeeze', [13])
-#     obj.set_input_data(
-#         "input_data",
-#         paddle.to_tensor(
-#             randtool("float", -1, 1, [3, 10]).astype('float32')))
-#     obj.run()
 
 
 def test_squeeze_9_None_has_one_negtive():
@@ -136,7 +115,6 @@ def test_squeeze_9_None_has_one_negtive():
     """
     op = Net(axis=[0, -2])
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "squeeze", [9, 10, 11, 12, 13])
     obj.set_input_data(
         "input_data",
@@ -152,7 +130,6 @@ def test_squeeze_9_None_has_two_negtive1():
     """
     op = Net(axis=[3, 5])
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "squeeze", [9])
     obj.set_input_data(
         "input_data",
@@ -168,7 +145,6 @@ def test_squeeze_9_None_has_two_negtive2():
     """
     op = Net(axis=[5, 3])
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "squeeze", [9])
     obj.set_input_data(
         "input_data",
@@ -184,22 +160,9 @@ def test_squeeze_9_None_has_two_negtive():
     """
     op = Net(axis=[-1, 2])
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "squeeze", [13])
     obj.set_input_data(
         "input_data",
         paddle.to_tensor(randtool("float", -1, 1, [1, 3, 1, 1, 10, 1]).astype("float32")),
     )
     obj.run()
-
-
-# if __name__ == '__main__':
-#     test_squeeze_9()
-#     test_squeeze_10()
-#     test_squeeze_11()
-#     test_squeeze_12()
-#     test_squeeze_9_None()
-#     # test_squeeze_9_None_no_one()
-#     test_squeeze_9_None_has_one_negtive()
-#     test_squeeze_9_None_has_two_negtive1()
-#     test_squeeze_9_None_has_two_negtive2()

@@ -34,7 +34,7 @@ void Conv3dTransposeMapper::Opset7() {
   auto input = helper_->AutoCast(input_info[0].name, input_info[0].dtype,
                                  P2ODataType::FP32);
   if (data_format_ == "NHWC") {
-    input = helper_->Transpose(input, {0, 4, 1, 2, 3}); // NDHWC -> NCDHW
+    input = helper_->Transpose(input, {0, 4, 1, 2, 3});
   }
 
   auto kernel = helper_->AutoCast(kernel_info[0].name, kernel_info[0].dtype,
@@ -75,7 +75,7 @@ void Conv3dTransposeMapper::Opset7() {
 
   auto output = node->output(0);
   if (data_format_ == "NHWC") {
-    output = helper_->Transpose(output, {0, 2, 3, 4, 1}); // NCDHW -> NDHWC
+    output = helper_->Transpose(output, {0, 2, 3, 4, 1});
   }
   helper_->AutoCast(output, output_info[0].name, P2ODataType::FP32,
                     output_info[0].dtype);

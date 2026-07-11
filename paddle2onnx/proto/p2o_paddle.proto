@@ -15,11 +15,6 @@ limitations under the License. */
 syntax = "proto2";
 package paddle2onnx.framework.proto;
 
-// Any incompatible changes to ProgramDesc and its dependencies should
-// raise the version defined version.h.
-//
-// Serailization and Deserialization codes should be modified in a way
-// that supports old versions following the version and compatibility policy.
 message Version { optional int64 version = 1 [ default = 0 ]; }
 
 enum AttrType {
@@ -63,8 +58,6 @@ message Scalar {
   optional Complex c = 5;
 };
 
-// OpDesc describes an instance of a C++ framework::OperatorBase
-// derived class type.
 message OpDesc {
 
   message Attr {
@@ -102,10 +95,8 @@ message OpDesc {
   optional bool is_target = 5 [ default = false ];
 };
 
-// OpProto describes a C++ framework::OperatorBase derived class.
 message OpProto {
 
-  // VarProto describes the C++ type framework::Variable.
   message Var {
     required string name = 1;
     required string comment = 2;
@@ -117,14 +108,10 @@ message OpProto {
     optional bool quant = 7 [ default = false ];
   }
 
-  // AttrProto describes the C++ type Attribute.
   message Attr {
     required string name = 1;
     required AttrType type = 2;
     required string comment = 3;
-    // If that attribute is generated, it means the Paddle third
-    // language binding has responsibility to fill that
-    // attribute. End-User should not set that attribute.
     optional bool generated = 4 [ default = false ];
     optional bool extra = 5 [ default = false ];
     optional bool quant = 6 [ default = false ];
@@ -140,7 +127,6 @@ message OpProto {
 
 message VarType {
   enum Type {
-    // Pod Types
     BOOL = 0;
     INT16 = 1;
     INT32 = 2;
@@ -148,7 +134,6 @@ message VarType {
     FP16 = 4;
     FP32 = 5;
     FP64 = 6;
-    // phi::DenseTensor<size_t> is used in C++.
     SIZE_T = 19;
     UINT8 = 20;
     INT8 = 21;
@@ -156,7 +141,6 @@ message VarType {
     COMPLEX64 = 23;
     COMPLEX128 = 24;
 
-    // Other types that may need additional descriptions
     DENSE_TENSOR = 7;
     SELECTED_ROWS = 8;
     FEED_MINIBATCH = 9;
@@ -166,9 +150,6 @@ message VarType {
     DENSE_TENSOR_ARRAY = 13;
     PLACE_LIST = 14;
     READER = 15;
-    // Any runtime decided variable type is raw
-    // raw variables should manage their own allocations
-    // in operators like nccl_op
     RAW = 17;
     TUPLE = 18;
 
@@ -176,20 +157,16 @@ message VarType {
     STRINGS = 26;
     VOCAB = 27;
     FEED_LIST = 28;
-    // The data type of phi::StringTensor
     PSTRING = 29;
-    // the data type of phi::SparseCooTensor
     SPARSE_COO = 30;
-    // the data type of phi::SparseCsrTensor
     SPARSE_CSR = 31;
   }
 
   required Type type = 1;
 
   message TensorDesc {
-    // Should only be PODType. Is enforced in C++
     required Type data_type = 1;
-    repeated int64 dims = 2; // [UNK, 640, 480] is saved as [-1, 640, 480]
+    repeated int64 dims = 2;
   }
   optional TensorDesc selected_rows = 2;
 
@@ -231,8 +208,6 @@ message VarDesc {
   required string name = 1;
   required VarType type = 2;
   optional bool persistable = 3 [ default = false ];
-  // True if the variable is an input data and
-  // have to check the feed data shape and dtype
   optional bool need_check_feed = 4 [ default = false ];
   optional bool is_parameter = 5 [ default = false ];
   optional bool stop_gradient = 6 [ default = false ];
@@ -247,8 +222,6 @@ message BlockDesc {
   optional int32 forward_block_idx = 5 [ default = -1 ];
 }
 
-// In some cases, Paddle may perform operator definition iterations,
-// and the operator uses OpVersionMap for compatibility testing.
 message OpVersion { required int32 version = 1; }
 message OpVersionMap {
   message OpVersionPair {
@@ -258,13 +231,9 @@ message OpVersionMap {
   repeated OpVersionPair pair = 1;
 }
 
-// Please refer to
-// https://github.com/PaddlePaddle/Paddle/blob/develop/doc/design/program.md
-// for more details.
-// TODO(panyx0718): A model can have multiple programs. Need a
-// way to distinguish them. Maybe ID or name?
+// ~keep TODO(panyx0718): support models with multiple programs.
 message ProgramDesc {
-  reserved 2, 3; // For backward compatibility.
+  reserved 2, 3;
   repeated BlockDesc blocks = 1;
   optional Version version = 4;
   optional OpVersionMap op_version_map = 5;

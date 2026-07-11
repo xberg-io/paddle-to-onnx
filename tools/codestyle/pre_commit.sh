@@ -16,15 +16,10 @@
 
 set +x
 
-# use pre-commit 2.17
 if ! [[ $(pre-commit --version) == *"2.17.0"* ]]; then
 	pip install pre-commit==2.17.0 1>nul
 fi
 
-# Install clang-format before git commit to avoid repeat installation due to
-# pre-commit multi-thread running.
-readonly VERSION="13.0.0"
-version=$(clang-format -version)
 if ! [[ $(python -V 2>&1 | awk '{print $2}' | awk -F '.' '{print $1$2}') -ge 36 ]]; then
 	echo "clang-format installation by pip need python version great equal 3.6,
           please change the default python to higher version."
@@ -32,11 +27,12 @@ if ! [[ $(python -V 2>&1 | awk '{print $2}' | awk -F '.' '{print $1$2}') -ge 36 
 fi
 
 diff_files=$(git diff --name-only --diff-filter=ACMR "${BRANCH}")
+readarray -t diff_file_array <<<"$diff_files"
 num_diff_files=$(echo "$diff_files" | wc -l)
 echo -e "diff files between pr and ${BRANCH}:\n${diff_files}"
 
 echo "Checking code style by pre-commit ..."
-pre-commit run --files ${diff_files}
+pre-commit run --files "${diff_file_array[@]}"
 check_error=$?
 
 if test ! -z "$(git diff)"; then
@@ -58,7 +54,7 @@ if [ ${check_error} != 0 ]; then
 	if [[ $num_diff_files -le 100 ]]; then
 		echo "Then, run pre-commit to check codestyle issues in your PR:"
 		echo ""
-		echo "    pre-commit run --files" $(echo ${diff_files} | tr "\n" " ")
+		printf '    pre-commit run --files %s\n' "$(printf '%s ' "${diff_file_array[@]}")"
 		echo ""
 	fi
 	echo "For more information, please refer to our codestyle check guide:"

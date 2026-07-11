@@ -30,7 +30,6 @@ public:
   ConcatMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t i, bool c)
       : Mapper(p, helper, i, c) {
     in_pir_mode = true;
-    // GetAttr("axis", &axis_); axis serves as input in PIR
   }
   int32_t GetMinOpsetVersion(bool verbose) override;
   void Opset7() override;

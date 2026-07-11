@@ -116,15 +116,12 @@ bool PaddleParser::LoadParamsFromMemoryBuffer(
     }
 
     {
-      // read version, we don't need this
       uint32_t version;
       params_buffer.copy(reinterpret_cast<char *>(&version), sizeof(version),
                          read_size);
       read_size += sizeof(version);
     }
     {
-      // read lod_level, we don't use it
-      // this has to be zero, otherwise not support
       uint64_t lod_level;
       params_buffer.copy(reinterpret_cast<char *>(&lod_level),
                          sizeof(lod_level), read_size);
@@ -135,19 +132,16 @@ bool PaddleParser::LoadParamsFromMemoryBuffer(
       }
     }
     {
-      // Another version, we don't use it
       uint32_t version;
       params_buffer.copy(reinterpret_cast<char *>(&version), sizeof(version),
                          read_size);
       read_size += sizeof(version);
     }
     {
-      // read size of TensorDesc
       int32_t size;
       params_buffer.copy(reinterpret_cast<char *>(&size), sizeof(size),
                          read_size);
       read_size += sizeof(size);
-      // read TensorDesc
       std::unique_ptr<char[]> buf(new char[size]);
       params_buffer.copy(reinterpret_cast<char *>(buf.get()), size, read_size);
       read_size += size;
@@ -166,7 +160,6 @@ bool PaddleParser::LoadParamsFromMemoryBuffer(
         weight.shape.push_back(tensor_desc->dims()[i]);
       }
 
-      // read weight data
       weight.buffer.resize(numel * PaddleDataTypeSize(data_type));
       params_buffer.copy(weight.buffer.data(),
                          numel * PaddleDataTypeSize(data_type), read_size);
@@ -195,15 +188,12 @@ bool PaddleParser::LoadParamsFromMemoryBuffer(const void *params_buffer,
     }
 
     {
-      // read version, we don't need this
       uint32_t version;
       std::memcpy(&version, read_pointer, sizeof(version));
       read_pointer += sizeof(version);
       params_size -= sizeof(version);
     }
     {
-      // read lod_level, we don't use it
-      // this has to be zero, otherwise not support
       uint64_t lod_level;
       std::memcpy(&lod_level, read_pointer, sizeof(lod_level));
       read_pointer += sizeof(lod_level);
@@ -214,19 +204,16 @@ bool PaddleParser::LoadParamsFromMemoryBuffer(const void *params_buffer,
       }
     }
     {
-      // Another version, we don't use it
       uint32_t version;
       std::memcpy(&version, read_pointer, sizeof(version));
       read_pointer += sizeof(version);
       params_size -= sizeof(version);
     }
     {
-      // read size of TensorDesc
       int32_t size;
       std::memcpy(&size, read_pointer, sizeof(size));
       read_pointer += sizeof(size);
       params_size -= sizeof(size);
-      // read TensorDesc
       std::unique_ptr<char[]> buf(new char[size]);
       std::memcpy(buf.get(), read_pointer, size);
       read_pointer += size;
@@ -246,7 +233,6 @@ bool PaddleParser::LoadParamsFromMemoryBuffer(const void *params_buffer,
         weight.shape.push_back(tensor_desc->dims()[i]);
       }
 
-      // read weight data
       weight.buffer.resize(numel * PaddleDataTypeSize(data_type));
       std::memcpy(weight.buffer.data(), read_pointer,
                   numel * PaddleDataTypeSize(data_type));
@@ -274,14 +260,11 @@ bool PaddleParser::LoadParams(const std::string &path) {
   int64_t read_size = 0;
   while (read_size < total_size) {
     {
-      // read version, we don't need this
       uint32_t version;
       read_size += sizeof(version);
       is.read(reinterpret_cast<char *>(&version), sizeof(version));
     }
     {
-      // read lod_level, we don't use it
-      // this has to be zero, otherwise not support
       uint64_t lod_level;
       read_size += sizeof(lod_level);
       is.read(reinterpret_cast<char *>(&lod_level), sizeof(lod_level));
@@ -289,17 +272,14 @@ bool PaddleParser::LoadParams(const std::string &path) {
              "Paddle2ONNX: Only support weight with lod_level = 0.");
     }
     {
-      // Another version, we don't use it
       uint32_t version;
       read_size += sizeof(version);
       is.read(reinterpret_cast<char *>(&version), sizeof(version));
     }
     {
-      // read size of TensorDesc
       int32_t size;
       read_size += sizeof(size);
       is.read(reinterpret_cast<char *>(&size), sizeof(size));
-      // read TensorDesc
       std::unique_ptr<char[]> buf(new char[size]);
       read_size += size;
       is.read(reinterpret_cast<char *>(buf.get()), size);
@@ -318,7 +298,6 @@ bool PaddleParser::LoadParams(const std::string &path) {
         weight.shape.push_back(tensor_desc->dims()[i]);
       }
 
-      // read weight data
       weight.buffer.resize(numel * PaddleDataTypeSize(data_type));
       read_size += numel * PaddleDataTypeSize(data_type);
       is.read(weight.buffer.data(), numel * PaddleDataTypeSize(data_type));
@@ -354,9 +333,6 @@ const framework::proto::OpDesc &PaddleParser::GetOpDesc(int32_t block_idx,
 }
 
 void PaddleParser::InitBlock() {
-  //  if (ExistsDuplicateTensorName()) {
-  //    return false;
-  //  }
   GetBlocksVarName2Id();
   GetBlocksOps();
   GetGlobalBlockInputOutputInfo();
@@ -438,8 +414,6 @@ void PaddleParser::GetBlocksOps() {
       if (prog->blocks(i).ops(j).type() == "assign_value") {
         _constant_ops[i][prog->blocks(i).ops(j).outputs(0).arguments(0)] = j;
       }
-      // Determine whether the model is a quantized model, if it is a
-      // quantized model, set is_quantized_model to be true
       if (!is_quantized_model &&
           prog->blocks(i).ops(j).type().find("quantize") != std::string::npos) {
         is_quantized_model = true;
@@ -470,8 +444,6 @@ TensorInfo PaddleParser::GetTensorInfo(
 
   auto var_idx = iter->second;
 
-  // Dangerous conversion, lod tensor array is under limited supporting
-  // Only works in some control flow situation
   if (prog->blocks(block_idx).vars(var_idx).type().has_tensor_array()) {
     auto tensor_array =
         prog->blocks(block_idx).vars(var_idx).type().tensor_array();
@@ -589,10 +561,9 @@ PaddleParser::GetOpAttrVar(int64_t block_id, int64_t op_id,
       Assert(IsAttrVar(op, i),
              "Required AttrVar: " + name +
                  " type is Variable in operator: " + op.type());
-      // Case 1: Attribute is a single Var
       if (op.attrs(i).has_var_name()) {
         inputs.push_back(GetTensorInfo(op.attrs(i).var_name(), block));
-      } else { // Case 2: Attribute is a List[Var]
+      } else {
         for (int idx = 0; idx < op.attrs(i).vars_name_size(); ++idx) {
           auto &var_name = op.attrs(i).vars_name(idx);
           inputs.push_back(GetTensorInfo(var_name, block));
@@ -616,8 +587,6 @@ bool PaddleParser::OpHasAttr(const paddle2onnx::framework::proto::OpDesc &op,
                              const std::string &name) const {
   bool found = false;
   for (auto i = 0; i < op.attrs_size(); ++i) {
-    // set found to true when name is in op attrs and can use GetOpAttr to
-    // get value
     if (op.attrs(i).name() == name) {
       found = true;
       break;
@@ -810,7 +779,6 @@ void PaddleParser::GetOpAttr(const paddle2onnx::framework::proto::OpDesc &op,
 void PaddleParser::GetGlobalBlockInputOutputInfo() {
   inputs.clear();
   outputs.clear();
-  // record the origin order of Paddle model
   std::vector<TensorInfo> inputs_with_no_order;
   std::vector<TensorInfo> outputs_with_no_order;
   std::vector<int64_t> input_order;
@@ -831,16 +799,11 @@ void PaddleParser::GetGlobalBlockInputOutputInfo() {
       input_order.push_back(order);
     }
 
-    // This is a trick check, due to the uncorrect shape inference of Paddle
-    // model
-    // Remove this after shape inference fixed
     if (prog->blocks(0).ops(i).type() == "multiclass_nms3") {
       _has_nms = true;
     }
   }
 
-  // Reorder the inputs and outputs to keep same with the original Paddle
-  // model
   inputs.resize(input_order.size());
   for (size_t i = 0; i < input_order.size(); ++i) {
     inputs[input_order[i]] = inputs_with_no_order[i];
@@ -849,7 +812,6 @@ void PaddleParser::GetGlobalBlockInputOutputInfo() {
   for (size_t i = 0; i < output_order.size(); ++i) {
     outputs[output_order[i]] = outputs_with_no_order[i];
   }
-  // Trick setting for nms, remove this after shape inference fixed
   if (_has_nms) {
     for (size_t i = 0; i < outputs.size(); ++i) {
       if (outputs[i].shape.size() == 2) {

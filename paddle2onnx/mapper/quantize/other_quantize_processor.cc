@@ -25,8 +25,6 @@ void OtherQuantizeProcessor::ProcessQuantizeModel(
   BaseQuantizeProcessor::ProcessQuantizeModel(
       parameters, inputs, outputs, nodes, helper, parser, calibration_cache);
 
-  // If deploy_backend is others, the quantization model is exported as a
-  // float model + quantization table.
   RemoveAllQuantizeOps();
   std::ofstream outfile;
   outfile.open("max_range.txt", std::ios::out);

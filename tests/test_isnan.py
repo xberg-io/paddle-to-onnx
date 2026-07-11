@@ -62,7 +62,6 @@ def test_isnan_9():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "isnan", [9])
     obj.set_input_data(
         "input_data",
@@ -79,7 +78,6 @@ def test_isnan_10():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "isnan", [10])
     obj.set_input_data(
         "input_data",
@@ -96,7 +94,6 @@ def test_isnan_11():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "isnan", [11])
     obj.set_input_data(
         "input_data",
@@ -113,7 +110,6 @@ def test_isnan_12():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "isnan", [12])
     obj.set_input_data(
         "input_data",

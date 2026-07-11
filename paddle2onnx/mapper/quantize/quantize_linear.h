@@ -55,8 +55,7 @@ public:
   void Opset19() override;
 
 private:
-  int64_t round_type_ = 0; // 0: rounding to nearest ties to even. 1: rounding
-  // to nearest ties away from zero.
+  int64_t round_type_ = 0;
   int64_t quant_axis_ = 1;
   int64_t bit_length_ = 8;
   int64_t qmin_ = -128;

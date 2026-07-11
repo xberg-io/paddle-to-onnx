@@ -66,7 +66,6 @@ def test_Conv1DTranspose_9():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Conv1DTranspose", [9])
     obj.set_input_data(
         "input_data",
@@ -83,7 +82,6 @@ def test_Conv1DTranspose_10():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Conv1DTranspose", [10])
     obj.set_input_data(
         "input_data",
@@ -100,7 +98,6 @@ def test_Conv1DTranspose_11():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Conv1DTranspose", [11])
     obj.set_input_data(
         "input_data",
@@ -117,7 +114,6 @@ def test_Conv1DTranspose_12_VALID():
     """
     op = Net(padding="VALID")
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Conv1DTranspose", [9, 10, 11, 12, 13])
     obj.set_input_data(
         "input_data",
@@ -134,7 +130,6 @@ def test_Conv1DTranspose_12_SAME():
     """
     op = Net(padding="SAME")
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Conv1DTranspose", [9, 10, 11, 12, 13])
     obj.set_input_data(
         "input_data",
@@ -151,7 +146,6 @@ def test_Conv1DTranspose_12_Padding_list1():
     """
     op = Net(padding=[1, 2])
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Conv1DTranspose", [9, 10, 11, 12, 13])
     obj.set_input_data(
         "input_data",
@@ -168,7 +162,6 @@ def test_Conv1DTranspose_12_Padding_list2():
     """
     op = Net(padding=[[0, 0], [0, 0], [2]])
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Conv1DTranspose", [9, 10, 11, 12, 13])
     obj.set_input_data(
         "input_data",
@@ -185,7 +178,6 @@ def test_Conv1DTranspose_12_Padding_tuple1():
     """
     op = Net(padding=(1, 2))
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Conv1DTranspose", [9, 10, 11, 12, 13])
     obj.set_input_data(
         "input_data",

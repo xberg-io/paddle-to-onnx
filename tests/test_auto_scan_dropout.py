@@ -35,7 +35,6 @@ class Net(BaseNet):
             p = paddle.to_tensor(self.config["p"], dtype="float32")
         else:
             p = self.config["p"]
-        # when training is true, has diff
         return paddle.nn.functional.dropout(x, training=False, p=p, axis=self.config["axis"], mode=self.config["mode"])
 
 
@@ -47,7 +46,6 @@ class TestDropoutConvert(OPConvertAutoScanTest):
 
     def sample_convert_config(self, draw):
         input_shape = draw(st.lists(st.integers(min_value=2, max_value=8), min_size=0, max_size=5))
-        # "float64" has a bug
         dtype = draw(st.sampled_from(["float32"]))
         p = random.random()
         mode = draw(st.sampled_from(["upscale_in_train", "downscale_in_infer"]))
@@ -61,7 +59,7 @@ class TestDropoutConvert(OPConvertAutoScanTest):
 
         if len(input_shape) == 0:
             axis = 0
-            tensor_attr = False  # must be false when 0D tensor
+            tensor_attr = False
 
         if len(input_shape) == 1:
             axis = 0

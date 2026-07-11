@@ -65,7 +65,6 @@ class TestGaussianRandomConvert_tensorlist(OPConvertAutoScanTest):
 
         dtype = draw(st.sampled_from(["int32", "int64"]))
 
-        # Tensor List input, three 0D tensors
         config = {
             "op_names": ["gaussian_random"],
             "test_data_shapes": [generator1_data, generator2_data, generator3_data],
@@ -125,7 +124,6 @@ class TestGaussianRandomConvert(OPConvertAutoScanTest):
 
         dtype = draw(st.sampled_from(["int32", "int64"]))
 
-        # Tensor input, one 1D tensor
         config = {
             "op_names": ["gaussian_random"],
             "test_data_shapes": [generator_data],
@@ -180,7 +178,6 @@ class TestGaussianRandomConvert_list(OPConvertAutoScanTest):
 
         out_dtype = draw(st.sampled_from(["float32", "float64"]))
 
-        # int list
         config = {
             "op_names": ["gaussian_random"],
             "test_data_shapes": [],

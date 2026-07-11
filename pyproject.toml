@@ -47,8 +47,6 @@ write_to = "paddle2onnx/version.py"
 [tool.pyrefly]
 python-version = "3.10"
 project-includes = ["paddle2onnx", "setup.py"]
-# The C++ extension `paddle2onnx_cpp2py_export` is a compiled `.so` with no
-# stubs, so the static checker cannot resolve it. Treat it as `Any`.
 replace-imports-with-any = ["paddle2onnx.paddle2onnx_cpp2py_export"]
 
 [tool.pytest]

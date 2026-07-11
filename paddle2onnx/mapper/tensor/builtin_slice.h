@@ -20,7 +20,6 @@
 
 namespace paddle2onnx {
 
-// PIR builtin.slice operation
 class BuiltinSliceMapper : public Mapper {
 public:
   BuiltinSliceMapper(const PaddlePirParser &p, OnnxHelper *helper,

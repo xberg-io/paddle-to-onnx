@@ -39,7 +39,7 @@ class Net(BaseNet):
         if self.config["isTensor"]:
             shape = paddle.to_tensor(np.array(shape).astype(self.config["shape_dtype"]))
         x = paddle.expand(inputs, shape=shape)
-        # TODO there's bug with expand operator
+        # ~keep TODO: expand operator has a known bug in this path.
         return paddle.reshape(x, shape=paddle.to_tensor(np.array([-1]).astype("int32")))
 
 
@@ -53,7 +53,7 @@ class TestExpandConvert(OPConvertAutoScanTest):
         input_shape = draw(st.lists(st.integers(min_value=2, max_value=6), min_size=0, max_size=5))
 
         dtype = draw(st.sampled_from(["float32", "float64", "int32", "int64"]))
-        isTensor = draw(st.booleans())  # future to valid
+        isTensor = draw(st.booleans())
         shape_dtype = draw(st.sampled_from(["int32", "int64"]))
         n = random.randint(1, 6 - len(input_shape))
         pre_shape = random.sample([1, 1, 2, 2, 3, 3], n)
@@ -88,10 +88,8 @@ class Net1(BaseNet):
         forward
         """
         shape = [2, 1, paddle.to_tensor(2, dtype=self.config["shape_dtype"]), 3, 2, 2]
-        # not supported
-        # shape = [paddle.to_tensor(2), paddle.to_tensor(np.array(1).astype("int64")), paddle.to_tensor(2), paddle.to_tensor(3), paddle.to_tensor(2), paddle.to_tensor(2)]
         x = paddle.expand(inputs, shape=shape)
-        # TODO there's bug with expand operator
+        # ~keep TODO: expand operator has a known bug in this path.
         return paddle.reshape(x, shape=paddle.to_tensor(np.array([-1]).astype("int32")))
 
 
@@ -105,7 +103,7 @@ class TestExpandConvert1(OPConvertAutoScanTest):
         input_shape = draw(st.lists(st.integers(min_value=2, max_value=6), min_size=0, max_size=5))
         input_shape = [2, 2]
         dtype = draw(st.sampled_from(["float32", "float64", "int32", "int64"]))
-        isTensor = draw(st.booleans())  # future to valid
+        isTensor = draw(st.booleans())
 
         n = random.randint(1, 6 - len(input_shape))
         pre_shape = random.sample([1, 1, 2, 2, 3, 3], n)

@@ -40,7 +40,6 @@ def test_matmul_9():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "matmul", [9])
     obj.set_input_data(
         "input_data",
@@ -58,7 +57,6 @@ def test_matmul_10():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "matmul", [10])
     obj.set_input_data(
         "input_data",
@@ -76,7 +74,6 @@ def test_matmul_11():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "matmul", [11])
     obj.set_input_data(
         "input_data",
@@ -94,7 +91,6 @@ def test_matmul_12():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "matmul", [12])
     obj.set_input_data(
         "input_data",

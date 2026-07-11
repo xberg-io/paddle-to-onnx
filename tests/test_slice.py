@@ -32,23 +32,6 @@ class Net(paddle.nn.Layer):
         return paddle.slice(inputs, axes=[0, 1], starts=[1, 0], ends=[4, 7])
 
 
-# @_test_with_pir
-# def test_slice_9():
-#     """
-#     api: paddle.slice
-#     op version: 9
-#     """
-#     op = Net()
-#     op.eval()
-#     # net, name, ver_list, delta=1e-6, rtol=1e-5
-#     obj = APIOnnx(op, "slice", [9])
-#     obj.set_input_data(
-#         "input_data",
-#         paddle.to_tensor(randtool("float", -1, 1, [3, 10]).astype("float32")),
-#     )
-#     obj.run()
-
-
 @_test_with_pir
 def test_slice_10():
     """
@@ -57,7 +40,6 @@ def test_slice_10():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "slice", [10])
     obj.set_input_data(
         "input_data",
@@ -74,7 +56,6 @@ def test_slice_11():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "slice", [11])
     obj.set_input_data(
         "input_data",
@@ -91,7 +72,6 @@ def test_slice_12():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "slice", [12])
     obj.set_input_data(
         "input_data",

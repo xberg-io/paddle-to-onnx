@@ -60,7 +60,6 @@ class TestSoftmaxWithCrossEntropyConvert(OPConvertAutoScanTest):
         def generator_label():
             label_shape = input_shape
             if soft_label:
-                # label_dtype = draw(st.sampled_from(["float32"]))
                 label = np.random.random(label_shape)
             else:
                 label_shape[axis] = 1

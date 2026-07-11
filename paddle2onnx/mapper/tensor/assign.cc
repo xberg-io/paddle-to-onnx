@@ -26,8 +26,6 @@ void AssignMapper::Opset7() {
   bool convert_assign =
       !in_pir_mode ? block_idx_ != 0 && OpType() != "share_data" : true;
   if (convert_assign) {
-    // Here's a trick for tensorrt
-    // Consider remove this trick
     if (input_info[0].dtype == P2ODataType::BOOL) {
       auto zero = helper_->Constant(ONNX_NAMESPACE::TensorProto::INT64,
                                     std::vector<int64_t>(1, 0));

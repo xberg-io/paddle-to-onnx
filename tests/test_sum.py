@@ -39,7 +39,6 @@ def test_sum_13_18():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "sum", [13, 18])
     obj.set_input_data(
         "input_data",

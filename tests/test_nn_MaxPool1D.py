@@ -47,7 +47,6 @@ def test_MaxPool1D_base():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_MaxPool1D", [9, 10, 11, 12])
     obj.set_input_data(
         "input_data",

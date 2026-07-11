@@ -20,7 +20,6 @@
 
 namespace paddle2onnx {
 
-// PIR builtin.split operation
 class BuiltinSplitMapper : public Mapper {
 public:
   BuiltinSplitMapper(const PaddlePirParser &p, OnnxHelper *helper,

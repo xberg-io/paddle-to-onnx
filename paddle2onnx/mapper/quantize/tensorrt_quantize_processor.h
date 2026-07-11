@@ -31,12 +31,9 @@ public:
       std::string *calibration_cache = nullptr) override;
 
 protected:
-  // According to:
-  // https://github.com/NVIDIA/TensorRT/tree/main/tools/pytorch-quantization/pytorch_quantization/nn/modules
   void AddQDQ() override;
 
 private:
-  // Generate cache file for TensorRT8.X int8 deploy
   void GenerateCache(std::string *calibration_cache);
 };
 } // namespace paddle2onnx

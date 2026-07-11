@@ -18,8 +18,6 @@
 
 #pragma once
 
-// Only support conv2d + bias now
-
 #include <numeric>
 
 #include "onnx/defs/tensor_util.h"
@@ -43,11 +41,9 @@ struct FusePaddleConvBias final : public PredicateBasedPass {
                     NodeDestroyType &destroy_current) override {
     destroy_current = NodeDestroyType::DestroyZero;
 
-    // check if Conv is only used by Add
     if (n->inputs()[0]->uses().size() > 1) {
       return false;
     }
-    // check if bias is only used by Add
     if (n->inputs()[1]->uses().size() > 1) {
       return false;
     }
@@ -74,7 +70,6 @@ struct FusePaddleConvBias final : public PredicateBasedPass {
     if (bias_shape[1] != weight_shape[0]) {
       return false;
     }
-    // reshape bias node
     bias_tensor.sizes().clear();
     bias_tensor.sizes().push_back(weight_shape[0]);
     bias->t_(kvalue, std::move(bias_tensor));

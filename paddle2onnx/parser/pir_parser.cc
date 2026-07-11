@@ -173,7 +173,6 @@ void PaddlePirParser::GetGlobalBlockOpOutputName() {
    */
   inputs.clear();
   outputs.clear();
-  // determine whether to generate new name for outputs
   std::unordered_set<std::string> input_names;
   for (auto op : global_blocks_ops) {
     if (op->name() == "pd_op.data" || op->name() == "pd_op.feed") {
@@ -196,8 +195,6 @@ void PaddlePirParser::GetGlobalBlockOpOutputName() {
       }
       auto output_idx = value.dyn_cast<pir::OpResult>().index();
       outputs.push_back(GetTensorInfo(output_name, op->result(0).type()));
-      // It's not necessary add output name of fetch op, but need to modify it's
-      // defining op here.
       AddOpOutputName(value.defining_op(), output_name, output_idx);
     } else {
       std::string var_name = GenOpInputOutputName(op->name());
@@ -229,7 +226,6 @@ void PaddlePirParser::GetOpArgNameMappings() {
     _op_arg_name_mappings[op_name] = arg_name_mapping;
   }
 
-  // mutable attribute name mappings
   for (auto &item : op_mutable_attribute_infos) {
     std::string op_name =
         pir_op_name_prefix + (op_name_mappings.count(item.first)
@@ -314,7 +310,6 @@ int32_t PaddlePirParser::GetOpInputOutputName2Idx(int64_t op_id,
   paddle::dialect::OpYamlInfoParser yaml_parser(
       op_info.GetInterfaceImpl<paddle::dialect::OpYamlInfoInterface>()
           ->get_op_info_(op_name),
-      // paddle::dialect::IsLegacyOp(op_name));
       false);
   name = GetOpArgName(op_id, name, if_in_subblock);
   bool exist = is_input ? yaml_parser.InputName2Id().count(name)
@@ -324,12 +319,6 @@ int32_t PaddlePirParser::GetOpInputOutputName2Idx(int64_t op_id,
                         << "' in op yaml info of " << op_name << std::endl;
     return -1;
   }
-  // PADDLE_ENFORCE_EQ(
-  //     exist,
-  //     true,
-  //     common::errors::InvalidArgument(
-  //         "Cannot find input/output name '%s' in op yaml info of %s.",
-  //         name, op_name));
   return is_input ? yaml_parser.InputName2Id().at(name)
                   : yaml_parser.OutputName2Id().at(name);
 }
@@ -339,7 +328,7 @@ bool PaddlePirParser::LoadProgram(const std::string &model) {
   ctx->GetOrRegisterDialect<paddle::dialect::OperatorDialect>();
   ctx->GetOrRegisterDialect<pir::BuiltinDialect>();
   pir_program_ = std::make_shared<pir::Program>(ctx);
-  if (!pir::ReadModule(model, pir_program_.get(), /*pir_version*/ 1)) {
+  if (!pir::ReadModule(model, pir_program_.get(), 1)) {
     P2OLogger() << "[ERROR] Failed to deserialize PaddlePaddle model."
                 << std::endl;
     return false;
@@ -397,14 +386,11 @@ bool PaddlePirParser::LoadParams(const std::string &path) {
   int64_t read_size = 0;
   while (read_size < total_size) {
     {
-      // read version, we don't need this
       uint32_t version;
       read_size += sizeof(version);
       is.read(reinterpret_cast<char *>(&version), sizeof(version));
     }
     {
-      // read lod_level, we don't use it
-      // this has to be zero, otherwise not support
       uint64_t lod_level;
       read_size += sizeof(lod_level);
       is.read(reinterpret_cast<char *>(&lod_level), sizeof(lod_level));
@@ -412,17 +398,14 @@ bool PaddlePirParser::LoadParams(const std::string &path) {
              "Paddle2ONNX: Only support weight with lod_level = 0.");
     }
     {
-      // Another version, we don't use it
       uint32_t version;
       read_size += sizeof(version);
       is.read(reinterpret_cast<char *>(&version), sizeof(version));
     }
     {
-      // read size of TensorDesc
       int32_t size;
       read_size += sizeof(size);
       is.read(reinterpret_cast<char *>(&size), sizeof(size));
-      // read TensorDesc
       std::unique_ptr<char[]> buf(new char[size]);
       read_size += size;
       is.read(reinterpret_cast<char *>(buf.get()), size);
@@ -441,7 +424,6 @@ bool PaddlePirParser::LoadParams(const std::string &path) {
         weight.shape.push_back(tensor_desc->dims()[i]);
       }
 
-      // read weight data
       weight.buffer.resize(numel * PaddleDataTypeSize(data_type));
       read_size += numel * PaddleDataTypeSize(data_type);
       is.read(weight.buffer.data(), numel * PaddleDataTypeSize(data_type));
@@ -478,7 +460,6 @@ bool PaddlePirParser::Init(const std::string &_model,
                         << std::endl;
   }
 
-  // InitBlock();
   GetGlobalBlocksOps();
   GetGlobalBlockOpOutputName();
   GetOpArgNameMappings();
@@ -512,13 +493,10 @@ TensorInfo PaddlePirParser::GetTensorInfo(const std::string &name,
                                           const pir::Type &value_type) const {
   TensorInfo info;
   if (value_type.isa<pir::DenseTensorType>()) {
-    // get info.name
     info.name = name;
-    // get info.dtype
     auto type = value_type.cast<pir::DenseTensorType>().dtype();
     auto data_type = TransToPhiDataType(type);
     info.dtype = TransPirDataType2OldIrDataType(data_type);
-    // get info.shape
     std::vector<int64_t> dims =
         common::vectorize(value_type.cast<pir::DenseTensorType>().dims());
     info.shape = dims;
@@ -586,7 +564,7 @@ PaddlePirParser::GetSubBlockValueTensorInfo(const pir::Value &value) const {
 
 bool PaddlePirParser::IsAttrVar(const pir::Operation *op,
                                 const int64_t &attr_id) const {
-  // TODO(qzylalala): For Resnet50, this interface always return false.
+  // ~keep TODO(qzylalala): for ResNet50, this interface always returns false.
   return false;
 }
 
@@ -676,9 +654,6 @@ void PaddlePirParser::GetOpAttr(const pir::Operation *op,
   for (auto &pair : op->attributes()) {
     if (pair.first == name) {
       found = true;
-      // Paddle may store a float-valued attribute as Float, Double, or an
-      // integer attribute depending on the op and version. Accept each and
-      // narrow to float so callers always get the value.
       if (pair.second.isa<pir::FloatAttribute>()) {
         *res = pair.second.dyn_cast<::pir::FloatAttribute>().data();
       } else if (pair.second.isa<pir::DoubleAttribute>()) {
@@ -706,8 +681,6 @@ void PaddlePirParser::GetOpAttr(const pir::Operation *op,
   for (auto &pair : op->attributes()) {
     if (pair.first == name) {
       found = true;
-      // Accept Double, Float, or integer attributes and widen to double so a
-      // float-typed attribute is still readable through the double overload.
       if (pair.second.isa<pir::DoubleAttribute>()) {
         *res = pair.second.dyn_cast<::pir::DoubleAttribute>().data();
       } else if (pair.second.isa<pir::FloatAttribute>()) {
@@ -774,7 +747,7 @@ void PaddlePirParser::GetOpAttr(const pir::Operation *op,
         auto array_list =
             pair.second.dyn_cast<::pir::ArrayAttribute>().AsVector();
         if (array_list.size() > 0) {
-          // TODO(qzylalala): Need double check.
+          // ~keep TODO(qzylalala): double-check array attribute handling.
           PADDLE_ENFORCE_EQ(
               array_list[0].isa<::pir::Int64Attribute>() ||
                   array_list[0].isa<::pir::Int32Attribute>(),
@@ -815,9 +788,6 @@ void PaddlePirParser::GetOpAttr(const pir::Operation *op,
       if (pair.second.isa<pir::ArrayAttribute>()) {
         auto array_list =
             pair.second.dyn_cast<::pir::ArrayAttribute>().AsVector();
-        // Array elements may be Float, Double, or integer attributes depending
-        // on the op and paddle version (e.g. interpolate `scale` is stored as
-        // Double). Accept each and narrow to float.
         for (size_t i = 0; i < array_list.size(); ++i) {
           if (array_list[i].isa<::pir::FloatAttribute>()) {
             res->push_back(
@@ -983,7 +953,7 @@ bool PaddlePirParser::IsConstantTensor(int64_t op_id, int64_t input_idx,
       input_idx, -1,
       common::errors::InvalidArgument(
           "input_idx should be greater than -1 in IsConstantTensor."));
-  // todo(wangmingkai02): need to check
+  // ~keep TODO(wangmingkai02): check constant tensor detection.
   pir::Operation *op =
       if_in_sub_block ? sub_blocks_ops[op_id] : global_blocks_ops[op_id];
   return op->operand(input_idx).source().defining_op()->num_operands() == 0 ||
@@ -1014,10 +984,8 @@ std::string PaddlePirParser::GetTensorArrayName(int64_t op_id,
 
 P2ODataType
 PaddlePirParser::TransPirDataType2OldIrDataType(phi::DataType dtype) const {
-  // TODO(wangmingkai02): This is for compatibility with conversions under the
-  // old IR, where P2ODataType is stored in TensorInfo.dtype. In the mapper,
-  // GetOnnxDtype is called to obtain TensorProto_DataType in ONNX.
-  // Add more type mappings if necessary.
+  // ~keep TODO(wangmingkai02): verify this PIR conversion compatibility
+  // mapping.
   if (dtype == phi::DataType::UNDEFINED) {
     return P2ODataType::UNDEFINED;
   } else if (dtype == phi::DataType::BOOL) {
@@ -1051,23 +1019,18 @@ PaddlePirParser::TransPirDataType2OldIrDataType(phi::DataType dtype) const {
 }
 void PaddlePirParser::GetWhileInputValuesAndArgsMappings(
     paddle::dialect::WhileOp *while_op) const {
-  // mapping args and inputs in while op using while_op_values_args_map
   std::vector<pir::detail::ValueImpl *> while_op_input_value_address;
   std::vector<pir::detail::ValueImpl *> while_op_input_arg_address;
-  // record input value address
   for (int index = 1; index < while_op->num_operands(); index++) {
     const pir::Value &value = while_op->operand_source(index);
-    while_op_input_value_address.push_back(
-        &(*(value).impl())); // get value address
+    while_op_input_value_address.push_back(&(*(value).impl()));
   }
-  // record args value address
   std::vector<pir::Value> args = while_op->block_args();
   for (int i = 0; i < args.size(); i++) {
     const pir::Value &value = args[i];
     while_op_input_arg_address.push_back(&(*(value.impl())));
   }
 
-  // mapping
   for (int index = 0; index < while_op_input_value_address.size(); index++) {
     auto arg_addr = while_op_input_arg_address[index];
     if (while_op_values_args_map.count(arg_addr))

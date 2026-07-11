@@ -50,7 +50,6 @@ class TestScaleConvert(OPConvertAutoScanTest):
 
     def sample_convert_config(self, draw):
         input_shape = draw(st.lists(st.integers(min_value=2, max_value=20), min_size=0, max_size=5))
-        # int32, int64 has a bug
         dtype = draw(st.sampled_from(["float32", "float64"]))
 
         scale = draw(st.floats(min_value=-20, max_value=20))

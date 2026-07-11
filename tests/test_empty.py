@@ -41,7 +41,6 @@ def test_empty_11():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "empty", [11])
     shape = paddle.to_tensor([4, 6], dtype=paddle.int64)
     obj.set_input_data("input_data", shape)

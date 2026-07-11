@@ -45,7 +45,6 @@ def test_nn_functional_selu_10():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn.functional.selu", [10])
     obj.set_input_data(
         "input_data",
@@ -61,7 +60,6 @@ def test_nn_functional_selu_11():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn.functional.selu", [11])
     obj.set_input_data(
         "input_data",
@@ -77,7 +75,6 @@ def test_nn_functional_selu_12():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn.functional.selu", [12])
     obj.set_input_data(
         "input_data",
@@ -93,7 +90,6 @@ def test_nn_functional_selu_scale():
     """
     op = Net(scale=2)
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn.functional.selu", [12])
     obj.set_input_data(
         "input_data",
@@ -109,7 +105,6 @@ def test_nn_functional_selu_alpha():
     """
     op = Net(alpha=2)
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn.functional.selu", [12])
     obj.set_input_data(
         "input_data",

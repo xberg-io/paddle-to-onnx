@@ -24,7 +24,6 @@ REGISTER_MAPPER(depthwise_conv2d_transpose, Conv2dTransposeMapper)
 REGISTER_PIR_MAPPER(depthwise_conv2d_transpose, Conv2dTransposeMapper)
 
 int32_t Conv2dTransposeMapper::GetMinOpsetVersion(bool verbose) {
-  // NHWC is not supported
   if (data_format_ == "NHWC") {
     Error() << "Cannot support NHWC format for operator "
                "conv2d_transpose/depthwise_conv2d_transpose."

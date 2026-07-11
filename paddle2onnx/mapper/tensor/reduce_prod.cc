@@ -56,7 +56,6 @@ void ReduceMapperProd::Opset18() {
     }
   }
 
-  // Add attribute
   auto reduce_node = helper_->MakeNode("ReduceProd", {x_info[0].name, dims});
   AddAttribute(reduce_node, "keepdims", static_cast<int64_t>(keep_dim_));
   auto out_node_name = reduce_node->output(0);

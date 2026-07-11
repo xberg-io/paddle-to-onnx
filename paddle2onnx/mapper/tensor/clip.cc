@@ -45,7 +45,6 @@ void ClipMapper::Opset7() {
     bool dtype_converted = false;
     std::string input_name = input_info[0].name;
     int32_t dtype = input_info[0].dtype;
-    // onnxruntime only supports float input
     if (input_info[0].dtype != P2ODataType::FP32) {
       input_name = helper_->AutoCast(input_info[0].name, input_info[0].dtype,
                                      P2ODataType::FP32);

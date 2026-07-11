@@ -111,9 +111,6 @@ class Net1(BaseNet):
         starts = self.config["starts"]
         ends = self.config["ends"]
         strides = self.config["strides"]
-        # strides = [1, paddle.to_tensor(1).astype('int32'), 1]
-        # strides = [1, paddle.to_tensor(1, dtype='int32'), 1]
-        # strides = [1, paddle.to_tensor(np.array(1).astype("int32")), 1]
         return paddle.strided_slice(inputs, axes=axes, starts=starts, ends=ends, strides=strides)
 
 
@@ -127,9 +124,9 @@ class TestStridedsliceConvert1(OPConvertAutoScanTest):
         input_shape = draw(st.lists(st.integers(min_value=4, max_value=10), min_size=4, max_size=6))
         input_shape = [4, 4, 4, 4]
         dtype = draw(st.sampled_from(["float32", "float64", "int32", "int64"]))
-        isStartsTensor = False  # draw(st.booleans())
-        isEndsTensor = False  # draw(st.booleans())
-        isStridesTensor = False  # draw(st.booleans())
+        isStartsTensor = False
+        isEndsTensor = False
+        isStridesTensor = False
 
         axes = [1, 2, 3]
         if draw(st.booleans()):
@@ -139,9 +136,6 @@ class TestStridedsliceConvert1(OPConvertAutoScanTest):
 
         ends = [3, 2, 40000] if draw(st.booleans()) else [-1, 2, 4]
 
-        # if draw(st.booleans()):
-        #     strides = [2, 1, 2]
-        # else:
         strides = [1, 1, 1]
 
         tmp = [i for i, val in enumerate(strides) if val == 1]

@@ -18,11 +18,6 @@
 
 #pragma once
 
-// Before:
-//   B = Reshape(Constant)
-// After:
-//   B = Constant (Constant with new shape)
-
 #include <numeric>
 
 #include "onnx/defs/tensor_util.h"

@@ -55,7 +55,6 @@ Export(const char *model_filename, const char *params_filename, char **out,
     }
     paddle2onnx::ModelExporter me;
 
-    // Add custom operator information
     if (ops != nullptr && op_count > 0) {
       for (int i = 0; i < op_count; ++i) {
         std::string op_name(ops[i].op_name, strlen(ops[i].op_name));
@@ -68,7 +67,6 @@ Export(const char *model_filename, const char *params_filename, char **out,
       }
     }
 
-    // Add disabled fp16 op information
     std::vector<std::string> disable_op_types;
     if (disable_fp16_op_types != nullptr && disable_fp16_op_types_count > 0) {
       for (int i = 0; i < disable_fp16_op_types_count; ++i) {
@@ -121,7 +119,6 @@ Export(const void *model_buffer, int64_t model_size, const void *params_buffer,
   }
   paddle2onnx::ModelExporter me;
 
-  // Add disabled fp16 op information
   std::vector<std::string> disable_op_types;
   if (disable_fp16_op_types != nullptr && disable_fp16_op_types_count > 0) {
     for (int i = 0; i < disable_fp16_op_types_count; ++i) {
@@ -168,7 +165,6 @@ PADDLE2ONNX_DECL bool ConvertFP32ToFP16(const char *onnx_model, int model_size,
   P2OLogger(verbose) << "Convert FP32 ONNX model to FP16." << std::endl;
   ConvertFp32ToFp16 convert(verbose);
   convert.Convert(&model);
-  // save external data file for big model
   std::string external_data_file;
   if (model.ByteSizeLong() > INT_MAX) {
     external_data_file = "external_data";
@@ -177,7 +173,6 @@ PADDLE2ONNX_DECL bool ConvertFP32ToFP16(const char *onnx_model, int model_size,
   if (external_data_file.size()) {
     me.SaveExternalData(model.mutable_graph(), external_data_file);
   }
-  // check model
   me.ONNXChecker(model);
 
   std::string result;
@@ -201,4 +196,4 @@ ModelTensorInfo::~ModelTensorInfo() {
     rank = 0;
   }
 }
-} //  namespace paddle2onnx
+} // namespace paddle2onnx

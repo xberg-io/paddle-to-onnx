@@ -63,7 +63,6 @@ def test_nn_functional_interpolate_nearest_scale_factor_float():
     """
     op = Net(scale_factor=1.5)
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_functional_interpolate", [11])
     obj.set_input_data(
         "input_data",
@@ -80,7 +79,6 @@ def test_nn_functional_interpolate_nearest_scale_factor_list():
     """
     op = Net(scale_factor=[1, 2])
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_functional_interpolate", [11])
     obj.set_input_data(
         "input_data",
@@ -97,7 +95,6 @@ def test_nn_functional_interpolate_nearest_scale_factor_tuple():
     """
     op = Net(scale_factor=(1, 2))
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_functional_interpolate", [11])
     obj.set_input_data(
         "input_data",
@@ -114,7 +111,6 @@ def test_nn_functional_interpolate_nearest_size():
     """
     op = Net(size=[4, 11])
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_functional_interpolate", [11])
     obj.set_input_data(
         "input_data",
@@ -131,7 +127,6 @@ def test_nn_functional_interpolate_nearest_date_format():
     """
     op = Net(size=[4, 12], data_format="NCHW")
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_functional_interpolate", [11])
     obj.set_input_data(
         "input_data",
@@ -148,7 +143,6 @@ def test_nn_functional_interpolate_bicubic_scale_factor_float():
     """
     op = Net(mode="bicubic", scale_factor=1.5)
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_functional_interpolate", [11])
     obj.set_input_data(
         "input_data",
@@ -165,7 +159,6 @@ def test_nn_functional_interpolate_bicubic_scale_factor_list():
     """
     op = Net(mode="bicubic", scale_factor=[1.5, 1.5])
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_functional_interpolate", [11])
     obj.set_input_data(
         "input_data",
@@ -182,7 +175,6 @@ def test_nn_functional_interpolate_bicubic_scale_factor_tuple():
     """
     op = Net(mode="bicubic", scale_factor=(1.5, 1.5))
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_functional_interpolate", [11])
     obj.set_input_data(
         "input_data",
@@ -199,7 +191,6 @@ def test_nn_functional_interpolate_bicubic_size():
     """
     op = Net(mode="bicubic", size=[5, 5])
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_functional_interpolate", [11])
     obj.set_input_data(
         "input_data",
@@ -216,7 +207,6 @@ def test_nn_functional_interpolate_bicubic_align_corners():
     """
     op = Net(mode="bicubic", scale_factor=1.5, align_corners=True)
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_functional_interpolate", [11])
     obj.set_input_data(
         "input_data",
@@ -239,7 +229,6 @@ def test_nn_functional_interpolate_linear_scale_factor_float():
         data_format="NCW",
     )
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_functional_interpolate", [11])
     obj.set_input_data(
         "input_data",
@@ -262,7 +251,6 @@ def test_nn_functional_interpolate_linear_scale_factor_tensor():
         data_format="NCW",
     )
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_functional_interpolate", [11])
     obj.set_input_data(
         "input_data",

@@ -93,13 +93,10 @@ void GatherMapper::Opset11() {
       axis = axes[0];
     }
   }
-  // If index.shape = [d_0, 1], squeeze the last dim to reshape index.shape =
-  // [d_0].
   std::string index_name = index_info[0].name;
   if (index_info[0].shape.size() == 2 && axis > 0) {
     index_name = helper_->Squeeze(index_info[0].name, {1});
   }
-  // Normal
   auto node = helper_->MakeNode("Gather", {x_info[0].name, index_name},
                                 {out_info[0].name});
   AddAttribute(node, "axis", axis);

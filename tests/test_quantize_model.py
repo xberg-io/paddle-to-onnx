@@ -125,7 +125,6 @@ class TestPostTrainingQuantization(unittest.TestCase):
             data_md5s.append("1b6c1c434172cca1bf9ba1e4d7a3157d")
             self.data_cache_folder = self.download_data(data_urls, data_md5s, "small_data", False)
 
-        # reader/decorator.py requires the relative path to the data folder
         if not os.path.exists("./data/ILSVRC2012"):
             cmd = "rm -rf {0} && ln -s {1} {0}".format("data", self.data_cache_folder)
             os.system(cmd)

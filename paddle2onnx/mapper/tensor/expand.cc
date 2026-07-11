@@ -16,7 +16,6 @@
 
 namespace paddle2onnx {
 REGISTER_MAPPER(expand, ExpandMapper)
-// REGISTER_PIR_MAPPER(expand, ExpandMapper)
 
 void ExpandMapper::Opset7() {
   auto input_info = GetInput("X");

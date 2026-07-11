@@ -33,7 +33,6 @@ def test_bitwise_and_int_type_18():
     """
     op = BitwiseAndNet()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "BitwiseAnd", [18])
     obj.set_input_data("input_data", paddle.to_tensor([-5, -1, 1]), paddle.to_tensor([4, 2, -3]))
     obj.run()
@@ -47,7 +46,6 @@ def test_bitwise_and_bool_type():
     """
     op = BitwiseAndNet()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "BitwiseAnd", [7])
     obj.set_input_data(
         "input_data",
@@ -65,7 +63,6 @@ def test_bitwise_and_bool_type_18():
     """
     op = BitwiseAndNet()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "BitwiseAnd", [18])
     obj.set_input_data(
         "input_data",
@@ -91,7 +88,6 @@ def test_bitwise_not_int_type_18():
     """
     op = BitwiseNotNet()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "BitwiseNot", [18])
     obj.set_input_data("input_data", paddle.to_tensor([-5, -1, 1]))
     obj.run()
@@ -105,7 +101,6 @@ def test_bitwise_not_bool_type():
     """
     op = BitwiseNotNet()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "BitwiseNot", [7])
     obj.set_input_data("input_data", paddle.to_tensor([True, True, True]))
     obj.run()
@@ -119,7 +114,6 @@ def test_bitwise_not_bool_type_18():
     """
     op = BitwiseNotNet()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "BitwiseNot", [18])
     obj.set_input_data("input_data", paddle.to_tensor([True, True, True]))
     obj.run()
@@ -141,7 +135,6 @@ def test_bitwise_or_int_type_18():
     """
     op = BitwiseOrNet()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "BitwiseOr", [18])
     obj.set_input_data("input_data", paddle.to_tensor([-5, -1, 1]), paddle.to_tensor([4, 2, -3]))
     obj.run()
@@ -155,7 +148,6 @@ def test_bitwise_or_bool_type():
     """
     op = BitwiseOrNet()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "BitwiseOr", [7])
     obj.set_input_data(
         "input_data",
@@ -173,7 +165,6 @@ def test_bitwise_or_bool_type_18():
     """
     op = BitwiseOrNet()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "BitwiseOr", [18])
     obj.set_input_data(
         "input_data",
@@ -199,7 +190,6 @@ def test_bitwise_xor_int_type_18():
     """
     op = BitwiseXorNet()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "BitwiseXor", [18])
     obj.set_input_data("input_data", paddle.to_tensor([-5, -1, 1]), paddle.to_tensor([4, 2, -3]))
     obj.run()
@@ -213,7 +203,6 @@ def test_bitwise_xor_bool_type():
     """
     op = BitwiseXorNet()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "BitwiseXor", [7])
     obj.set_input_data(
         "input_data",
@@ -231,7 +220,6 @@ def test_bitwise_xor_bool_type_18():
     """
     op = BitwiseXorNet()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "BitwiseXor", [18])
     obj.set_input_data(
         "input_data",

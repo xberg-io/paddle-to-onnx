@@ -39,7 +39,6 @@ def test_floor_mod_10():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "floor_mod", [10])
     obj.set_input_data("input_data", paddle.to_tensor([2, 3, 8, 7]), paddle.to_tensor([1, 5, 3, 3]))
     obj.run()
@@ -52,7 +51,6 @@ def test_floor_mod_12():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "floor_mod", [12])
     obj.set_input_data("input_data", paddle.to_tensor([2, 3, 8, 7]), paddle.to_tensor([1, 5, 3, 3]))
     obj.run()
@@ -65,7 +63,6 @@ def test_floor_mod_broadcasting():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "floor_mod", [12])
     obj.set_input_data("input_data", paddle.to_tensor([2, 3, 8, 7]), paddle.to_tensor([3]))
     obj.run()

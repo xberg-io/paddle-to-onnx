@@ -41,7 +41,6 @@ def test_unfold_11():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "unfold", [11])
     obj.set_input_data(
         "input_data",
@@ -58,7 +57,6 @@ def test_unfold_11_2():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "unfold", [11])
     obj.set_input_data("input_data", paddle.arange(16).view([1, 1, 4, 4]).cast(paddle.float32))
     obj.run()

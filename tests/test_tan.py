@@ -40,7 +40,6 @@ def test_tan_8():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "tan", [8])
     obj.set_input_data(
         "input_data",
@@ -57,7 +56,6 @@ def test_tan_10():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "tan", [10])
     obj.set_input_data(
         "input_data",
@@ -74,7 +72,6 @@ def test_tan_11():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "tan", [11])
     obj.set_input_data(
         "input_data",
@@ -91,7 +88,6 @@ def test_tan_12():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "tan", [12])
     obj.set_input_data(
         "input_data",

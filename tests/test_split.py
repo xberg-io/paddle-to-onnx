@@ -47,36 +47,6 @@ class Net2(paddle.nn.Layer):
         return paddle.split(inputs, num_or_sections=[2, 3, 5], axis=-1)
 
 
-# @_test_with_pir
-# def test_split_v7_1():
-#     """
-#     api: paddle.split
-#     op version: 7
-#     """
-#     op = Net()
-#     op.eval()
-#     obj = APIOnnx(op, 'split', [7])
-#     obj.set_input_data("input_data",
-#                        paddle.to_tensor(
-#                            randtool("float", -1, 1, [3, 10]).astype('float32')))
-#     obj.run()
-
-
-# @_test_with_pir
-# def test_split_v7_2():
-#     """
-#     api: paddle.split
-#     op version: 7
-#     """
-#     op = Net2()
-#     op.eval()
-#     obj = APIOnnx(op, 'split2', [7])
-#     obj.set_input_data("input_data",
-#                        paddle.to_tensor(
-#                            randtool("float", -1, 1, [3, 10]).astype('float32')))
-#     obj.run()
-
-
 @_test_with_pir
 def test_split_v13_1():
     """
@@ -85,7 +55,6 @@ def test_split_v13_1():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "split", [13])
     obj.set_input_data(
         "input_data",
@@ -102,7 +71,6 @@ def test_split_v13_2():
     """
     op = Net2()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "split", [13])
     obj.set_input_data(
         "input_data",
@@ -119,7 +87,6 @@ def test_split_v18_1():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "split", [18])
     obj.set_input_data(
         "input_data",
@@ -136,7 +103,6 @@ def test_split_v18_2():
     """
     op = Net2()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "split", [18])
     obj.set_input_data(
         "input_data",

@@ -65,7 +65,6 @@ def test_Conv2D_Dropout_9():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "Conv2D_Dropout", [9])
     obj.set_input_data(
         "input_data",
@@ -82,7 +81,6 @@ def test_Conv2D_Dropout_10():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "Conv2D_Dropout", [10])
     obj.set_input_data(
         "input_data",
@@ -99,7 +97,6 @@ def test_Conv2D_Dropout_11():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "Conv2D_Dropout", [11])
     obj.set_input_data(
         "input_data",
@@ -116,7 +113,6 @@ def test_Conv2D_Dropout_12():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "Conv2D_Dropout", [12])
     obj.set_input_data(
         "input_data",
@@ -133,7 +129,6 @@ def test_Conv2D_Dropout_padding_0_9():
     """
     op = Net(padding=[1, 2])
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "Conv2D_Dropout", [9])
     obj.set_input_data(
         "input_data",
@@ -150,7 +145,6 @@ def test_Conv2D_Dropout_padding_1_9():
     """
     op = Net(padding=[1, 2, 3, 4])
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "Conv2D_Dropout", [9])
     obj.set_input_data(
         "input_data",
@@ -167,7 +161,6 @@ def test_Conv2D_Dropout_padding_2_9():
     """
     op = Net(padding=[[0, 0], [0, 0], [1, 2], [2, 3]])
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "Conv2D_Dropout", [9])
     obj.set_input_data(
         "input_data",

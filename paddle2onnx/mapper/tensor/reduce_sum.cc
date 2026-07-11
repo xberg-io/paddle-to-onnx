@@ -40,8 +40,6 @@ void ReduceMapperSum::Opset13() {
     }
   } else {
     TryGetInputValue("axis", &dim_);
-    // Note: This is a temporary solution. It's needed to be fixed in
-    // ProgramTranslator.
     if (dim_.size() == 0 || out_info[0].Rank() == 0 ||
         (out_info[0].Rank() == 1 && out_info[0].shape[0] == 1)) {
       reduce_all_ = true;
@@ -71,7 +69,6 @@ void ReduceMapperSum::Opset13() {
     }
   }
 
-  // Add attribute
   auto reduce_node = helper_->MakeNode("ReduceSum", {x_name, dims});
   AddAttribute(reduce_node, "keepdims", static_cast<int64_t>(keep_dim_));
   auto out_node_name = reduce_node->output(0);

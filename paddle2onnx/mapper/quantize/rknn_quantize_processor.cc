@@ -150,10 +150,6 @@ void RKNNQuantizeProcessor::AddQDQ() {
         helper_->quantize_info[name] = quantize_info;
       }
     } else if (node->op_type() == "BatchNormalization") {
-      // BatchNormalization only need quntize X and Y.
-      // when opset > 9, tensor_names is {X, scale, B, input_mean, input_var, Y,
-      // running_mean, running_var} when opset <= 9, tensor_names is {X, scale,
-      // B, mean, var, Y, mean, var, saved_mean, saved_var}
       tensor_names.erase(tensor_names.begin() + 1, tensor_names.begin() + 5);
       tensor_names.erase(tensor_names.begin() + 2, tensor_names.end());
     }
@@ -233,16 +229,9 @@ void RKNNQuantizeProcessor::ProcessQuantizeModel(
   BaseQuantizeProcessor::ProcessQuantizeModel(
       parameters, inputs, outputs, nodes, helper, parser, calibration_cache);
 
-  // When deploy_backend is RKNN, use the follow four steps to process:
-  // 1. broadcast quantize info
-  // 2. remove all quantize ops
-  // 3. add Q and DQ
-  // 4. use topo sort in nodes
   QuantizeInfoBroadcast();
   RemoveAllQuantizeOps();
   RemoveIdentityOp();
-  // MergeConvAdd();
-  // MergeConvBN();
   AddQDQ();
   PerchannelToPerlayer();
   UpdateInputNameToNodes();

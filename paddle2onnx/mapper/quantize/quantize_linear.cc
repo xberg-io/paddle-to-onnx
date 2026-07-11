@@ -62,10 +62,5 @@ void QuantizeLinearMapper::Opset19() {
   }
   helper_->AutoCast(QuantizeLinear_node->output(0), y_info[0].name,
                     output_paddle_dtype, P2ODataType::FP32);
-
-  //   QuantizeInfo quantize_info(
-  //       onnx_scales, onnx_zeros, onnx_scales, zero_node, quant_axis_);
-  //   helper_->quantize_info[x_info[0].name] = quantize_info;
-  // }
 }
 } // namespace paddle2onnx

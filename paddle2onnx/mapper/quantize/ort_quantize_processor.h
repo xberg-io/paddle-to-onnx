@@ -22,8 +22,6 @@ public:
   ORTQuantizeProcessor();
   virtual ~ORTQuantizeProcessor() = default;
 
-  // According to:
-  // https://github.com/microsoft/onnxruntime/blob/master/onnxruntime/core/optimizer/qdq_transformer/selectors_actions/qdq_selector_action_transformer.cc
   void AddQDQ() override;
 
   void ProcessQuantizeModel(

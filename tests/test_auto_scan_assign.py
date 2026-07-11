@@ -32,7 +32,6 @@ class Net(BaseNet):
         forward
         """
         np.random.seed(13)
-        # float64 has a bug
         x1 = np.random.random(self.config["input_shape"]).astype("float32")
         if self.config["data_type"].count("int") > 0:
             x1 = x1.astype(self.config["data_type"])
@@ -56,7 +55,6 @@ class TestAssignConvert(OPConvertAutoScanTest):
         input_shape = draw(st.lists(st.integers(min_value=4, max_value=8), min_size=0, max_size=5))
 
         dtype = draw(st.sampled_from(["float16", "float32", "float64", "int32", "int64"]))
-        # "list" has a bug
         input_dtype = draw(st.sampled_from(["tensor", "ndarray"]))
 
         config = {

@@ -58,7 +58,6 @@ def test_MaxPool2D_base():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_MaxPool2D", [9, 10, 11, 12])
     obj.set_input_data(
         "input_data",
@@ -75,7 +74,6 @@ def test_MaxPool2D_base_VALID():
     """
     op = Net(kernel_size=5, padding="VALID")
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_MaxPool2D", [9, 10, 11, 12])
     obj.set_input_data(
         "input_data",
@@ -92,7 +90,6 @@ def test_MaxPool2D_base_SAME():
     """
     op = Net(kernel_size=5, padding="SAME")
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_MaxPool2D", [9, 10, 11, 12])
     obj.set_input_data(
         "input_data",
@@ -109,7 +106,6 @@ def test_MaxPool2D_base_Padding_0():
     """
     op = Net(kernel_size=5, padding=[[0, 0], [0, 0], [1, 2], [3, 4]])
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_MaxPool2D", [9, 10, 11, 12])
     obj.set_input_data(
         "input_data",
@@ -126,7 +122,6 @@ def test_MaxPool2D_base_Padding_1():
     """
     op = Net(kernel_size=5, padding=[1, 2, 3, 4])
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_MaxPool2D", [9, 10, 11, 12])
     obj.set_input_data(
         "input_data",
@@ -143,7 +138,6 @@ def test_MaxPool2D_base_Padding_2():
     """
     op = Net(kernel_size=5, padding=[1, 2])
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_MaxPool2D", [9, 10, 11, 12])
     obj.set_input_data(
         "input_data",
@@ -160,7 +154,6 @@ def test_MaxPool2D_base_Padding_3():
     """
     op = Net(kernel_size=20, padding=2)
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_MaxPool2D", [9, 10, 11, 12])
     obj.set_input_data(
         "input_data",

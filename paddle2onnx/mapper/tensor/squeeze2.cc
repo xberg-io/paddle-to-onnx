@@ -20,9 +20,6 @@ REGISTER_PIR_MAPPER(squeeze, Squeeze2Mapper)
 
 int32_t Squeeze2Mapper::GetMinOpsetVersion(bool verbose) {
   if (in_pir_mode) {
-    // if (HasInput("axis")) {
-    //   return 13;
-    // }
     return 7;
   }
 
@@ -48,21 +45,18 @@ void Squeeze2Mapper::Opset7() {
       ret.push_back(i);
   }
   if (ret.size() == input_info[0].Rank()) {
-    // All dimensions are > 1, nothing to squeeze
     helper_->MakeNode("Identity", {input_info[0].name}, {output_info[0].name});
   } else {
     bool with_axis = in_pir_mode ? HasInput("axis") : IsAttrVar("axes");
     if (helper_->GetOpsetVersion() >= 13 && with_axis) {
       auto axes_info = in_pir_mode ? GetInput("axis") : GetAttrVar("axes");
 
-      // Check if we can get the axes values statically
       std::vector<int64_t> axes_values;
       bool axes_known = false;
       if (in_pir_mode) {
         axes_known = TryGetInputValue("axis", &axes_values);
       }
 
-      // If axes are known, check if the dimensions at those axes are 1
       if (axes_known && !axes_values.empty()) {
         bool all_dims_not_one = true;
         for (auto axis : axes_values) {
@@ -70,14 +64,12 @@ void Squeeze2Mapper::Opset7() {
           if (actual_axis >= 0 && actual_axis < input_info[0].Rank()) {
             int64_t dim_size = input_info[0].shape[actual_axis];
             if (dim_size == 1 || dim_size == -1) {
-              // -1 means dynamic, might be 1 at runtime
               all_dims_not_one = false;
               break;
             }
           }
         }
         if (all_dims_not_one) {
-          // None of the dimensions to squeeze have size 1, use Identity
           helper_->MakeNode("Identity", {input_info[0].name},
                             {output_info[0].name});
           return;

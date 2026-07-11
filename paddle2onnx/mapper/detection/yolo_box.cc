@@ -27,7 +27,6 @@ int32_t YoloBoxMapper::GetMinOpsetVersion(bool verbose) {
 void YoloBoxMapper::Opset11() {
   auto x_info_ori = GetInput("X");
 
-  // handle the float64 input
   auto x_info = x_info_ori;
   if (x_info_ori[0].dtype != P2ODataType::FP32) {
     x_info[0].name = helper_->AutoCast(x_info_ori[0].name, x_info_ori[0].dtype,
@@ -55,10 +54,6 @@ void YoloBoxMapper::Opset11() {
 
   auto x_name = x_info[0].name;
   if (iou_aware_) {
-    // Here we use the feature that while value is very large, it equals to the
-    // ends This is a standared definition in ONNX However not sure all the
-    // inference engines implements `Slice` this way Let's handle this issue
-    // later
     x_name = helper_->Slice(x_name, {0, 1, 2, 3}, {0, 0, 0, 0},
                             {max_int, anchor_num, max_int, max_int});
   }
@@ -75,8 +70,6 @@ void YoloBoxMapper::Opset11() {
     AddAttribute(transposed_x, "perm", perm);
   }
 
-  // grid_x = np.tile(np.arange(w).reshape((1, w)), (h, 1))
-  // grid_y = np.tile(np.arange(h).reshape((h, 1)), (1, w))
   auto float_value_0 = helper_->Constant({}, GetOnnxDtype(x_info[0].dtype),
                                          static_cast<float>(0.0));
   auto float_value_1 = helper_->Constant({}, GetOnnxDtype(x_info[0].dtype),
@@ -84,13 +77,11 @@ void YoloBoxMapper::Opset11() {
   auto scalar_float_w = helper_->Squeeze(float_w, {});
   auto scalar_float_h = helper_->Squeeze(float_h, {});
   auto grid_x_0 = helper_->MakeNode(
-      "Range", {float_value_0, scalar_float_w, float_value_1}); // shape is [w]
+      "Range", {float_value_0, scalar_float_w, float_value_1});
   auto grid_y_0 = helper_->MakeNode(
-      "Range", {float_value_0, scalar_float_h, float_value_1}); // shape is [h]
-  auto grid_x_1 = helper_->MakeNode(
-      "Tile", {grid_x_0->output(0), nchw[2]}); // shape is [w*h]
-  auto grid_y_1 = helper_->MakeNode(
-      "Tile", {grid_y_0->output(0), nchw[3]}); // shape is [h*w]
+      "Range", {float_value_0, scalar_float_h, float_value_1});
+  auto grid_x_1 = helper_->MakeNode("Tile", {grid_x_0->output(0), nchw[2]});
+  auto grid_y_1 = helper_->MakeNode("Tile", {grid_y_0->output(0), nchw[3]});
   auto int_value_1 = helper_->Constant({1}, ONNX_NAMESPACE::TensorProto::INT64,
                                        static_cast<float>(1.0));
   auto grid_shape_x =
@@ -113,9 +104,6 @@ void YoloBoxMapper::Opset11() {
       helper_->MakeNode("Concat", {grid_x->output(0), grid_y->output(0)});
   AddAttribute(grid, "axis", int64_t(2));
 
-  // pred_box[:, :, :, :, 0] = (grid_x + sigmoid(pred_box[:, :, :, :, 0]) *
-  // scale_x_y + bias_x_y) / w pred_box[:, :, :, :, 1] = (grid_y +
-  // sigmoid(pred_box[:, :, :, :, 1]) * scale_x_y + bias_x_y) / h
   auto pred_box_xy =
       helper_->Slice(transposed_x->output(0), {0, 1, 2, 3, 4}, {0, 0, 0, 0, 0},
                      {max_int, max_int, max_int, max_int, 2});
@@ -134,11 +122,6 @@ void YoloBoxMapper::Opset11() {
   pred_box_xy =
       helper_->MakeNode("Div", {pred_box_xy, wh->output(0)})->output(0);
 
-  // anchors = [(anchors[i], anchors[i + 1]) for i in range(0, len(anchors), 2)]
-  // anchors_s = np.array(
-  //     [(an_w / input_w, an_h / input_h) for an_w, an_h in anchors])
-  // anchor_w = anchors_s[:, 0:1].reshape((1, an_num, 1, 1))
-  // anchor_h = anchors_s[:, 1:2].reshape((1, an_num, 1, 1))
   std::vector<int64_t> valid_anchors(anchor_num);
   valid_anchors.assign(anchors_.begin(), anchors_.begin() + anchor_num * 2);
   auto anchors =
@@ -150,13 +133,6 @@ void YoloBoxMapper::Opset11() {
   auto ori_wh =
       helper_->MakeNode("Mul", {wh->output(0), downsample})->output(0);
   anchors = helper_->MakeNode("Div", {anchors, ori_wh})->output(0);
-  // Following divide operation requires undirectional broadcast
-  // It satisfies the definition of ONNX, but now sure all the inference engines
-  // support this rule e.g TensorRT、OpenVINO anchor_w = anchors_s[:,
-  // 0:1].reshape((1, an_num, 1, 1)) anchor_h = anchors_s[:, 1:2].reshape((1,
-  // an_num, 1, 1)) pred_box[:, :, :, :, 2] = np.exp(pred_box[:, :, :, :, 2]) *
-  // anchor_w pred_box[:, :, :, :, 3] = np.exp(pred_box[:, :, :, :, 3]) *
-  // anchor_h
   anchors = helper_->Reshape(anchors, {1, anchor_num, 1, 1, 2});
   auto pred_box_wh =
       helper_->Slice(transposed_x->output(0), {0, 1, 2, 3, 4}, {0, 0, 0, 0, 2},
@@ -164,11 +140,6 @@ void YoloBoxMapper::Opset11() {
   pred_box_wh = helper_->MakeNode("Exp", {pred_box_wh})->output(0);
   pred_box_wh = helper_->MakeNode("Mul", {pred_box_wh, anchors})->output(0);
 
-  // if iou_aware:
-  //     pred_conf = sigmoid(x[:, :, :, :, 4:5])**(
-  //         1 - iou_aware_factor) * sigmoid(ioup)**iou_aware_factor
-  // else:
-  //     pred_conf = sigmoid(x[:, :, :, :, 4:5])
   auto confidence =
       helper_->Slice(transposed_x->output(0), {0, 1, 2, 3, 4}, {0, 0, 0, 0, 4},
                      {max_int, max_int, max_int, max_int, 5});
@@ -188,9 +159,6 @@ void YoloBoxMapper::Opset11() {
     pred_conf = helper_->MakeNode("Mul", {pred_conf, ioup})->output(0);
   }
 
-  // pred_conf[pred_conf < conf_thresh] = 0.
-  // pred_score = sigmoid(x[:, :, :, :, 5:]) * pred_conf
-  // pred_box = pred_box * (pred_conf > 0.).astype('float32')
   auto value_2 = helper_->Constant({1}, GetOnnxDtype(x_info[0].dtype),
                                    static_cast<float>(2.0));
   auto center = helper_->MakeNode("Div", {pred_box_wh, value_2})->output(0);

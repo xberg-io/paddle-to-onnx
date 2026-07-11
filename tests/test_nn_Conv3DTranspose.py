@@ -65,7 +65,6 @@ def test_Conv3DTranspose_9_10_11_12():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Conv3DTranspose", [9, 10, 11, 12])
     obj.set_input_data(
         "input_data",
@@ -82,7 +81,6 @@ def test_Conv3DTranspose_padding_0_9_10_11_12():
     """
     op = Net(padding=[1, 2, 3])
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Conv3DTranspose", [9])
     obj.set_input_data(
         "input_data",
@@ -99,7 +97,6 @@ def test_Conv3DTranspose_padding_1_9_10_11_12():
     """
     op = Net(padding=[1, 2, 3, 4, 5, 6])
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Conv3DTranspose", [9, 10, 11, 12])
     obj.set_input_data(
         "input_data",
@@ -116,7 +113,6 @@ def test_Conv3DTranspose_padding_2_9_10_11_12():
     """
     op = Net(padding=[[0, 0], [0, 0], [1, 2], [2, 3], [2, 2]])
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Conv3DTranspose", [9, 10, 11, 12])
     obj.set_input_data(
         "input_data",
@@ -133,7 +129,6 @@ def test_Conv3DTranspose_groups_1_9_10_11_12():
     """
     op = Net(in_channels=16, out_channels=16, groups=4)
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Conv3DTranspose", [9, 10, 11, 12])
     obj.set_input_data(
         "input_data",
@@ -150,7 +145,6 @@ def test_Conv3DTranspose_groups_2_9_10_11_12():
     """
     op = Net(in_channels=16, out_channels=16, groups=16)
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Conv3DTranspose", [9, 10, 11, 12])
     obj.set_input_data(
         "input_data",
@@ -167,7 +161,6 @@ def test_Conv3DTranspose_dilation_2_9_10_11_12():
     """
     op = Net(in_channels=16, out_channels=16, dilation=3)
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Conv3DTranspose", [9, 10, 11, 12])
     obj.set_input_data(
         "input_data",
@@ -184,21 +177,9 @@ def test_Conv3DTranspose_output_padding_2_9_10_11_12():
     """
     op = Net(in_channels=16, out_channels=16, stride=3, output_padding=2)
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Conv3DTranspose", [9, 10, 11, 12])
     obj.set_input_data(
         "input_data",
         paddle.to_tensor(randtool("float", -1, 1, [3, 16, 10, 10, 10]).astype("float32")),
     )
     obj.run()
-
-
-# if __name__ == '__main__':
-#     test_Conv3DTranspose_output_padding_2_9_10_11_12()
-#     test_Conv3DTranspose_dilation_2_9_10_11_12()
-#     test_Conv3DTranspose_groups_2_9_10_11_12()
-#     test_Conv3DTranspose_groups_1_9_10_11_12()
-#     test_Conv3DTranspose_padding_2_9_10_11_12()
-#     test_Conv3DTranspose_padding_1_9_10_11_12()
-#     test_Conv3DTranspose_padding_0_9_10_11_12()
-#     test_Conv3DTranspose_9_10_11_12()

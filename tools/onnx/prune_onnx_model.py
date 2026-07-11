@@ -50,7 +50,6 @@ if __name__ == "__main__":
             if out in args.output_names:
                 output_node_indices.add(i)
 
-    # from outputs find all the ancestors
     import copy
 
     reserved_node_indices = copy.deepcopy(output_node_indices)

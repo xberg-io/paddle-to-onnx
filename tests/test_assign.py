@@ -40,7 +40,6 @@ def test_assign_int32():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "assign", [9])
     obj.set_input_data(
         "input_data",
@@ -57,7 +56,6 @@ def test_assign_int64():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "assign", [10])
     obj.set_input_data(
         "input_data",
@@ -74,7 +72,6 @@ def test_assign_fp32():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "assign", [11])
     obj.set_input_data(
         "input_data",
@@ -91,7 +88,6 @@ def test_assign_fp64():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "assign", [12])
     obj.set_input_data(
         "input_data",

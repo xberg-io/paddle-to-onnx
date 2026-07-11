@@ -35,14 +35,9 @@ void FillLikeMapper::Opset9() {
   }
   auto shape_node = helper_->MakeNode("Shape", {input_info[0].name});
   int64_t dtype = output_info[0].dtype;
-  // There's some problem with tensorrt with `ConstantOfShape`
-  // Maybe we should use a graph pass to solve this problem
-  // but now we just to avoid using `ConstantOfShape`
   auto const_node = helper_->Constant({1}, GetOnnxDtype(dtype), value_);
   helper_->MakeNode("Expand", {const_node, shape_node->output(0)},
                     {output_info[0].name});
-  //    helper_->ConstOfShape(shape_node->output(0), output_info[0].name,
-  //                         GetOnnxDtype(dtype), value_);
 }
 
 } // namespace paddle2onnx

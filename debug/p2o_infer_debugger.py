@@ -265,7 +265,7 @@ with open('{temp_filename}', 'rb') as f:
             r"Variable:.*?- shape:\s.*?\[(.*?)\].*?- dtype:\s*(\w+).*?- data:\s*\[(.*?)\].*?",
             flags=re.DOTALL,
         )
-        # TODO(wangmingkai02): adjust n according to the number of print op
+        # ~keep TODO(wangmingkai02): adjust n according to the number of print ops.
         n = 8
         shape_list, dtype, data_list = [], None, []
         with open(log_file, encoding="utf-8") as f:
@@ -346,7 +346,7 @@ with open('{temp_filename}', 'rb') as f:
             for _op in block.ops:
                 if _op.name() == "pd_op.print":
                     block.remove_op(_op)
-            # TODO(wangmingkai02): compare results
+            # ~keep TODO(wangmingkai02): compare results.
             _compare_results(
                 os.path.splitext(new_model_file)[0],
                 onnx_model_file,
@@ -888,7 +888,7 @@ def main():
     model_file_path = os.path.join(args.model_dir, args.model_filename)
     model = paddle.jit.load(model_file_path)
     program = model.program()
-    # TODO(wangmingkai02): Add a check for print op
+    # ~keep TODO(wangmingkai02): add a check for print op.
     assert program.num_blocks == 1, "Only support single block model."
     logger.info("Initial Program: \n%s", str(program))
     if os.environ.get("FLAGS_print_ir", None) is not None and os.environ.get(

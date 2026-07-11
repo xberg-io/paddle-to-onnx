@@ -57,7 +57,6 @@ def test_set_value_1():
     }
     op = Net(config)
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "set_value", [19])
     obj.set_input_data("input_data", (paddle.ones(shape=[8, 8])))
     obj.run()
@@ -77,7 +76,6 @@ def test_set_value_2():
     }
     op = Net(config)
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "set_value", [19])
     obj.set_input_data("input_data", (paddle.ones(shape=[1, 7, 7, 1])))
     obj.run()

@@ -105,7 +105,6 @@ class TestAdaptiveAvgPool2dConvert(OPConvertAutoScanTest):
             output_size = draw(st.integers(min_value=1, max_value=3))
         elif output_type == "list":
             output_size = draw(st.lists(st.integers(min_value=1, max_value=3), min_size=2, max_size=2))
-        # tensor_attr True is not supported, because when tensor_attr is True, the output size is unknown
         tensor_attr = False
         config = {
             "op_names": ["pool2d"],

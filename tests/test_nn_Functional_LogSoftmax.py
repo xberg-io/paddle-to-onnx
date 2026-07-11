@@ -42,7 +42,6 @@ def test_nn_functional_LogSigmoid_9():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_functional_LogSigmoid", [9])
     obj.set_input_data(
         "input_data",
@@ -58,7 +57,6 @@ def test_nn_functional_LogSigmoid_10():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_functional_LogSigmoid", [10])
     obj.set_input_data(
         "input_data",
@@ -74,7 +72,6 @@ def test_nn_functional_LogSigmoid_11():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_functional_LogSigmoid", [11])
     obj.set_input_data(
         "input_data",
@@ -90,7 +87,6 @@ def test_nn_functional_LogSigmoid_12():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_functional_LogSigmoid", [12])
     obj.set_input_data(
         "input_data",
@@ -106,7 +102,6 @@ def test_nn_functional_LogSigmoid_axis():
     """
     op = Net(axis=1)
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_functional_LogSigmoid", [12])
     obj.set_input_data(
         "input_data",
@@ -122,7 +117,6 @@ def test_nn_functional_LogSigmoid_dtype():
     """
     op = Net(dtype="float64")
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_functional_LogSigmoid", [12])
     obj.set_input_data(
         "input_data",

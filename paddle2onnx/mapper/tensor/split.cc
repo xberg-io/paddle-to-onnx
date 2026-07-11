@@ -73,7 +73,7 @@ int32_t SplitMapper::GetMinOpsetVersion(bool verbose) {
 }
 
 int64_t SplitMapper::GetAxis(int64_t rank) {
-  int64_t axis = axis_; // Old IR
+  int64_t axis = axis_;
   if (HasInput("axis") || HasInput("AxisTensor")) {
     if (in_pir_mode) {
       double value = 0;
@@ -242,7 +242,7 @@ void SplitMapper::Opset18() {
         helper_->MakeNode("Split", {input_info[0].name, splits}, output_names);
     AddAttribute(node, "axis", axis);
   } else {
-    int64_t num = input_info[0].shape[axis]; // default
+    int64_t num = input_info[0].shape[axis];
     if (HasAttr("num")) {
       GetAttr("num", &num);
     }

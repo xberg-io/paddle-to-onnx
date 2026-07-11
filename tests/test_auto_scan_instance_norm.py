@@ -86,8 +86,6 @@ class TestInstanceNormConvert(OPConvertAutoScanTest):
     def sample_convert_config(self, draw):
         input_shape = draw(st.lists(st.integers(min_value=4, max_value=10), min_size=3, max_size=5))
 
-        # input_spec = [-1] * len(input_shape)
-
         dtype = draw(st.sampled_from(["float32"]))
 
         if len(input_shape) == 2:

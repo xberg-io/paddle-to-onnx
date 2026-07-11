@@ -23,12 +23,10 @@ exclude = [
     "docs/**",
     ".github/ISSUE_TEMPLATE/**",
     "debug/**",
+    "crates/*-ffi/include/*.h",
+    "packages/go/include/*.h",
 ]
 
-# Inherited PaddlePaddle upstream source carries pre-existing misspellings not
-# worth rewriting. Note the level-of-detail tensor term is legitimate Paddle
-# terminology, so these trees are excluded from spell-checking rather than
-# autocorrected (autocorrect would wrongly rewrite it).
 [lint.typos]
 extend_exclude = ["paddle2onnx/**", "tools/**", "tests/**", "cmake/**", "setup.py"]
 
@@ -36,6 +34,50 @@ extend_exclude = ["paddle2onnx/**", "tools/**", "tests/**", "cmake/**", "setup.p
 select = ["B", "C4", "E", "F", "FURB", "I", "PERF", "PIE", "RET", "RUF", "SIM", "TCH", "UP", "W"]
 ignore = ["E501", "E721", "PERF401", "RET504", "SIM108", "SIM112", "SIM115"]
 
+[lint.markdown.rumdl]
+disable = ["MD041"]
+
+[fmt.markdown.rumdl]
+disable = ["MD041"]
+
+[lint.uncomment]
+enabled = true
+remove_todos = false
+remove_fixme = false
+remove_docs = false
+use_default_ignores = true
+preserve_patterns = [
+    "SAFETY",
+    "HACK",
+    "WORKAROUND",
+    "NOTE",
+    "Copyright",
+    "Licensed",
+    "License",
+    "SPDX",
+    "Apache",
+    "MIT",
+    "WITHOUT WARRANTIES",
+    "limitations under the License",
+    "copyright",
+    "licensed",
+    "license",
+    "apache",
+    "you may not use this file except in compliance",
+    "You may obtain a copy of the License",
+    "you may obtain a copy of the license",
+    "http://www.apache.org/licenses/LICENSE-2.0",
+    "http://www.apache.org/licenses/license-2.0",
+    "Unless required by applicable law",
+    "unless required by applicable law",
+    "distributed under the License",
+    "distributed under the license",
+    "AS IS",
+    "as is",
+    "without warranties",
+    "specific language governing permissions",
+    "limitations under the license",
+]
 [hooks]
 stages = ["pre-commit"]
 
@@ -56,6 +98,8 @@ lint = { exclude = [
     "docs/**",
     ".github/ISSUE_TEMPLATE/**",
     "debug/**",
+    "crates/*-ffi/include/*.h",
+    "packages/go/include/*.h",
 ] }
 fmt = { exclude = [
     "**/*.lock",
@@ -73,6 +117,8 @@ fmt = { exclude = [
     "docs/**",
     ".github/ISSUE_TEMPLATE/**",
     "debug/**",
+    "crates/*-ffi/include/*.h",
+    "packages/go/include/*.h",
 ] }
 commit = { stages = ["commit-msg"] }
 file_safety = { exclude = [
@@ -91,13 +137,14 @@ file_safety = { exclude = [
     "docs/**",
     ".github/ISSUE_TEMPLATE/**",
     "debug/**",
+    "crates/*-ffi/include/*.h",
+    "packages/go/include/*.h",
 ] }
 
 [hooks.pre-commit.commands.pyrefly]
 run = "pyrefly check paddle2onnx setup.py"
 files = "{paddle2onnx/**/*.py,setup.py}"
 
-# --- catalog tools (standalone binaries, PATH-probed) ---
 [tools.clang-format]
 enabled = true
 
@@ -110,3 +157,22 @@ enabled = true
 [tools.actionlint]
 enabled = true
 
+
+[per-file-ignores]
+"**/*.py" = ["comment", "doc-comment"]
+"**/*.cc" = ["comment", "doc-comment"]
+"**/*.h" = ["comment", "doc-comment"]
+"**/*.sh" = ["comment", "doc-comment"]
+"**/*.proto" = ["comment", "doc-comment"]
+"e2e/**" = ["comment", "doc-comment"]
+"**/e2e/**" = ["comment", "doc-comment"]
+"test_apps/**" = ["comment", "doc-comment"]
+"**/test_apps/**" = ["comment", "doc-comment"]
+"docs/assets/**" = ["comment", "doc-comment"]
+"**/generated/**" = ["comment", "doc-comment"]
+"**/*.generated.*" = ["comment", "doc-comment"]
+"**/*.g.*" = ["comment", "doc-comment"]
+"**/*.freezed.*" = ["comment", "doc-comment"]
+"crates/*-ffi/include/*.h" = ["comment", "doc-comment"]
+"packages/go/include/*.h" = ["comment", "doc-comment"]
+"Package.swift" = ["comment", "doc-comment"]

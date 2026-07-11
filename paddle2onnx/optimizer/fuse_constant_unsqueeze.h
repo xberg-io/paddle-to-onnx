@@ -18,11 +18,6 @@
 
 #pragma once
 
-// Before:
-//   B = Unsqueeze(Constant, axes)
-// After:
-//   B = Constant (Constant with new shape)
-
 #include <numeric>
 
 #include "onnx/defs/tensor_util.h"
@@ -45,7 +40,6 @@ struct FuseConstantUnsqueeze final : public PredicateBasedPass {
                     NodeDestroyType &destroy_current) override {
     destroy_current = NodeDestroyType::DestroyZero;
 
-    // check if Constant is only used by Reshape
     if (n->inputs()[0]->uses().size() > 1) {
       return false;
     }
@@ -53,14 +47,10 @@ struct FuseConstantUnsqueeze final : public PredicateBasedPass {
     Node *unsqueeze = n;
     Node *constant = n->inputs()[0]->node();
 
-    // Process 'axes' data
     std::vector<int64_t> axes;
     if (unsqueeze->hasAttribute(kaxes)) {
-      // opset 13 below
       axes = unsqueeze->is(kaxes);
     } else {
-      // opset 13 and above - first check if 'unsqueeze' has 'axes' input
-      // constant
       if (unsqueeze->inputs()[1]->node()->kind() != kConstant) {
         return false;
       }
@@ -90,7 +80,6 @@ struct FuseConstantUnsqueeze final : public PredicateBasedPass {
                      new_size.begin() + new_size.size());
     constant->t_(kvalue, std::move(t));
 
-    // update constant node
     constant->output()->setSizes(unsqueeze->output()->sizes());
     constant->output()->setElemType(unsqueeze->output()->elemType());
     unsqueeze->output()->replaceAllUsesWith(unsqueeze->inputs()[0]);

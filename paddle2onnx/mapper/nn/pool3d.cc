@@ -189,7 +189,6 @@ void Pool3dMapper::NoAdaptivePool(const std::vector<TensorInfo> &input_info,
 }
 
 int32_t Pool3dMapper::GetMinOpsetVersion(bool verbose) {
-  // NHWC is not supported
   if (data_format_ == "NDHWC") {
     Error() << "NDHWC format is not supported." << std::endl;
     return -1;

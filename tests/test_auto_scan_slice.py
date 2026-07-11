@@ -224,7 +224,6 @@ class Net3(BaseNet):
             0,
         ]
         ends = self.config["ends"]
-        # ends = [10, 10, paddle.to_tensor(np.array(10).astype("int64")), 10]
         ends = [
             paddle.to_tensor(np.array(10).astype("int64")),
             paddle.to_tensor(np.array(10).astype("int64")),

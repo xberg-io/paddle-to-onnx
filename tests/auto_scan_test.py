@@ -74,7 +74,6 @@ class OPConvertAutoScanTest(unittest.TestCase):
         np.random.seed(1024)
         self.num_ran_models = 0
 
-    # @_test_with_pir
     def run_and_statis(
         self,
         max_examples=100,
@@ -89,7 +88,6 @@ class OPConvertAutoScanTest(unittest.TestCase):
         if os.getenv("CE_STAGE", "OFF") == "ON":
             max_examples *= 10
             min_success_num *= 10
-            # while at ce phase, there's no limit on time
             max_duration = -1
         start_time = time.time()
         settings.register_profile(
@@ -201,7 +199,6 @@ class OPConvertAutoScanTest(unittest.TestCase):
             for input_type in input_type_list:
                 input_tensors = []
                 for j, shape in enumerate(test_data_shapes):
-                    # Determine whether it is a user-defined data generation function
                     if isfunction(shape):
                         data = shape()
                         data = data.astype(input_type[j])

@@ -39,7 +39,6 @@ def test_logical_or_7():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "logical_or", [7])
     obj.set_input_data(
         "input_data",
@@ -56,7 +55,6 @@ def test_logical_or_11():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "logical_or", [11])
     obj.set_input_data(
         "input_data",
@@ -73,7 +71,6 @@ def test_logical_or_12():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "logical_or", [12])
     obj.set_input_data(
         "input_data",

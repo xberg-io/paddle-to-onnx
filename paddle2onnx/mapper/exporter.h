@@ -37,7 +37,6 @@
 inline std::string convert_pir_op_name(const std::string pir_op_name) {
   std::unordered_map<std::string, std::string> op_name_mappings = {
       {"matmul", "matmul_v2"},
-      // {"relu", "relu6"},
       {"batch_norm_", "batch_norm"},
       {"topk", "top_k_v2"},
       {"repeat_interleave_with_tensor_index", "repeat_interleave"},
@@ -101,8 +100,6 @@ inline std::string GetFilenameFromPath(const std::string &path) {
 
 class ModelExporter {
 public:
-  // custom operators for export
-  // <key: op_name, value:[exported_op_name, domain]>
   std::map<std::string, std::string> custom_ops;
 
   void SaveExternalData(ONNX_NAMESPACE::GraphProto *graph,
@@ -133,7 +130,6 @@ public:
 
 private:
   bool verbose_ = false;
-  // The _deploy_backend will pass to Mapper to influence the conversion
   std::string deploy_backend_ = "onnxruntime";
   BaseQuantizeProcessor *quantize_processer_ = nullptr;
   std::string *calibration_cache_ = nullptr;
@@ -146,7 +142,6 @@ private:
                        bool enable_experimental_op);
 
   ONNX_NAMESPACE::ModelProto onnx_model_;
-  // Opset Version
 
   int32_t GetCfBlockMinOpsetVersion(const PaddlePirParser &pir_parser,
                                     const pir::Block &block);
@@ -156,10 +151,8 @@ private:
   void SetOpsetVersion(const PaddleParser &parser, bool auto_upgrade_opset);
   void SetOpsetVersion(const PaddlePirParser &pir_parser,
                        bool auto_upgrade_opset);
-  // IR Version
   inline ONNX_NAMESPACE::Version GetIRVersion() const;
   void SetIRVersion();
-  //
   void ExportInputOutputs(
       const PaddleParser &parser,
       std::vector<std::shared_ptr<ONNX_NAMESPACE::ValueInfoProto>> *inputs,
@@ -176,7 +169,6 @@ private:
   void ExportParameters(
       const PaddlePirParser &pir_parser,
       std::vector<std::shared_ptr<ONNX_NAMESPACE::NodeProto>> *parameters);
-  // Process dumplicate tensor names in paddle model
   std::set<std::string> tensor_names_;
   std::set<std::string> while_tensor_names_;
   void ProcessGraphDumplicateNames(
@@ -186,9 +178,6 @@ private:
       std::vector<std::shared_ptr<ONNX_NAMESPACE::NodeProto>> *nodes,
       std::map<std::string, QuantizeInfo> *quantize_info,
       bool is_while_block = false);
-  // Update constant node in parameters. When process quantize model, the weight
-  // dtype may be int8, it should be convet to float32 and use this function to
-  // update converted params.
   void UpdateParameters(
       const std::map<std::string, Weight> &params,
       std::vector<std::shared_ptr<ONNX_NAMESPACE::NodeProto>> *parameters);

@@ -47,7 +47,6 @@ void ExpandV2Mapper::Opset8() {
     input_shape = helper_->Concat({padding_shape, input_shape}, 0);
   }
   if (helper_->GetOpsetVersion() < 12) {
-    // While opset < 12, Max cannot support int64 datatype with onnxruntime
     input_shape =
         helper_->AutoCast(input_shape, P2ODataType::INT64, P2ODataType::FP32);
     shape = helper_->AutoCast(shape, P2ODataType::INT64, P2ODataType::FP32);

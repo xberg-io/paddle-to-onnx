@@ -51,7 +51,6 @@ class TestTileConvert(OPConvertAutoScanTest):
         input_shape = draw(st.lists(st.integers(min_value=2, max_value=5), min_size=0, max_size=5))
 
         dtype = draw(st.sampled_from(["float32", "float64", "int32", "int64"]))
-        # when repeat_times_dtype is tensor has a bug
         repeat_times_dtype = draw(st.sampled_from(["list", "Tensor", "int"]))
         shape_dtype = draw(st.sampled_from(["int32", "int64"]))
 
@@ -86,11 +85,6 @@ class Net1(BaseNet):
         forward
         """
         repeat_times = [4, paddle.to_tensor(3, dtype=self.config["shape_dtype"]), 2, 1]
-        # repeat_times = [4, 3, 2, 1]
-        # repeat_times = paddle.to_tensor(
-        #                     np.array([4, 3, 2, 1]).astype('int32'))
-        # not work
-        # repeat_times = [4, 3, paddle.to_tensor(np.array(2).astype("int64")), 1]
         return paddle.tile(inputs, repeat_times=repeat_times)
 
 
@@ -108,7 +102,6 @@ class TestTileConvert1(OPConvertAutoScanTest):
 
         repeat_times = [10] if len(input_shape) == 0 else input_shape
 
-        # when repeat_times_dtype is tensor has a bug
         repeat_times_dtype = draw(st.sampled_from(["list", "Tensor"]))
         config = {
             "op_names": ["tile"],

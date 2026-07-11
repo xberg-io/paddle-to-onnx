@@ -63,32 +63,12 @@ def test_Upsample_size():
     op = Net(size=[12, 12], align_mode=1)
 
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Upsample", [11, 12])
     obj.set_input_data(
         "input_data",
         paddle.to_tensor(randtool("float", -1, 1, [3, 1, 10, 10]).astype("float32")),
     )
     obj.run()
-
-
-# has a bug
-# def test_Upsample_size_tensor():
-#     """
-#     api: paddle.nn.functional.upsample
-#     op version: 11, 12
-#     """
-#     op = Net(scale_factor=(paddle.to_tensor(2), paddle.to_tensor(2)),
-#              align_mode=1)
-#
-#     op.eval()
-#     # net, name, ver_list, delta=1e-6, rtol=1e-5
-#     obj = APIOnnx(op, 'nn_Upsample', [11, 12])
-#     obj.set_input_data(
-#         "input_data",
-#         paddle.to_tensor(
-#             randtool("float", -1, 1, [3, 1, 10, 10]).astype('float32')))
-#     obj.run()
 
 
 @_test_with_pir
@@ -100,7 +80,6 @@ def test_Upsample_scale_factor():
     op = Net(scale_factor=[2, 3])
 
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Upsample", [11, 12])
     obj.set_input_data(
         "input_data",
@@ -118,7 +97,6 @@ def test_Upsample_size_linear_tensor():
     op = Net(size=[12], mode="linear", data_format="NCW", align_mode=1)
 
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Upsample", [11])
     obj.set_input_data(
         "input_data",
@@ -136,7 +114,6 @@ def test_Upsample_size_linear():
     op = Net(size=[12], mode="linear", align_corners=False, align_mode=1, data_format="NCW")
 
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Upsample", [11, 12])
     obj.set_input_data(
         "input_data",
@@ -160,7 +137,6 @@ def test_Upsample_scale_factor_linear():
     )
 
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Upsample", [11, 12])
     obj.set_input_data(
         "input_data",
@@ -184,7 +160,6 @@ def test_Upsample_size_bilinear():
     )
 
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Upsample", [11, 12])
     obj.set_input_data(
         "input_data",
@@ -208,7 +183,6 @@ def test_Upsample_scale_factor_bilinear():
     )
 
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Upsample", [11, 12])
     obj.set_input_data(
         "input_data",
@@ -232,7 +206,6 @@ def test_Upsample_size_nearest():
     )
 
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Upsample", [11, 12])
     obj.set_input_data(
         "input_data",
@@ -256,7 +229,6 @@ def test_Upsample_scale_factor_nearest():
     )
 
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Upsample", [11, 12])
     obj.set_input_data(
         "input_data",
@@ -280,7 +252,6 @@ def test_Upsample_size_bicubic():
     )
 
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Upsample", [11, 12])
     obj.set_input_data(
         "input_data",
@@ -304,7 +275,6 @@ def test_Upsample_scale_factor_bicubic():
     )
 
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Upsample", [11, 12])
     obj.set_input_data(
         "input_data",
@@ -328,7 +298,6 @@ def test_Upsample_size_trilinear():
     )
 
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Upsample", [11, 12])
     obj.set_input_data(
         "input_data",
@@ -352,7 +321,6 @@ def test_Upsample_scale_factor_trilinear():
     )
 
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Upsample", [11, 12])
     obj.set_input_data(
         "input_data",

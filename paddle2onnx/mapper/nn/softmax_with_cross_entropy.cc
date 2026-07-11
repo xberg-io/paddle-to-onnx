@@ -95,7 +95,6 @@ void SoftmaxCrossEntropyLossMapper::Opset12() {
       AddAttribute(node, "reduction", "none");
       auto loss_node =
           helper_->Unsqueeze(node->output(0), loss[0].name, {axis_});
-      // onnx output is log(softmax), but paddle output is softmax
       helper_->MakeNode("Exp", {node->output(1)}, {softmax[0].name});
     } else {
       std::vector<int64_t> perm = Arange(0, dim);
@@ -118,7 +117,6 @@ void SoftmaxCrossEntropyLossMapper::Opset12() {
       auto revert_transpose_softmax =
           helper_->MakeNode("Transpose", {node->output(1)});
       AddAttribute(revert_transpose_softmax, "perm", perm);
-      // onnx output is log(softmax), but paddle output is softmax
       helper_->MakeNode("Exp", {revert_transpose_softmax->output(0)},
                         {softmax[0].name});
     }

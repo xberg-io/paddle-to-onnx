@@ -41,7 +41,6 @@ def test_fftr2c_17():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "fft_r2c", [17])
     obj.set_input_data(
         "input_data",

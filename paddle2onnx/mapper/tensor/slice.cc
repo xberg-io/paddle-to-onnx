@@ -67,9 +67,6 @@ std::vector<int64_t> SliceMapper::DecreaseAxis() {
   if (has_attr) {
     GetAttr("decrease_axis", &decrease_axis);
 
-    // In PIR mode, if decrease_axis is not empty, we should use it directly
-    // The shape comparison logic may fail in PIR mode due to input name
-    // differences
     if (in_pir_mode && !decrease_axis.empty()) {
       return decrease_axis;
     }

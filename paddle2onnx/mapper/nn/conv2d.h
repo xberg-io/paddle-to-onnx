@@ -49,7 +49,6 @@ public:
       padding_algorithm_ = "EXPLICIT";
     }
     GetAttr("data_format", &data_format_);
-    // p.GetOpInput(i, 0);
   }
 
   int32_t GetMinOpsetVersion(bool verbose) override;

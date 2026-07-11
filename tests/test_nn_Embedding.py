@@ -49,7 +49,6 @@ def test_Embedding_base():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Embedding", [9, 10, 11, 12])
     obj.set_input_data("input_data", paddle.to_tensor(np.arange(3, 6).reshape((3, 1)).astype(np.int64)))
     obj.run()

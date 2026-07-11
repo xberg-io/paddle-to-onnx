@@ -27,7 +27,6 @@ namespace paddle2onnx {
 typedef std::map<std::string, std::string> CustomOpInfo;
 PYBIND11_MODULE(paddle2onnx_cpp2py_export, m) {
   m.doc() = "Paddle2ONNX: export PaddlePaddle to ONNX";
-  // converter.cc
   m.def("export", [](const std::string &model_filename,
                      const std::string &params_filename, int opset_version = 7,
                      bool auto_upgrade_opset = true, bool verbose = false,

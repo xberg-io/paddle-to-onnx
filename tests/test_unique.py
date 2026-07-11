@@ -41,7 +41,6 @@ def test_unique_11():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "unique", [11])
     obj.set_input_data(
         "input_data",
@@ -58,7 +57,6 @@ def test_unique_12():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "unique", [12])
     obj.set_input_data(
         "input_data",
@@ -75,7 +73,6 @@ def test_unique_axis():
     """
     op = Net(axis=1)
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "unique", [12])
     obj.set_input_data(
         "input_data",
@@ -119,7 +116,6 @@ def test_unique_return_index():
     """
     op = Net_mult_2(return_index=True)
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "unique", [12])
     obj.set_input_data(
         "input_data",
@@ -136,7 +132,6 @@ def test_unique_return_inverse():
     """
     op = Net_mult_2(return_inverse=True)
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "unique", [12])
     obj.set_input_data(
         "input_data",
@@ -153,7 +148,6 @@ def test_unique_return_counts():
     """
     op = Net_mult_2(return_counts=True)
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "unique", [12])
     obj.set_input_data(
         "input_data",
@@ -197,7 +191,6 @@ def test_unique_return_index_inverse():
     """
     op = Net_mult_3(return_index=True, return_inverse=True)
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "unique", [12])
     obj.set_input_data(
         "input_data",
@@ -214,7 +207,6 @@ def test_unique_return_index_counts():
     """
     op = Net_mult_3(return_index=True, return_counts=True)
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "unique", [12])
     obj.set_input_data(
         "input_data",
@@ -231,7 +223,6 @@ def test_unique_return_inverse_counts():
     """
     op = Net_mult_3(return_inverse=True, return_counts=True)
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "unique", [12])
     obj.set_input_data(
         "input_data",
@@ -271,7 +262,6 @@ def test_unique_return_all():
     """
     op = Net_mult_all()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "unique", [12])
     obj.set_input_data(
         "input_data",

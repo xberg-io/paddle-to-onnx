@@ -41,22 +41,17 @@ CMAKE = which("cmake3") or which("cmake")
 MAKE = which("make")
 
 ################################################################################
-# Global variables for controlling the build variant
 ################################################################################
 
-# Default value is set to TRUE\1 to keep the settings same as the current ones.
-# However going forward the recomemded way to is to set this to False\0
 USE_MSVC_STATIC_RUNTIME = bool(os.getenv("USE_MSVC_STATIC_RUNTIME", "1") == "1")
 ONNX_NAMESPACE = os.getenv("ONNX_NAMESPACE", "onnx")
 
 ################################################################################
-# Pre Check
 ################################################################################
 
 assert CMAKE, 'Could not find "cmake" executable!'
 
 ################################################################################
-# Utilities
 ################################################################################
 
 
@@ -73,7 +68,6 @@ def cd(path):
 
 
 ################################################################################
-# Customized commands
 ################################################################################
 
 
@@ -106,7 +100,6 @@ class cmake_build(setuptools.Command):
 
         with cd(CMAKE_BUILD_DIR):
             build_type = "Release"
-            # configure
             cmake_args = [
                 CMAKE,
                 f"-DPYTHON_INCLUDE_DIR={sysconfig.get_python_inc()}",
@@ -122,9 +115,6 @@ class cmake_build(setuptools.Command):
             if WINDOWS:
                 cmake_args.extend(
                     [
-                        # we need to link with libpython on windows, so
-                        # passing python version to window in order to
-                        # find python in cmake
                         "-DPY_VERSION={}".format("{}.{}".format(*sys.version_info[:2])),
                     ]
                 )
@@ -136,7 +126,6 @@ class cmake_build(setuptools.Command):
                 cmake_args.append(f"-DPYTHON_LIBRARY={sysconfig.get_python_lib(standard_lib=True)}")
             if "CMAKE_ARGS" in os.environ:
                 extra_cmake_args = shlex.split(os.environ["CMAKE_ARGS"])
-                # prevent crossfire with downstream scripts
                 del os.environ["CMAKE_ARGS"]
                 log.info(f"Extra cmake args: {extra_cmake_args}")
                 cmake_args.extend(extra_cmake_args)
@@ -192,13 +181,11 @@ cmdclass = {
 }
 
 ################################################################################
-# Extensions
 ################################################################################
 
 ext_modules = [setuptools.Extension(name="paddle2onnx.paddle2onnx_cpp2py_export", sources=[])]
 
 ################################################################################
-# Final
 ################################################################################
 
 setuptools.setup(

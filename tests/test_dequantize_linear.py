@@ -57,12 +57,12 @@ def build_static_net(input_shape, quant_axis, scale_shape, qmin, qmax, type):
             accum,
             state,
             quant_axis,
-            8,  # bit_length
-            qmin,  # qmin
-            qmax,  # qmax
-            0,  # rounding_type
-            True,  # is_test
-            False,  # only_observer
+            8,
+            qmin,
+            qmax,
+            0,
+            True,
+            False,
         )
 
         model_dir = f"./dequantize_linear_model_{type}"
@@ -97,25 +97,24 @@ def compare_paddle_and_onnx(model_dir, input_data, scale, zero_points, accum, st
         fetch_list=fetch_targets,
     )[0]
     paddle.disable_static()
-    # exit()
     model_file = os.path.join(model_dir, "model.json")
     params_file = ""
     onnx_model_str = paddle2onnx.export(
-        model_file,  # model_filename
-        params_file,  # params_filename
-        None,  # save_file
-        opset_version,  # opset_version
-        False,  # auto_upgrade_opset
-        False,  # dist_prim_all
-        True,  # verbose
-        True,  # enable_onnx_checker
-        True,  # enable_experimental_op
-        True,  # enable_optimize
-        {},  # custom_ops
-        "onnxruntime",  # deploy_backend
-        "",  # calibration_file
-        "",  # external_file
-        False,  # export_fp16_model
+        model_file,
+        params_file,
+        None,
+        opset_version,
+        False,
+        False,
+        True,
+        True,
+        True,
+        True,
+        {},
+        "onnxruntime",
+        "",
+        "",
+        False,
     )
 
     onnx_model_path = os.path.join(model_dir, "model.onnx")
@@ -141,9 +140,9 @@ class TestDequantizeLinear(unittest.TestCase):
     @_test_only_pir
     def test_dequantize_linear_float8_e4m3fn(
         self,
-    ):  # except output [0.0, 1.0, 2.0, 896.0, -208.0]
-        qmin = -448  # float8_e4m3fn
-        qmax = 448  # float8_e4m3fn
+    ):
+        qmin = -448
+        qmax = 448
         input_data = np.array([0, 0.5, 1, 448, -104]).astype(np.float32)
         scale = np.array([2], dtype=np.float32)
         paddle_scale = convert_scale_to_paddle(scale, qmax)
@@ -169,9 +168,9 @@ class TestDequantizeLinear(unittest.TestCase):
     @_test_only_pir
     def test_dequantize_linear_float8_e5m2(
         self,
-    ):  # except output [0.0, 1.0, 2.0, 98304.0, -192.0]
-        qmin = -57344  # float8_e5m2
-        qmax = 57344  # float8_e5m2
+    ):
+        qmin = -57344
+        qmax = 57344
         input_data = np.array([0, 0.5, 1, 49152, -96]).astype(np.float32)
         scale = np.array([2], dtype=np.float32)
         paddle_scale = convert_scale_to_paddle(scale, qmax)

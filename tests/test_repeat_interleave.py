@@ -30,7 +30,6 @@ class Net(paddle.nn.Layer):
         forward
         """
 
-        # repeats = paddle.to_tensor([3,2,1], dtype='int32')
         return paddle.repeat_interleave(inputs, repeats=2, axis=0)
 
 
@@ -42,7 +41,6 @@ def test_repeat_interleave_9():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "repeat_interleave", [9])
     obj.set_input_data(
         "input_data",
@@ -76,7 +74,6 @@ def test_repeat_interleave_9_2():
     """
     op = Net2()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "repeat_interleave", [9])
     obj.set_input_data(
         "input_data",

@@ -42,7 +42,6 @@ def test_Pad1D_9():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Pad1D", [9])
     obj.set_input_data(
         "input_data",
@@ -58,7 +57,6 @@ def test_Pad1D_10():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Pad1D", [10])
     obj.set_input_data(
         "input_data",
@@ -74,7 +72,6 @@ def test_Pad1D_11():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Pad1D", [11])
     obj.set_input_data(
         "input_data",
@@ -90,7 +87,6 @@ def test_Pad1D_12():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Pad1D", [12])
     obj.set_input_data(
         "input_data",
@@ -106,7 +102,6 @@ def test_Pad1D_paddingList():
     """
     op = Net(padding=[1, 2])
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Pad1D", [12])
     obj.set_input_data(
         "input_data",
@@ -122,7 +117,6 @@ def test_Pad1D_reflect():
     """
     op = Net(mode="reflect")
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Pad1D", [12])
     obj.set_input_data(
         "input_data",
@@ -138,7 +132,6 @@ def test_Pad1D_replicate():
     """
     op = Net(mode="replicate")
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Pad1D", [12])
     obj.set_input_data(
         "input_data",

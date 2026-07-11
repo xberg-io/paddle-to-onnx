@@ -46,7 +46,6 @@ class TestMatmulConvert(OPConvertAutoScanTest):
 
     def sample_convert_config(self, draw):
         input_shape1 = draw(st.lists(st.integers(min_value=5, max_value=20), min_size=3, max_size=5))
-        # broadcast
         input_shape2 = input_shape1[-2:]
         input_shape2.reverse()
         dtype = draw(st.sampled_from(["float32", "float64"]))

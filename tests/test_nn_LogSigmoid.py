@@ -40,7 +40,6 @@ def test_nn_LogSigmoid_9():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_LogSigmoid", [9])
     obj.set_input_data(
         "input_data",
@@ -56,7 +55,6 @@ def test_nn_LogSigmoid_10():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_LogSigmoid", [10])
     obj.set_input_data(
         "input_data",
@@ -72,7 +70,6 @@ def test_nn_LogSigmoid_11():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_LogSigmoid", [11])
     obj.set_input_data(
         "input_data",
@@ -88,7 +85,6 @@ def test_nn_LogSigmoid_12():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_LogSigmoid", [12])
     obj.set_input_data(
         "input_data",

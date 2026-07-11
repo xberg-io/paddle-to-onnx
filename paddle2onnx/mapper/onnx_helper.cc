@@ -153,33 +153,6 @@ std::shared_ptr<ONNX_NAMESPACE::NodeProto> MakeConstant(const std::string &name,
   return node;
 }
 
-// std::shared_ptr<ONNX_NAMESPACE::NodeProto> OnnxHelper::MakeConstant(
-//    const Weight& weight) {
-//  auto node_name = MapperHelper::Get()->GenName("auto.constant");
-//  return MakeConstant(node_name, weight);
-//}
-//
-// std::shared_ptr<ONNX_NAMESPACE::NodeProto> OnnxHelper::MakeConstant(
-//    const std::string& name, const Weight& weight) {
-//  auto node = std::make_shared<ONNX_NAMESPACE::NodeProto>();
-//  node->set_op_type("Constant");
-//  node->add_output(name);
-//  auto attr = node->add_attribute();
-//  attr->set_name("value");
-//  attr->set_type(ONNX_NAMESPACE::AttributeProto::TENSOR);
-//  auto tensor = attr->mutable_t();
-//  tensor->set_name(name);
-//  auto onnx_dtype = GetOnnxDtype(weight.dtype);
-//  tensor->set_data_type(onnx_dtype);
-//  for (auto& dim : weight.shape) {
-//    tensor->add_dims(dim);
-//  }
-//  tensor->set_raw_data(std::string(weight.buffer.data(),
-//  weight.buffer.size()));
-//  nodes.push_back(node);
-//  return node;
-//}
-
 std::shared_ptr<ONNX_NAMESPACE::ValueInfoProto>
 MakeValueInfo(const TensorInfo &info) {
   auto value_info = std::make_shared<ONNX_NAMESPACE::ValueInfoProto>();
@@ -400,7 +373,6 @@ std::string OnnxHelper::BroadcastTo(const std::string &input,
 
 std::string OnnxHelper::ConcatIndices(const std::vector<TensorInfo> &indices) {
   std::vector<std::string> vars;
-  // make sure all the indices be 1-D tensor
   for (size_t i = 0; i < indices.size(); ++i) {
     std::string var = indices[i].name;
     if (indices[i].Rank() != 1) {
@@ -408,7 +380,6 @@ std::string OnnxHelper::ConcatIndices(const std::vector<TensorInfo> &indices) {
     }
     vars.push_back(var);
   }
-  // make sure all the indices be int64
   for (size_t i = 0; i < indices.size(); ++i) {
     if (indices[i].dtype != P2ODataType::INT64) {
       auto node = MakeNode("Cast", {vars[i]});
@@ -416,7 +387,6 @@ std::string OnnxHelper::ConcatIndices(const std::vector<TensorInfo> &indices) {
       vars[i] = node->output(0);
     }
   }
-  // concat and return
   if (vars.size() > 1) {
     return Concat(vars, 0);
   }
@@ -426,7 +396,6 @@ std::string OnnxHelper::ConcatIndices(const std::vector<TensorInfo> &indices) {
 std::string OnnxHelper::Clip(const std::string &input,
                              const std::string &output, const float &min,
                              const float &max, const int32_t &in_dtype) {
-  // onnxruntime only supports float input
   std::string input_name = AutoCast(input, in_dtype, P2ODataType::FP32);
   if (opset_version < 11) {
     auto node = MakeNode("Clip", {input_name});

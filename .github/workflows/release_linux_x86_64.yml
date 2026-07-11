@@ -16,7 +16,6 @@ jobs:
         architecture: ["x86_64"]
 
     steps:
-      # Checkout the latest branch of Paddle2ONNX.
       - name: Checkout Paddle2ONNX
         uses: actions/checkout@v4
         with:
@@ -28,7 +27,7 @@ jobs:
           entrypoint: bash
           args: .github/workflows/scripts/entrypoint.sh ${{ matrix.python-version }}
 
-      - uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6
+      - uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
         with:
           name: LinuxRelease_${{ matrix.architecture }}_py${{ matrix.python-version }}
           path: dist

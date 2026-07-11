@@ -94,17 +94,6 @@ void NMSMapper::KeepTopK(const std::string &selected_indices) {
     filtered_box_id = new_box_id->output(0);
   }
 
-  // Here is a little complicated
-  // Since we need to gather all the scores for the final boxes to filter the
-  // top-k boxes Now we have the follow inputs
-  //    - scores: [N, C, M] N means batch size(but now it will be regarded as
-  //    1); C means number of classes; M means number of boxes for each classes
-  //    - selected_indices: [num_selected_indices, 3], and 3 means [batch,
-  //    class_id, box_id]. We will use this inputs to gather score
-  // So now we will first flatten `scores` to shape of [1 * C * M], then we
-  // gather scores by each elements in `selected_indices` The index need be
-  // calculated as
-  //    `gather_index = class_id * M + box_id`
   auto flatten_score = helper_->Flatten(score_info[0].name);
   auto num_boxes_each_class = helper_->Constant(
       {1}, ONNX_NAMESPACE::TensorProto::INT64, score_info[0].shape[2]);
@@ -117,16 +106,10 @@ void NMSMapper::KeepTopK(const std::string &selected_indices) {
       helper_->MakeNode("Gather", {flatten_score, gather_indices});
   AddAttribute(gathered_scores, "axis", int64_t(0));
 
-  // Now we will perform keep_top_k process
-  // First we need to check if the number of remaining boxes is greater than
-  // keep_top_k Otherwise, we will downgrade the keep_top_k to number of
-  // remaining boxes
-  auto final_classes = filtered_class_id; // shape of [num_selected_indices, 1]
+  auto final_classes = filtered_class_id;
   auto final_boxes_id = filtered_box_id;
-  auto final_scores =
-      gathered_scores->output(0); // shape of [num_selected_indices]
+  auto final_scores = gathered_scores->output(0);
   if (keep_top_k_ > 0) {
-    // get proper topk
     auto shape_of_scores = helper_->MakeNode("Shape", {final_scores});
     auto num_of_boxes =
         helper_->Slice(shape_of_scores->output(0), std::vector<int64_t>(1, 0),
@@ -149,7 +132,6 @@ void NMSMapper::KeepTopK(const std::string &selected_indices) {
     }
     AddAttribute(new_top_k, "keepdims", int64_t(1));
 
-    // the output is topk_scores, topk_score_indices
     auto topk_node =
         helper_->MakeNode("TopK", {final_scores, new_top_k->output(0)}, 2);
     auto topk_scores =
@@ -201,9 +183,7 @@ void NMSMapper::KeepTopK(const std::string &selected_indices) {
   helper_->Squeeze({box_result->output(0)}, {out_info[0].name},
                    std::vector<int64_t>(1, 0));
 
-  // other outputs, we don't use sometimes
-  // there's lots of Cast in exporting
-  // TODO(jiangjiajun) A pass to eleminate all the useless Cast is needed
+  // ~keep TODO(jiangjiajun): add a pass to eliminate useless Cast nodes.
   auto reshaped_index_result =
       helper_->Reshape({flatten_boxes_id}, {int64_t(-1), int64_t(1)});
   auto index_result =
@@ -321,30 +301,6 @@ void NMSMapper::ExportForTensorRT() {
   out_classes =
       helper_->AutoCast(out_classes, P2ODataType::INT32, P2ODataType::FP32);
   helper_->Concat({out_classes, out_scores, out_boxes}, {out_info[0].name}, 1);
-
-  //  EfficientNMS_TRT cannot get the same result, so disable now
-  //  auto nms_node = helper_->MakeNode("EfficientNMS_TRT", {boxes_info[0].name,
-  //  score}, 4);
-  //  AddAttribute(nms_node, "plugin_version", "1");
-  //  AddAttribute(nms_node, "background_class", background_label_);
-  //  AddAttribute(nms_node, "max_output_boxes", nms_top_k_);
-  //  AddAttribute(nms_node, "score_threshold", score_threshold_);
-  //  AddAttribute(nms_node, "iou_threshold", nms_threshold_);
-  //  AddAttribute(nms_node, "score_activation", int64_t(0));
-  //  AddAttribute(nms_node, "box_coding", int64_t(0));
-  //  nms_node->set_domain("Paddle");
-  //
-  //  auto num_rois = helper_->Reshape(nms_node->output(0), {-1});
-  //  helper_->AutoCast(num_rois, num_rois_info[0].name, P2ODataType::INT32,
-  //  num_rois_info[0].dtype);
-  //
-  //  auto out_classes = helper_->Reshape(nms_node->output(3), {-1, 1});
-  //  auto out_scores = helper_->Reshape(nms_node->output(2), {-1, 1});
-  //  auto out_boxes = helper_->Reshape(nms_node->output(1), {-1, 4});
-  //  out_classes = helper_->AutoCast(out_classes, P2ODataType::INT32,
-  //  P2ODataType::FP32);
-  //  helper_->Concat({out_classes, out_scores, out_boxes}, {out_info[0].name},
-  //  1);
 }
 
 } // namespace paddle2onnx

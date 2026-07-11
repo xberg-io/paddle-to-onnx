@@ -48,16 +48,12 @@ class TestFlattenConvert(OPConvertAutoScanTest):
             start_axis = 0
             stop_axis = 0
         else:
-            # 生成合法的start_axis
             start_axis = draw(st.integers(min_value=0, max_value=len(input_shape) - 1))
 
-            # 生成合法的stop_axis
             stop_axis = draw(st.integers(min_value=start_axis, max_value=len(input_shape) - 1))
 
-        # 随机将start_axis转为负数
         if draw(st.booleans()):
             start_axis -= len(input_shape)
-        # 随机将stop_axis转为负数
         if draw(st.booleans()):
             stop_axis -= len(input_shape)
 

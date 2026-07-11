@@ -43,13 +43,8 @@ public:
     in_pir_mode = true;
     if_in_cf_block = in_contro_flow_block;
   }
-  // The flag will control if the op is exported as a custom operator
-  // if export_as_custom_op = true, will exported as description in
-  // custom_op_info
   bool export_as_custom_op = false;
-  // [exported_op_name, domain]
 
-  // [exported_op_name, domain]
   std::string custom_op_name;
   std::string deploy_backend;
 
@@ -109,14 +104,8 @@ public:
     return P2OLogger(true, prefix);
   }
 
-  // Some operators is not implement very well, e.g the output may not be same
-  // We mark these operators as experimental, these operators requires double
-  // checking after model exported.
   virtual void MarkAsExperimentalOp() { is_experimental_op_ = true; }
   virtual bool IsExperimentalOp() const { return is_experimental_op_; }
-  // the return value in [7, MAX_ONNX_OPSET_VERSION], represent the minimum
-  // opset_version
-  // if return value < 0, means the op is not supported.
   virtual int32_t GetMinOpsetVersion(bool verbose) { return 7; }
   virtual bool IsExportAsCustomOp() { return export_as_custom_op; }
 
@@ -204,7 +193,7 @@ public:
   int32_t block_idx_;
   int32_t op_idx_;
   int32_t pir_op_idx_;
-  std::string name_; // op transform name
+  std::string name_;
 
   std::string OpType() const {
     if (in_pir_mode) {
@@ -221,10 +210,6 @@ public:
       return op.type();
     }
   }
-
-  // std::string PirOpName() const {
-  //   auto &op = pir_
-  // }
 
   std::string Name() const { return name_; }
 
@@ -273,26 +258,15 @@ public:
     return pir_parser_->GetOpOutput(pir_op_idx_, input_idx, if_in_cf_block);
   }
 
-  // Judge whether Attribute(name)'s type is Var or Vars.
   bool IsAttrVar(const std::string &name) const {
     if (in_pir_mode)
       return pir_parser_->OpIsAttrVar(pir_op_idx_, name, if_in_cf_block);
     return parser_->OpIsAttrVar(block_idx_, op_idx_, name);
   }
 
-  // Get TensorInfo(s) from Attribute Var or Vars.
   std::vector<TensorInfo> GetAttrVar(const std::string &name) const {
     return parser_->GetOpAttrVar(block_idx_, op_idx_, name);
   }
-
-  /*
-* todo(wangmingkai02): add GetInputAttrVar function.
-std::vector<int64_t> GetInputAttrVar(const std::string &input_name, const
-std::string &attr_name) const { int32_t value_idx =
-pir_parser_->GetOpInputOutputName2Idx(pir_op_idx_, input_name, true); return
-pir_parser_->GetOpAttrVar(pir_op_idx_, value_idx, attr_name);
-}
-*/
 
   bool HasAttr(const std::string &name) const {
     if (in_pir_mode) {

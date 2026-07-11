@@ -20,7 +20,7 @@ from auto_scan_test import BaseNet, OPConvertAutoScanTest
 from onnxbase import _test_with_pir
 
 
-# TODO(wangmingkai02): add test for set_value which none_axes_ > 0
+# ~keep TODO(wangmingkai02): add test for set_value where none_axes_ > 0.
 class Net(BaseNet):
     """
     simple Net

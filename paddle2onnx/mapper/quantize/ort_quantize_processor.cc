@@ -27,8 +27,6 @@ ORTQuantizeProcessor::ORTQuantizeProcessor() {
   };
 }
 
-// According to:
-// https://github.com/microsoft/onnxruntime/blob/master/onnxruntime/core/optimizer/qdq_transformer/selectors_actions/qdq_selector_action_transformer.cc
 void ORTQuantizeProcessor::AddQDQ() {
   BaseQuantizeProcessor::AddQDQ();
   for (auto iter = nodes_->begin(); iter < nodes_->end(); iter++) {
@@ -106,13 +104,6 @@ void ORTQuantizeProcessor::ProcessQuantizeModel(
   BaseQuantizeProcessor::ProcessQuantizeModel(
       parameters, inputs, outputs, nodes, helper, parser, calibration_cache);
 
-  // When deploy_backend is ONNXRuntime, use the follow four steps to process:
-  // 1. broadcast quantize info
-  // 2. remove all quantize ops
-  // 3. merge conv and add
-  // 4. merge conv and bn
-  // 5. add Q and DQ according ONNXRuntime quantize OP fuse patten.
-  // 6. use topo sort in nodes
   QuantizeInfoBroadcast();
   RemoveAllQuantizeOps();
   MergeConvAdd();

@@ -14,9 +14,8 @@
 
 import sys
 
-import paddle.fluid as fluid
-
 import paddle
+import paddle.fluid as fluid
 
 paddle.enable_static()
 

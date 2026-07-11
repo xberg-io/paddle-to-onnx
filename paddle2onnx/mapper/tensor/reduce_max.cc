@@ -72,7 +72,6 @@ void ReduceMaxMapper::Opset18() {
   }
   auto reduce_node = helper_->MakeNode("ReduceMax", {input_name, dims});
 
-  // Add attribute
   AddAttribute(reduce_node, "keepdims", static_cast<int64_t>(keep_dim_));
   auto out_node_name = reduce_node->output(0);
 
@@ -88,11 +87,7 @@ void ReduceMaxMapper::Opset18() {
                     out_info[0].dtype);
 }
 
-void ReduceMaxMapper::Opset12() {
-  // The implementation logic of Opset12 is the same as that of Opset11,
-  // with the difference being that Opset12 supports input data types as double.
-  Opset11();
-}
+void ReduceMaxMapper::Opset12() { Opset11(); }
 
 void ReduceMaxMapper::Opset11() {
   GetAttr("keep_dim", &keep_dim_);
@@ -127,7 +122,6 @@ void ReduceMaxMapper::Opset11() {
   }
   auto reduce_node = helper_->MakeNode("ReduceMax", {input_name});
 
-  // Add attribute
   if (!reduce_all_) {
     AddAttribute(reduce_node, "axes", dim_);
   } else {
@@ -147,4 +141,4 @@ void ReduceMaxMapper::Opset11() {
   helper_->AutoCast(out_node_name, out_info[0].name, input_tpye,
                     out_info[0].dtype);
 }
-} //  namespace paddle2onnx
+} // namespace paddle2onnx

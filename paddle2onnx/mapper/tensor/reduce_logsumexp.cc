@@ -46,7 +46,6 @@ void ReduceLogSumExpMapper::Opset18() {
   }
   auto reduce_node = helper_->MakeNode("ReduceLogSumExp", {input_name, dims});
 
-  // Add attribute
   AddAttribute(reduce_node, "keepdims", static_cast<int64_t>(keep_dim_));
   auto out_node_name = reduce_node->output(0);
 
@@ -77,7 +76,6 @@ void ReduceLogSumExpMapper::Opset11() {
   }
   auto reduce_node = helper_->MakeNode("ReduceLogSumExp", {input_name});
 
-  // Add attribute
   if (!reduce_all_) {
     AddAttribute(reduce_node, "axes", dim_);
   } else {

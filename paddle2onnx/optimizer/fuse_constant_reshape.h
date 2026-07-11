@@ -18,11 +18,6 @@
 
 #pragma once
 
-// Before:
-//   B = Reshape(Constant)
-// After:
-//   B = Constant (Constant with new shape)
-
 #include <numeric>
 
 #include "onnx/defs/tensor_util.h"
@@ -45,7 +40,6 @@ struct FuseConstantReshape final : public PredicateBasedPass {
                     NodeDestroyType &destroy_current) override {
     destroy_current = NodeDestroyType::DestroyZero;
 
-    // check if Constant is only used by Reshape
     if (n->inputs()[0]->uses().size() > 1) {
       return false;
     }
@@ -53,14 +47,10 @@ struct FuseConstantReshape final : public PredicateBasedPass {
     Node *reshape = n;
     Node *constant = n->inputs()[0]->node();
 
-    // Process 'reshape' data
     std::vector<int64_t> shape;
     if (reshape->hasAttribute(kshape)) {
-      // opset 5 and below
       shape = reshape->is(kshape);
     } else {
-      // opset 6 and above - first check if 'reshape' has 'shape' input
-      // constant
       if (reshape->inputs()[1]->node()->kind() != kConstant) {
         return false;
       }
@@ -81,11 +71,9 @@ struct FuseConstantReshape final : public PredicateBasedPass {
     Tensor t = constant->t(kvalue);
     const auto &ori_size = t.sizes();
 
-    // process 0 in shape
     if (allow_zero != 0) {
       for (size_t i = 0; i < shape.size(); ++i) {
         if (shape[i] == 0) {
-          // illegal situation
           if (ori_size.size() <= i) {
             return false;
           }
@@ -94,7 +82,6 @@ struct FuseConstantReshape final : public PredicateBasedPass {
       }
     }
 
-    // process -1 in shape
     int count_of_unknown = 0;
     int index_of_unknown = -1;
     for (size_t i = 0; i < shape.size(); ++i) {
@@ -103,7 +90,6 @@ struct FuseConstantReshape final : public PredicateBasedPass {
         index_of_unknown = i;
       }
     }
-    // illegal situtaion
     if (count_of_unknown > 1) {
       return false;
     }
@@ -121,7 +107,6 @@ struct FuseConstantReshape final : public PredicateBasedPass {
                      shape.begin() + shape.size());
     constant->t_(kvalue, std::move(t));
 
-    // update constant node
     constant->output()->setSizes(reshape->output()->sizes());
     constant->output()->setElemType(reshape->output()->elemType());
     reshape->output()->replaceAllUsesWith(reshape->inputs()[0]);

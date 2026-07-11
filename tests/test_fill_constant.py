@@ -19,7 +19,6 @@ import paddle
 
 class Net(paddle.nn.Layer):
     def forward(self, shape):
-        # assert(type(value) == bool)
         x = paddle.full(shape=shape, fill_value=False, dtype=paddle.bool)
         print(x)
         return x
@@ -32,7 +31,6 @@ def test_flatten_9_bool():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "fill_constant", [9])
     obj.set_input_data(
         "input_data",

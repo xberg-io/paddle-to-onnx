@@ -65,7 +65,6 @@ def test_Conv2D_9():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Conv2D", [9])
     obj.set_input_data(
         "input_data",
@@ -83,7 +82,6 @@ def test_Conv2D_10():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Conv2D", [10])
     obj.set_input_data(
         "input_data",
@@ -100,7 +98,6 @@ def test_Conv2D_11():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Conv2D", [11])
     obj.set_input_data(
         "input_data",
@@ -117,7 +114,6 @@ def test_Conv2D_12():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Conv2D", [12])
     obj.set_input_data(
         "input_data",
@@ -134,7 +130,6 @@ def test_Conv2D_padding_0_9():
     """
     op = Net(padding=[1, 2])
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "Conv2D", [9])
     obj.set_input_data(
         "input_data",
@@ -151,7 +146,6 @@ def test_Conv2D_padding_1_9():
     """
     op = Net(padding=[1, 2, 3, 4])
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "Conv2D", [9])
     obj.set_input_data(
         "input_data",
@@ -168,7 +162,6 @@ def test_Conv2D_padding_2_9():
     """
     op = Net(padding=[[0, 0], [0, 0], [1, 2], [2, 3]])
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "Conv2D", [9])
     obj.set_input_data(
         "input_data",
@@ -185,7 +178,6 @@ def test_Conv2D_groups_1_9():
     """
     op = Net(in_channels=16, out_channels=16, groups=4)
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "Conv2D", [9])
     obj.set_input_data(
         "input_data",
@@ -202,7 +194,6 @@ def test_Conv2D_groups_2_9():
     """
     op = Net(in_channels=16, out_channels=16, groups=16)
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "Conv2D", [9])
     obj.set_input_data(
         "input_data",
@@ -219,7 +210,6 @@ def test_Conv2D_dilation_2_9():
     """
     op = Net(in_channels=16, out_channels=16, dilation=3)
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "Conv2D", [9])
     obj.set_input_data(
         "input_data",

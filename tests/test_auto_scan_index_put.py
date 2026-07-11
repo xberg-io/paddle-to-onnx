@@ -30,7 +30,7 @@ class Net(BaseNet):
 
     def forward(self, inputs, indices, value):
         accumulate = self.config.get("accumulate", False)
-        indices = list(indices)  # index_put() expects a list/tuple of tensors
+        indices = list(indices)
         return paddle.index_put(inputs, indices=indices, value=value, accumulate=accumulate)
 
 
@@ -41,12 +41,10 @@ class TestIndexPutConvert(OPConvertAutoScanTest):
     """
 
     def sample_convert_config(self, draw):
-        # Test with Tensors only up to 4 dimensions for simplicity
         input_shape = draw(st.lists(st.integers(min_value=2, max_value=10), min_size=2, max_size=4))
         dtype = draw(st.sampled_from(["float32", "float64", "int32", "int64"]))
         accumulate = draw(st.booleans())
 
-        # Determine how many dimensions we are indexing
         num_indices = draw(st.integers(min_value=1, max_value=len(input_shape)))
 
         def generator_indices():
@@ -56,7 +54,6 @@ class TestIndexPutConvert(OPConvertAutoScanTest):
                 indices.append(randtool("int", 0, dim_limit, shape=value_shape))
             return np.array(indices)
 
-        # For simplicity, only generate tensors equal to same shape of last axis of input
         value_shape = [
             input_shape[-1],
         ]

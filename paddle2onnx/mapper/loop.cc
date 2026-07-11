@@ -34,17 +34,14 @@ namespace paddle2onnx {
         std::vector<std::shared_ptr<ONNX_NAMESPACE::ValueInfoProto>> inputs;
         std::vector<std::shared_ptr<ONNX_NAMESPACE::ValueInfoProto>> outputs;
 
-        // make loop iter
         auto iter_name = MapperHelper::Get()->GenName("loop.iter");
         TensorInfo iter_info(iter_name, std::vector<int64_t>(1, 1),
             P2ODataType::INT64);
         inputs.push_back(std::move(MakeValueInfo(iter_info)));
 
         std::set<std::string> input_names;
-        // make cond
         inputs.push_back(std::move(MakeValueInfo(cond_info[0])));
         input_names.insert(cond_info[0].name);
-        // other inputs
         outputs.push_back(std::move(std::move(MakeValueInfo(cond_info[0]))));
         for (size_t i = 0; i < x_info.size(); ++i) {
             if (x_info[i].is_tensor_array) {
@@ -67,7 +64,6 @@ namespace paddle2onnx {
             }
         }
 
-        // make op nodes
         OnnxHelper loop_helper;
         loop_helper.SetOpsetVersion(opset_version);
 
@@ -106,17 +102,6 @@ namespace paddle2onnx {
             }
         }
 
-        //  // construct a onnx model proto
-        //  // consider to optimize the subgraph
-        //  auto model = std::make_shared<ONNX_NAMESPACE::ModelProto>();
-        //  model->set_ir_version(ONNX_NAMESPACE::IR_VERSION);
-        //  auto graph = model->mutable_graph();
-        //  auto graph_name = MapperHelper::Get()->GenName("Model from
-        //  PaddlePaddle(Loop).");
-        //  graph->set_name(graph_name);
-        //  auto opset_id = model->add_opset_import();
-        //  opset_id->set_domain("");
-        //  opset_id->set_version(loop_helper->GetOpsetVersion());
 
         auto graph_name = MapperHelper::Get()->GenName("paddle.loop");
         auto graph = std::make_shared<ONNX_NAMESPACE::GraphProto>();
@@ -131,7 +116,6 @@ namespace paddle2onnx {
             *(graph->add_output()) = (*item.get());
         }
 
-        // fake iter
         auto fake_iter = helper->Constant(ONNX_NAMESPACE::TensorProto::INT64,
             std::vector<int64_t>(1, 1024));
         std::vector<std::string> x_names;
@@ -163,5 +147,5 @@ namespace paddle2onnx {
         attr->set_type(ONNX_NAMESPACE::AttributeProto::GRAPH);
         *(attr->mutable_g()) = *(graph.get());
     }
-}  // namespace paddle2onnx
+}
 #endif

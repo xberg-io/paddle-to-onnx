@@ -41,7 +41,6 @@ def test_GroupNorm_11():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_GroupNorm", [11])
     obj.set_input_data(
         "input_data",
@@ -58,7 +57,6 @@ def test_GroupNorm_12():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_GroupNorm", [12])
     obj.set_input_data(
         "input_data",

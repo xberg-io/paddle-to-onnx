@@ -33,16 +33,11 @@ public:
   std::shared_ptr<pir::Program> pir_program_;
   std::vector<TensorInfo> inputs;
   std::vector<TensorInfo> outputs;
-  bool is_quantized_model = false; // If the Paddle model is a quantized
-  // model,set is_quantized_model to be true
-  // recoring set of operators for global block
+  bool is_quantized_model = false;
   std::vector<pir::Operation *> global_blocks_ops;
-  // recoring set of operators for sub block
   mutable std::vector<pir::Operation *>
-      sub_blocks_ops; // todo(wangmingkai02): delete sub_blocks_ops
-  // recoring set of operators for all blocks
+      sub_blocks_ops; // ~keep TODO(wangmingkai02): delete sub_blocks_ops.
   std::set<pir::Operation *> total_blocks_ops;
-  // recording args of while op body name info
   mutable std::unordered_map<pir::detail::ValueImpl *, pir::detail::ValueImpl *>
       while_op_values_args_map;
   mutable std::unordered_map<pir::detail::ValueImpl *, std::string>
@@ -50,9 +45,7 @@ public:
 
   explicit PaddlePirParser(bool verbose) : verbose_(verbose) {}
   int NumOfBlocks() const;
-  // int NumOfOps(int block_idx) const;
   int NumOfProgramOps() const;
-  // recoring set of operators for pir global block
   TensorInfo GetTensorInfo(const std::string &name,
                            const pir::Type &value_type) const;
   std::vector<TensorInfo> GetTensorInfo(const pir::Value &value) const;
@@ -120,7 +113,7 @@ public:
       (iter->second).get(data);
       return true;
     }
-    // TODO(qzylalala): Need double-check
+    // ~keep TODO(qzylalala): double-check attribute extraction.
     std::string attr_name;
     std::string attr_value = "value";
     std::string attr_values = "values";
@@ -188,12 +181,7 @@ public:
     TensorInfo tensor_info =
         GetTensorInfo(temp_op->operand(input_idx).source())[0];
     pir::Operation *op = temp_op->operand(input_idx).source().defining_op();
-    // PADDLE_ENFORCE_EQ(
-    //   op->HasAttribute(attr_name),
-    //   true,
-    //   common::errors::InvalidArgument(
-    //     "Cannot found attribute '%s' in op %s", attr_name, op->name()));
-    // TODO(qzylalala): Need double-check
+    // ~keep TODO(qzylalala): double-check attribute extraction.
     std::string attr_name;
     std::string attr_value = "value";
     std::string attr_values = "values";

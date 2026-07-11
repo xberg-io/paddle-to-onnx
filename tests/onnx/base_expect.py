@@ -100,7 +100,7 @@ def _rename_edges_helper(
     return new_node
 
 
-# FIXME(TMVector): Any reason we can't get rid of this and use the C++ helper directly?
+# ~keep FIXME(TMVector): determine whether this can be replaced with the C++ helper directly.
 def function_expand_helper(node: NodeProto, function_proto: FunctionProto, op_prefix: str) -> list[NodeProto]:
     io_names_map = {}
     attribute_map = {a.name: a for a in node.attribute}
@@ -109,12 +109,6 @@ def function_expand_helper(node: NodeProto, function_proto: FunctionProto, op_pr
         io_names_map[function_proto.input[idx]] = node.input[idx] if idx in range(len(node.input)) else ""
 
     for idx in range(len(function_proto.output)):
-        # Even if the node has been created with optional outputs missing, we
-        # can't assume that the function body handles this correctly, such as in
-        # the case that output is also an intermediate value.
-        # So we only add a name mapping if the output is present. An internal
-        # name will be generated if the missing output is used, the same as any
-        # other internal tensor.
         if idx in range(len(node.output)) and node.output[idx] != "":
             io_names_map[function_proto.output[idx]] = node.output[idx]
 
@@ -138,9 +132,6 @@ def function_testcase_helper(
     op_prefix = test_op + "_" + name + "_expanded_function_"
     schema = onnx.defs.get_schema(test_op, domain=node.domain)
 
-    # an op schema may have several functions, each for one opset version
-    # opset versions include the op's since_version and other opset versions
-    # if it is needed to define the op for a opset version other than the op's since_version.
     function_protos = []
     for opset_version in schema.function_opset_versions:  # type: ignore
         function_proto_str = schema.get_function_with_opset_version(opset_version)  # type: ignore
@@ -165,7 +156,6 @@ def function_testcase_helper(
             if schema.attributes[attr].default_value:
                 node.attribute.extend([schema.attributes[attr].default_value])
 
-        # function_proto.attributes
         node_list = function_expand_helper(node, function_proto, op_prefix)
         expanded_tests.append((node_list, function_proto.opset_import))
 
@@ -205,8 +195,6 @@ def _make_test_model_gen_version(graph: GraphProto, **kwargs: Any) -> ModelProto
     ) = onnx.helper.VERSION_TABLE[-1][2:5]  # type: ignore
     if "opset_imports" in kwargs:
         for opset in kwargs["opset_imports"]:
-            # If the test model uses an unreleased opset version (latest_version+1),
-            # directly use make_model to create a model with the latest ir version
             if (
                 ((opset.domain in {"", "ai.onnx"}) and opset.version == latest_onnx_version + 1)
                 or (opset.domain == "ai.onnx.ml" and opset.version == latest_ml_version + 1)
@@ -216,20 +204,9 @@ def _make_test_model_gen_version(graph: GraphProto, **kwargs: Any) -> ModelProto
                 )
             ):
                 return onnx.helper.make_model(graph, **kwargs)
-    # Otherwise, find and use the corresponding ir version according to given opset version
     return onnx.helper.make_model_gen_version(graph, **kwargs)
 
 
-# In the case of ops with optional inputs and outputs, node_op.input and node_op.output indicate
-# which inputs/outputs are present and which are omitted. However, the parameter inputs
-# and outputs of this function include values only for inputs/outputs that are present.
-# E.g., for an op with 3 inputs, if the second parameter is optional and we wish to omit it,
-# node_op.inputs would look like ["Param1", "", "Param3"], while inputs would look like
-# [input-1-value, input-3-value]
-# Instead of creating model with latest version, it now generates models for since_version by default.
-# Thus it can make every model uses the same opset version after every opset change.
-# Besides, user can specify "use_max_opset_version" to generate models for
-# the latest opset vesion that supports before targeted opset version
 def expect(
     node_op: onnx.NodeProto,
     inputs: Sequence[np.ndarray | TensorProto],
@@ -238,7 +215,6 @@ def expect(
     save_path: str = "model.onnx",
     **kwargs: Any,
 ) -> None:
-    # skip if the node_op's op_type is not same as the given one
     if _TargetOpType and node_op.op_type != _TargetOpType:
         return
     if _DiffOpTypes is not None and node_op.op_type.lower() not in _DiffOpTypes:
@@ -247,7 +223,6 @@ def expect(
         raise ValueError(f"Name {name!r} is already using by one test case for node type {node_op.op_type!r}.")
     _existing_names[name] = node_op
 
-    # in case node_op is modified
     node = deepcopy(node_op)
     present_inputs = [x for x in node.input if (x != "")]
     present_outputs = [x for x in node.output if (x != "")]
@@ -271,8 +246,6 @@ def expect(
     kwargs["producer_name"] = "backend-test"
 
     if "opset_imports" not in kwargs:
-        # To make sure the model will be produced with the same opset_version after opset changes
-        # By default, it uses since_version as opset_version for produced models
         produce_opset_version = onnx.defs.get_schema(node.op_type, domain=node.domain).since_version
         kwargs["opset_imports"] = [onnx.helper.make_operatorsetid(node.domain, produce_opset_version)]
 

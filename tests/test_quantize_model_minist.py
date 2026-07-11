@@ -260,13 +260,10 @@ class TestPostTrainingQuantization(unittest.TestCase):
         )
         sys.stdout.flush()
 
-        # fp32 and int8
         delta_value = fp32_acc1 - int8_acc1
         self.assertLess(delta_value, diff_threshold)
-        # onnx fp32 and paddle fp32
         delta_value = onnx_fp32_acc1 - fp32_acc1
         self.assertLess(delta_value, diff_threshold)
-        # onnx int8 and paddle int8
         delta_value = onnx_fp32_acc1 - fp32_acc1
         self.assertLess(delta_value, diff_threshold)
 

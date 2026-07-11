@@ -41,8 +41,6 @@ void BaseQuantizeProcessor::ReplaceInputOfAllNodes(
         &except_nodes) {
   auto iter = name2node_dict_.find(old_name);
   std::vector<std::shared_ptr<ONNX_NAMESPACE::NodeProto>> need_rename_nodes;
-  // after replace all old_name to new_name, replace the quantize_info of new
-  // name with the quantize_info of old name
   auto quantize_info_iter = helper_->quantize_info.find(old_name);
   if (quantize_info_iter != helper_->quantize_info.end()) {
     helper_->quantize_info[new_name] = helper_->quantize_info[old_name];
@@ -109,7 +107,6 @@ void BaseQuantizeProcessor::RemoveIdentityOp() {
 void BaseQuantizeProcessor::AddQDQ() { UpdateInputNameToNodes(); }
 
 void BaseQuantizeProcessor::AddQDQInModel() {
-  // add Q and DQ according to tensors_to_be_quantize
   for (auto &name : tensors_to_be_quantize_) {
     if (IsGraphOutput(name)) {
       continue;
@@ -124,7 +121,6 @@ void BaseQuantizeProcessor::AddQDQInModel() {
     auto iter = std::find(only_dequantize_tensors_.begin(),
                           only_dequantize_tensors_.end(), name);
     if (iter != only_dequantize_tensors_.end()) {
-      // if only add DequantizeLinear
       std::vector<float> scale = quantize_info.scale_;
       std::vector<float> bias;
       Assert(GetTensorByName(name, &bias),
@@ -145,12 +141,6 @@ void BaseQuantizeProcessor::AddQDQInModel() {
       }
       ReplaceInputOfAllNodes(name, dq_node->output(0));
     } else {
-      // Handle the following situations
-      //           conv                   conv
-      //         /  |  \         ->     /      \
-      //      conv conv scale         DQD     scale
-      //                             /   \
-      //                           conv conv
       std::vector<std::shared_ptr<ONNX_NAMESPACE::NodeProto>> except_nodes;
       auto next_nodes = name2node_dict_[name];
       if (next_nodes.size() > 1) {
@@ -163,8 +153,6 @@ void BaseQuantizeProcessor::AddQDQInModel() {
           }
         }
       }
-      // When all the outputs of this tensor cannot be renamed,
-      // it means that the quantization OP will be merged
       if (next_nodes.size() == except_nodes.size()) {
         except_nodes.clear();
       }
@@ -246,7 +234,6 @@ void BaseQuantizeProcessor::MergeConvBN() {
              "Can not get " + conv_node->input(2) + " in Conv.");
     }
 
-    // merge conv and bn
     std::vector<float> alpha(bn_scale.size());
     for (int64_t i = 0; i < bn_scale.size(); i++) {
       alpha[i] = bn_scale[i] / sqrt(bn_var[i] + epsilon);
@@ -266,20 +253,17 @@ void BaseQuantizeProcessor::MergeConvBN() {
         new_weight[index] = conv_weight[index] * alpha[i];
       }
     }
-    // update weight
     std::vector<int64_t> weight_shape;
     Assert(GetTensorShape(conv_node->input(1), &weight_shape),
            "Can not get the shape of " + conv_node->input(1) + " in Conv.");
     Weight updated_conv_weight;
     updated_conv_weight.set(P2ODataType::FP32, weight_shape, new_weight);
     helper_->updated_params[conv_node->input(1)] = updated_conv_weight;
-    // update bias
     Weight updated_bias_weight;
     std::vector<int64_t> bias_shape = {static_cast<int64_t>(new_bias.size())};
     updated_bias_weight.set(P2ODataType::FP32, bias_shape, new_bias);
     helper_->updated_params[conv_bias_node] = updated_bias_weight;
     AppendQuantizeTensor(conv_bias_node, true);
-    // update weight scale
     auto quantize_info = helper_->quantize_info[conv_node->input(1)];
     std::string scale_node = quantize_info.scale_node_;
     std::string zero_node = quantize_info.zeros_node_;
@@ -303,7 +287,6 @@ void BaseQuantizeProcessor::MergeConvBN() {
                                               weight_scale_node,
                                               weight_zero_node, quantize_axis);
     helper_->quantize_info[conv_node->input(1)] = updated_weight_quantize_info;
-    // add bias scale and update bias
     auto act_quantize_info = helper_->quantize_info[conv_node->input(0)];
     std::vector<float> act_scale = act_quantize_info.scale_;
     std::vector<float> bias_scale;
@@ -321,7 +304,6 @@ void BaseQuantizeProcessor::MergeConvBN() {
     if (conv_node->input_size() == 2) {
       conv_node->add_input(conv_bias_node);
     }
-    // remove BN op
     RemoveNodeByName(bn_node->name());
   }
 }
@@ -333,14 +315,12 @@ void BaseQuantizeProcessor::MergeConvAdd() {
     if (node->op_type() != "Conv") {
       continue;
     }
-    // if act input of conv does not have quantize info, continue
     bool act_has_quantize_info = helper_->quantize_info.find(node->input(0)) !=
                                  helper_->quantize_info.end();
     if (!act_has_quantize_info) {
       continue;
     }
 
-    // if weight of conv does not have quantize info, continue
     bool weight_has_quantize_info =
         helper_->quantize_info.find(node->input(1)) !=
         helper_->quantize_info.end();
@@ -376,26 +356,21 @@ void BaseQuantizeProcessor::MergeConvAdd() {
     }
 
     std::string bias_node = before_nodes[0]->input(0);
-    // continue if bias is not a constant
     std::vector<float> bias_val;
     if (!GetTensorByName(bias_node, &bias_val)) {
       continue;
     }
 
-    // continue if shape tensor of reshape op is not a constant
     std::vector<int64_t> shape_val;
     if (!GetTensorByName(before_nodes[0]->input(1), &shape_val)) {
       continue;
     }
-    // continue if shape_val != [1, bias_val.size(), 1, 1]
     std::vector<int64_t> target = {1, static_cast<int64_t>(bias_val.size()), 1,
                                    1};
     if (target != shape_val) {
       continue;
     }
-    // remove Reshape op
     RemoveNodeByName(before_nodes[0]->name());
-    // add scale for bias
     std::vector<float> weight_scale =
         helper_->quantize_info[node->input(1)].scale_;
     std::vector<float> act_scale =
@@ -421,14 +396,6 @@ void BaseQuantizeProcessor::MergeConvAdd() {
 }
 
 void BaseQuantizeProcessor::SortNodes() {
-  // return the topo sort of nodes;
-  // 1. Get i2o_mapper and  constant_nodes, i2o_mapper means the node map to its
-  // all output nodes, constant_nodes save all constant nodes.
-  // 2. Nodes without output nodes are first saved to new_nodes, and then
-  // cyclically delete the records of the node in i2o_mapper items, and nodes
-  // whose output nodes are empty are also saved to new_nodes in turn.
-  // 3. Store constant nodes in new_nodes.
-  // 4. Reverse new_nodes, then assign to nodes.
   std::map<std::string, std::vector<std::string>> i2o_mapper;
   std::vector<std::shared_ptr<ONNX_NAMESPACE::NodeProto>> constant_nodes;
   std::map<std::string, std::shared_ptr<ONNX_NAMESPACE::NodeProto>>
@@ -545,8 +512,6 @@ void BaseQuantizeProcessor::RemoveAllQuantizeOps() {
   }
 }
 
-// Broadcast quantize info between the input and output of the OPs that will not
-// change quantize info
 void BaseQuantizeProcessor::QuantizeInfoBroadcast() {
   UpdateInputNameToNodes();
   for (auto iter = nodes_->begin(); iter < nodes_->end(); iter++) {
@@ -558,12 +523,10 @@ void BaseQuantizeProcessor::QuantizeInfoBroadcast() {
     std::string output_name = node->output(0);
     auto input_quantize_info_iter = helper_->quantize_info.find(input_name);
     auto output_quantize_info_iter = helper_->quantize_info.find(output_name);
-    // The input and output of Identity do not have quantize info
     if (input_quantize_info_iter == helper_->quantize_info.end() &&
         output_quantize_info_iter == helper_->quantize_info.end()) {
       continue;
     }
-    // The input and output of Identity have quantize info
     if (input_quantize_info_iter != helper_->quantize_info.end() &&
         output_quantize_info_iter != helper_->quantize_info.end()) {
       continue;
@@ -591,7 +554,6 @@ bool BaseQuantizeProcessor::IsGraphOutput(const std::string &name) {
   return false;
 }
 
-// Try get tensor shape value
 bool BaseQuantizeProcessor::GetTensorShape(const std::string &name,
                                            std::vector<int64_t> *shape) {
   for (auto &item : *parameters_) {
@@ -701,11 +663,6 @@ void BaseQuantizeProcessor::GetChannelWiseQuantizeInfo(
 template <typename T>
 bool BaseQuantizeProcessor::GetTensorByName(const std::string &name,
                                             std::vector<T> *value) {
-  // Find tensor values in the following order, if found, store the data in
-  // value, and return true：
-  // 1. updated_parameters, the weight of conv or matmul.
-  // 2. parameters of original graph, the scale or bias of BN.
-  // 3. constant node in nodes, other vals.
   auto updated_params_iter = helper_->updated_params.find(name);
   if (updated_params_iter != helper_->updated_params.end()) {
     (updated_params_iter->second).get(value);
@@ -747,8 +704,6 @@ bool BaseQuantizeProcessor::CanBeQuantize(
     }
   }
 
-  // If there is an OP linked to the output by identity, it needs to be skipped,
-  // do not quantize the OP
   for (auto i = 0; i < output_index.size(); i++) {
     int64_t index = output_index[i];
     if (index == -1) {

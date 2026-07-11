@@ -41,52 +41,6 @@ void FullWithTensorMapper::Opset8() {
 
   helper_->AutoCast(expand_node->output(0), output_info[0].name,
                     value_info[0].dtype, output_info[0].dtype);
-
-  // double fill_value = 0;
-  // if(TryGetInputValue("value", &fill_value)) {
-  //    helper_->ConstOfShape(shape_info[0].name,
-  //                          output_info[0].name,
-  //                          GetOnnxDtype(output_info[0].dtype),
-  //                          fill_value);
-  // }
-  // else {
-  //     if(value_info[0].dtype ==
-  //     paddle2onnx::framework::proto::VarType_Type_FP32) {
-  //         std::vector<float> value;
-  //         TryGetInputValue("value", &value);
-  //         helper_->ConstOfShape(shape_info[0].name,
-  //                   output_info[0].name,
-  //                   GetOnnxDtype(output_info[0].dtype),
-  //                   value[0]);
-  //     } else if (value_info[0].dtype ==
-  //     paddle2onnx::framework::proto::VarType_Type_FP64) {
-  //         std::vector<double> value;
-  //         TryGetInputValue("value", &value);
-  //         helper_->ConstOfShape(shape_info[0].name,
-  //                   output_info[0].name,
-  //                   GetOnnxDtype(output_info[0].dtype),
-  //                   value[0]);
-  //     } else if (value_info[0].dtype ==
-  //     paddle2onnx::framework::proto::VarType_Type_INT32) {
-  //         std::vector<int32_t> value;
-  //         TryGetInputValue("value", &value);
-  //         helper_->ConstOfShape(shape_info[0].name,
-  //                   output_info[0].name,
-  //                   GetOnnxDtype(output_info[0].dtype),
-  //                   value[0]);
-  //     } else if (value_info[0].dtype ==
-  //     paddle2onnx::framework::proto::VarType_Type_INT64) {
-  //         std::vector<int64_t> value;
-  //         TryGetInputValue("value", &value);
-  //         helper_->ConstOfShape(shape_info[0].name,
-  //                   output_info[0].name,
-  //                   GetOnnxDtype(output_info[0].dtype),
-  //                   value[0]);
-  //     } else {
-  //         std::cerr << "unsupported dtype for full_with_tensor, only support
-  //         float32/float64/int32/int64 now." << std::endl;
-  //     }
-  // }
 }
 
 } // namespace paddle2onnx

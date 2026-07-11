@@ -41,7 +41,6 @@ def test_Pad3D_9():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Pad3D", [9])
     obj.set_input_data(
         "input_data",
@@ -58,7 +57,6 @@ def test_Pad3D_10():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Pad3D", [10])
     obj.set_input_data(
         "input_data",
@@ -75,7 +73,6 @@ def test_Pad3D_11():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Pad3D", [11])
     obj.set_input_data(
         "input_data",
@@ -92,7 +89,6 @@ def test_Pad3D_12():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Pad3D", [12])
     obj.set_input_data(
         "input_data",
@@ -125,7 +121,6 @@ def test_Pad3D_19():
     """
     op = Net2()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Pad3D", [19])
     obj.set_input_data(
         "input_data",

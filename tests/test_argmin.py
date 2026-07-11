@@ -41,7 +41,6 @@ def test_argmin_9():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "argmin", [9])
     obj.set_input_data(
         "input_data",
@@ -57,7 +56,6 @@ def test_argmin_10():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "argmin", [10])
     obj.set_input_data(
         "input_data",
@@ -73,7 +71,6 @@ def test_argmin_11():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "argmin", [11])
     obj.set_input_data(
         "input_data",
@@ -89,7 +86,6 @@ def test_argmin_12():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "argmin", [12])
     obj.set_input_data(
         "input_data",
@@ -105,7 +101,6 @@ def test_argmin_keepdim():
     """
     op = Net(keepdim=True)
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "argmin", [12])
     obj.set_input_data(
         "input_data",
@@ -121,7 +116,6 @@ def test_argmin_axis():
     """
     op = Net(axis=1)
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "argmin", [12])
     obj.set_input_data(
         "input_data",
@@ -137,7 +131,6 @@ def test_argmin_axis_keepdim():
     """
     op = Net(axis=1, keepdim=True)
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "argmin", [12])
     obj.set_input_data(
         "input_data",

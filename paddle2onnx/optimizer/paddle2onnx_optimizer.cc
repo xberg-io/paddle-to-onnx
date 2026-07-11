@@ -39,9 +39,7 @@ OptimizeOnnxModel(const ONNX_NAMESPACE::ModelProto &model_proto) {
   auto optimized_model_proto =
       ONNX_NAMESPACE::optimization::Optimize(model_proto, option.passes);
 
-  // reinfer shape for this onnx model
   auto graph = optimized_model_proto.mutable_graph();
-  // clear all the type info of outputs
   auto output_size = graph->output_size();
   for (size_t i = 0; i < output_size; ++i) {
     graph->mutable_output(i)->clear_type();
@@ -134,14 +132,11 @@ bool OptimizePaddle2ONNX(
     const OptimizerOption &option) {
   auto model_proto = LoadModelFromFile(model_path);
   if (shape_infos.size() > 0) {
-    // reinfer shape for this onnx model
     auto graph = model_proto->mutable_graph();
-    // clear all the type info of outputs
     auto output_size = graph->output_size();
     for (size_t i = 0; i < output_size; ++i) {
       graph->mutable_output(i)->clear_type();
     }
-    // reset type info of inputs
     auto input_size = graph->input_size();
     for (size_t i = 0; i < input_size; ++i) {
       auto input_name = graph->input(i).name();

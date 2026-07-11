@@ -17,9 +17,6 @@ import onnx
 from base_expect import expect
 
 if __name__ == "__main__":
-    # Given a bool scalar input cond.
-    # return constant tensor x if cond is True, otherwise return constant tensor y.
-
     then_out = onnx.helper.make_tensor_value_info("then_out", onnx.TensorProto.FLOAT, [5])
     else_out = onnx.helper.make_tensor_value_info("else_out", onnx.TensorProto.FLOAT, [5])
 

@@ -78,10 +78,7 @@ public:
 
   std::vector<std::shared_ptr<ONNX_NAMESPACE::NodeProto>> nodes;
   std::vector<std::shared_ptr<ONNX_NAMESPACE::ValueInfoProto>> value_infos;
-  // Use updated_params to store params that were changed during conversion
   std::map<std::string, Weight> updated_params;
-  // Use quantize_info to record quantization-related information, scale and
-  // zero information corresponding to each tensor
   std::map<std::string, QuantizeInfo> quantize_info;
 
   explicit OnnxHelper(bool verbose = false) : verbose_(verbose) {}
@@ -97,11 +94,6 @@ public:
   std::shared_ptr<ONNX_NAMESPACE::NodeProto>
   MakeNode(const std::string &op_type, const std::vector<std::string> &inputs,
            const std::vector<std::string> &outputs);
-  // we use this function to generate some temporary node
-  // we do not need to define the outputs, because the outputs
-  // is generate by MapperHelper, which will make sure there's no
-  // name confict problem
-  // the parameter `num_outputs` will define the number of output names
   std::shared_ptr<ONNX_NAMESPACE::NodeProto>
   MakeNode(const std::string &op_type, const std::vector<std::string> &inputs,
            int num_outputs = 1);
@@ -136,10 +128,6 @@ public:
                           const std::vector<int64_t> &input_shape,
                           const std::vector<int64_t> &target_shape);
 
-  // Helper function for PaddlePaddle's shape tensor list inputs
-  // will cast all data type to int64
-  // will make sure all inputs to be 1-D tensor
-  // will concat them as output
   std::string ConcatIndices(const std::vector<TensorInfo> &indices);
   std::vector<std::string>
   DtypeAlignment(const std::vector<TensorInfo> &input_info, int32_t *out_dtype);

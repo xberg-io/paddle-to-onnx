@@ -84,7 +84,6 @@ REGISTER_PIR_MAPPER(sqrt, ActivationMapper)
 REGISTER_MAPPER(square, SquareMapper)
 REGISTER_PIR_MAPPER(square, SquareMapper)
 REGISTER_MAPPER(tan, ActivationMapper)
-// REGISTER_PIR_MAPPER(hardtanh, ActivationMapper)
 REGISTER_PIR_MAPPER(tan, ActivationMapper)
 REGISTER_MAPPER(tanh, ActivationMapper)
 REGISTER_PIR_MAPPER(tanh, ActivationMapper)
@@ -215,8 +214,6 @@ void GeluMapper::Opset9() {
   auto input_name = helper_->AutoCast(input_info[0].name, input_info[0].dtype,
                                       P2ODataType::FP32);
 
-  // the computation formula follows
-  // https://www.paddlepaddle.org.cn/documentation/docs/zh/api/paddle/nn/functional/gelu_cn.html#gelu
   auto erf0 = helper_->MakeNode("Div", {input_name, sqrt_2});
   auto erf1 = helper_->MakeNode("Erf", {erf0->output(0)});
   auto gelu0 = helper_->MakeNode("Add", {erf1->output(0), const_1});

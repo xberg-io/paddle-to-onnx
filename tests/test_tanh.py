@@ -40,7 +40,6 @@ def test_tanh_9():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "tanh", [9])
     obj.set_input_data(
         "input_data",
@@ -57,7 +56,6 @@ def test_tanh_10():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "tanh", [10])
     obj.set_input_data(
         "input_data",
@@ -74,7 +72,6 @@ def test_tanh_11():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "tanh", [11])
     obj.set_input_data(
         "input_data",
@@ -91,7 +88,6 @@ def test_tanh_12():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "tanh", [12])
     obj.set_input_data(
         "input_data",

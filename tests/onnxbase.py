@@ -32,10 +32,6 @@ from paddle2onnx.convert import dygraph2onnx
 def _test_with_pir(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        # PaddlePaddle 3.x (the version this project targets) has removed the
-        # old (Variable-based) IR: tracing under DygraphOldIrGuard now raises
-        # "argument must be Value, but got Variable" because the op kernels
-        # dispatch to PIR regardless of the guard. Only the PIR path is valid.
         with paddle.pir_utils.DygraphPirGuard():
             func(*args, **kwargs)
 
@@ -56,15 +52,12 @@ def compare_data(result_data, expect_data, delta, rtol):
     if res_data is True:
         return res_data
 
-    # 输出错误类型
-    # 输出数据类型错误
     if result_data.dtype != result_data.dtype:
         logging.error(
             f"Different output data types! res type is: {result_data.dtype}, and expect type is: {expect_data.dtype}"
         )
         return False
 
-    # 输出数据大小错误
     if result_data.dtype == np.bool_:
         diff = abs(result_data.astype("int32") - expect_data.astype("int32"))
     else:
@@ -88,7 +81,6 @@ def compare(result, expect, delta=1e-10, rtol=1e-10):
     :return:
     """
     if type(result) == np.ndarray:
-        # Convert Paddle Tensor to Numpy array
         if isinstance(expect, list):
             expect = expect[0]
 
@@ -97,12 +89,9 @@ def compare(result, expect, delta=1e-10, rtol=1e-10):
         else:
             expect = np.array(expect)
 
-        # For result_shape is (1) and expect_shape shape is ()
         expect = expect.squeeze()
         result = result.squeeze()
-        # Compare the actual value with the expected value and determine whether the output result is correct.
         res_data = compare_data(result, expect, delta, rtol)
-        # Compare the actual shape with the expected shape and determine if the output results are correct.
         res_shape = compare_shape(result, expect)
 
         assert res_data, f"result: {result} != expect: {expect}"
@@ -177,7 +166,6 @@ dtype_map = {
     paddle.base.core.DataType.BOOL: np.bool_,
 }
 
-# VarDesc.VarType is deprecated in PaddlePaddle 3.x but may still exist in older versions
 with contextlib.suppress(AttributeError):
     dtype_map.update(
         {
@@ -241,7 +229,6 @@ class APIOnnx:
         self.res_fict = {}
 
         if isfunction(self.func):
-            # self._func = self.BuildFunc(self.func, **self.kwargs_dict_dygraph["params_group1"])
             self._func = BuildFunc(inner_func=self.func, **sup_params)
         elif isinstance(self.func, type):
             self._func = BuildClass(inner_class=self.func, **sup_params)
@@ -315,9 +302,6 @@ class APIOnnx:
         """
         paddle dygraph layer to onnx
         """
-        #        paddle.jit.save(instance, "model/model", input_spec=self.input_spec)
-        #        import sys
-        #        sys.exit(0)
         enable_dev_version = True
         if os.getenv("ENABLE_DEV", "OFF") == "OFF":
             enable_dev_version = False
@@ -388,25 +372,8 @@ class APIOnnx:
 
         assert included is True, f"{self.ops} op in not in convert OPs, all OPs :{paddle_op_list}"
 
-    # TODO: PaddlePaddle 2.6 has modified the ParseFromString API, and it cannot be simply replaced with
-    #  parse_from_string. Considering that checking the OP name in the Paddle model has almost no impact on the CI
-    #  results, temporarily set this function to return True.
+    # ~keep TODO: adapt to the PaddlePaddle 2.6 ParseFromString API change.
     def dev_check_ops(self, op_name, model_file_path):
-        # prog = Program()
-        #
-        # with open(model_file_path, "rb") as f:
-        #     model_parse_string = f.read()
-        #     prog.parse_from_string(model_parse_string)
-        #
-        # ops = set()
-        # find = False
-        # for block in prog.blocks:
-        #     for op in block.ops:
-        #         op_type = op.type
-        #         op_type = op_type.replace("depthwise_", "")
-        #         if op_type == op_name:
-        #             find = True
-        # return find
         return True
 
     def clip_extra_program_only(self, orig_program_path, clipped_program_path):
@@ -446,19 +413,15 @@ class APIOnnx:
             exp = self._mk_dygraph_exp(self._func)
             assert len(self.ops) <= 1, "Need to make sure the number of ops in config is 1."
 
-            # Save Paddle Inference model
             if os.path.exists(self.name):
                 shutil.rmtree(self.name)
             paddle.jit.save(self._func, os.path.join(self.name, "model"), self.input_spec)
 
-            # Get PaddleInference model path
             default_model_name = "model.pdmodel"
             if paddle.get_flags("FLAGS_enable_pir_api")["FLAGS_enable_pir_api"]:
                 default_model_name = "model.json"
             pdmodel_path = os.path.join(self.name, default_model_name)
             pdiparams_path = os.path.join(self.name, "model.pdiparams")
-            # model = paddle.jit.load(os.path.join(self.name, "model"))
-            # print("program:", model.program())
             if len(self.ops) > 0:
                 self.dev_check_ops(self.ops[0], pdmodel_path)
 
@@ -466,17 +429,14 @@ class APIOnnx:
             params_file = pdiparams_path
             if not os.path.exists(params_file):
                 params_file = ""
-            # # clip extra
             model_file = original_model_file
 
-            # clip extra
             model_file = None
             if paddle.get_flags("FLAGS_enable_pir_api")["FLAGS_enable_pir_api"]:
                 model_file = original_model_file
             else:
                 model_file = os.path.join(self.name, "cliped_model.pdmodel")
                 self.clip_extra_program_only(original_model_file, model_file)
-                # check if params_file exists and rename it
                 if os.path.exists(params_file):
                     new_params_file = os.path.join(
                         os.path.dirname(params_file),
@@ -488,22 +448,22 @@ class APIOnnx:
 
             for v in self._version:
                 onnx_model_str = paddle2onnx.export(
-                    model_file,  # model_filename
-                    params_file,  # params_filename
-                    None,  # save_file
-                    v,  # opset_version
-                    False,  # auto_upgrade_opset
-                    False,  # dist_prim_all
-                    True,  # verbose
-                    True,  # enable_onnx_checker
-                    True,  # enable_experimental_op
-                    True,  # enable_optimize
+                    model_file,
+                    params_file,
+                    None,
+                    v,
+                    False,
+                    False,
+                    True,
+                    True,
+                    True,
+                    True,
                     {},
-                    "onnxruntime",  # deploy_backend
-                    "",  # calibration_file
-                    "",  # external_file
-                    False,  # export_fp16_model
-                    "None",  # optimize_tool
+                    "onnxruntime",
+                    "",
+                    "",
+                    False,
+                    "None",
                 )
                 with open(os.path.join(self.name, self.name + "_" + str(v) + ".onnx"), "wb") as f:
                     f.write(onnx_model_str)

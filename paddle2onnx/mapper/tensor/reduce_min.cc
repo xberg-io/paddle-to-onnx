@@ -69,7 +69,6 @@ void ReduceMinMapper::Opset18() {
     input_tpye = P2ODataType::INT32;
   }
 
-  // Add attribute
   auto reduce_node = helper_->MakeNode("ReduceMin", {input_node_name, dims});
   AddAttribute(reduce_node, "keepdims", static_cast<int64_t>(keep_dim_));
 
@@ -86,11 +85,7 @@ void ReduceMinMapper::Opset18() {
                     out_info[0].dtype);
 }
 
-void ReduceMinMapper::Opset12() {
-  // The implementation logic of Opset12 is the same as that of Opset11,
-  // with the difference being that Opset12 supports input data types as double.
-  Opset11();
-}
+void ReduceMinMapper::Opset12() { Opset11(); }
 
 void ReduceMinMapper::Opset11() {
   GetAttr("keep_dim", &keep_dim_);
@@ -121,7 +116,6 @@ void ReduceMinMapper::Opset11() {
   }
   auto reduce_node = helper_->MakeNode("ReduceMin", {input_name});
 
-  // Add attribute
   if (!reduce_all_) {
     AddAttribute(reduce_node, "axes", dim_);
   } else {

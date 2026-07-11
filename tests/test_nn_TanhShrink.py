@@ -40,7 +40,6 @@ def test_nn_tanhshrink_9():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_tanhshrink", [9])
     obj.set_input_data(
         "input_data",
@@ -56,7 +55,6 @@ def test_nn_tanhshrink_10():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_tanhshrink", [10])
     obj.set_input_data(
         "input_data",
@@ -72,7 +70,6 @@ def test_nn_tanhshrink_11():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_tanhshrink", [11])
     obj.set_input_data(
         "input_data",
@@ -88,7 +85,6 @@ def test_nn_tanhshrink_12():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_tanhshrink", [12])
     obj.set_input_data(
         "input_data",

@@ -65,7 +65,6 @@ def test_Conv2DTranspose_9_10_11_12():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Conv2DTranspose", [9, 10, 11, 12])
     obj.set_input_data(
         "input_data",
@@ -82,7 +81,6 @@ def test_Conv2DTranspose_9_output_padding():
     """
     op = Net(output_padding=1, stride=[3, 2])
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Conv2DTranspose", [9])
     obj.set_input_data(
         "input_data",
@@ -99,7 +97,6 @@ def test_Conv2DTranspose_9_output_padding_1():
     """
     op = Net(output_padding=1, stride=[3, 2], padding=[1, 2])
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Conv2DTranspose", [9])
     obj.set_input_data(
         "input_data",
@@ -116,7 +113,6 @@ def test_Conv2DTranspose_9_output_padding_2():
     """
     op = Net(output_padding=1, stride=[3, 2], padding=[1, 2, 3, 4])
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Conv2DTranspose", [9])
     obj.set_input_data(
         "input_data",
@@ -133,7 +129,6 @@ def test_Conv2DTranspose_9_output_padding_3():
     """
     op = Net(output_padding=1, stride=[3, 2], padding=[[0, 0], [0, 0], [1, 2], [2, 3]])
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Conv2DTranspose", [9])
     obj.set_input_data(
         "input_data",
@@ -155,7 +150,6 @@ def test_Conv2DTranspose_9_10_11_12_group():
         padding=[[0, 0], [0, 0], [1, 2], [2, 3]],
     )
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Conv2DTranspose", [9, 10, 11, 12])
     obj.set_input_data(
         "input_data",

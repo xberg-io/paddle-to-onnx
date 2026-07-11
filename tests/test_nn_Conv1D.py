@@ -66,7 +66,6 @@ def test_Conv1D_9():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Conv1D", [9])
     obj.set_input_data(
         "input_data",
@@ -83,7 +82,6 @@ def test_Conv1D_10():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Conv1D", [10])
     obj.set_input_data(
         "input_data",
@@ -100,7 +98,6 @@ def test_Conv1D_11():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Conv1D", [11])
     obj.set_input_data(
         "input_data",
@@ -117,7 +114,6 @@ def test_Conv1D_12():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Conv1D", [12])
     obj.set_input_data(
         "input_data",
@@ -134,7 +130,6 @@ def test_Conv1D_11_padding_0():
     """
     op = Net(padding=[[0, 0], [0, 0], [1, 2]])
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Conv1D", [11])
     obj.set_input_data(
         "input_data",
@@ -151,7 +146,6 @@ def test_Conv1D_11_padding_1():
     """
     op = Net(padding=[1, 2])
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Conv1D", [11])
     obj.set_input_data(
         "input_data",
@@ -168,7 +162,6 @@ def test_Conv1D_11_padding_2():
     """
     op = Net(padding=0)
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Conv1D", [9, 10, 11, 12])
     obj.set_input_data(
         "input_data",
@@ -185,7 +178,6 @@ def test_Conv1D_11_padding_reflect():
     """
     op = Net(padding=1, padding_mode="reflect")
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Conv1D", [9, 10, 11, 12])
     obj.set_input_data(
         "input_data",
@@ -202,7 +194,6 @@ def test_Conv1D_11_padding_replicate():
     """
     op = Net(padding=2, padding_mode="replicate")
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "nn_Conv1D", [9, 10, 11, 12])
     obj.set_input_data(
         "input_data",

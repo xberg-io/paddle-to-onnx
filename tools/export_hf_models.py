@@ -48,8 +48,6 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(me
 logger = logging.getLogger(__name__)
 
 
-# Suppress ORT warnings during validation (shape mismatch warnings are expected
-# for models with Loop nodes and are benign after our fixes)
 ort.set_default_logger_severity(3)
 
 
@@ -61,23 +59,17 @@ class ModelConfig:
     model_filename: str = "inference.json"
     params_filename: str = "inference.pdiparams"
     opset_version: int = 17
-    # Map of input_name -> (shape, dtype). If None, auto-detected from the model.
     inputs: dict[str, tuple[tuple[int, ...], str]] | None = None
-    # Path under the distribution HF repo where model.onnx (and dict.txt for
-    # recognition models) is published, e.g. "v6/det/medium". None → not uploaded.
     upload_path: str | None = None
 
 
-# Models to export — add new models here
 MODELS: dict[str, ModelConfig] = {
-    # --- Text Detection (v5 latest) ---
     "PP-OCRv5_server_det": ModelConfig(
         hf_repo="PaddlePaddle/PP-OCRv5_server_det",
     ),
     "PP-OCRv5_mobile_det": ModelConfig(
         hf_repo="PaddlePaddle/PP-OCRv5_mobile_det",
     ),
-    # --- Text Recognition (v5 latest) ---
     "PP-OCRv5_server_rec": ModelConfig(
         hf_repo="PaddlePaddle/PP-OCRv5_server_rec",
     ),
@@ -87,9 +79,6 @@ MODELS: dict[str, ModelConfig] = {
     "en_PP-OCRv5_mobile_rec": ModelConfig(
         hf_repo="PaddlePaddle/en_PP-OCRv5_mobile_rec",
     ),
-    # --- PP-OCRv6 (medium/small/tiny tiers; unified multilingual rec) ---
-    # v6 base repos ship the char dict in inference.yml (no config.json) and use
-    # medium/small/tiny tiers rather than v5's server/mobile. Rec is unified.
     "PP-OCRv6_medium_det": ModelConfig(
         hf_repo="PaddlePaddle/PP-OCRv6_medium_det",
         upload_path="v6/det/medium",
@@ -114,7 +103,6 @@ MODELS: dict[str, ModelConfig] = {
         hf_repo="PaddlePaddle/PP-OCRv6_tiny_rec",
         upload_path="v6/rec/tiny",
     ),
-    # --- Document Layout Analysis ---
     "PP-DocLayoutV3": ModelConfig(
         hf_repo="PaddlePaddle/PP-DocLayoutV3",
         inputs={
@@ -123,7 +111,6 @@ MODELS: dict[str, ModelConfig] = {
             "scale_factor": ((1, 2), "float32"),
         },
     ),
-    # --- Table Structure Recognition ---
     "SLANet_plus": ModelConfig(
         hf_repo="PaddlePaddle/SLANet_plus",
     ),
@@ -133,7 +120,6 @@ MODELS: dict[str, ModelConfig] = {
     "SLANeXt_wireless": ModelConfig(
         hf_repo="PaddlePaddle/SLANeXt_wireless",
     ),
-    # --- Table Cell Detection ---
     "RT-DETR-L_wired_table_cell_det": ModelConfig(
         hf_repo="PaddlePaddle/RT-DETR-L_wired_table_cell_det",
         inputs={
@@ -150,7 +136,6 @@ MODELS: dict[str, ModelConfig] = {
             "scale_factor": ((1, 2), "float32"),
         },
     ),
-    # --- Document Orientation / Classification ---
     "PP-LCNet_x1_0_doc_ori": ModelConfig(
         hf_repo="PaddlePaddle/PP-LCNet_x1_0_doc_ori",
     ),
@@ -178,10 +163,6 @@ def download_model(config: ModelConfig, target_dir: Path) -> Path:
     for fname in [config.model_filename, config.params_filename]:
         hf_hub_download(config.hf_repo, fname, local_dir=str(target_dir))
         logger.info("Downloaded %s/%s", config.hf_repo, fname)
-    # Best-effort metadata files carrying the recognition character dict and
-    # preprocessing info: config.json (PP-OCRv5) and inference.yml (PP-OCRv6 base
-    # repos have no config.json). Non-OCR models (e.g. PP-DocLayoutV3) may lack a
-    # character dict entirely, so a missing file is not an error.
     for optional in ("config.json", "inference.yml"):
         _download_optional(config.hf_repo, optional, target_dir)
     return target_dir
@@ -246,7 +227,6 @@ def fix_ort_compatibility(model_path: Path) -> None:
 
         loop_inputs = set(node.input)
 
-        # Fix graph-level Constant nodes that feed scalar values into the Loop
         for gnode in model.graph.node:
             if gnode.op_type == "Constant" and any(o in loop_inputs for o in gnode.output):
                 for a in gnode.attribute:
@@ -254,7 +234,6 @@ def fix_ort_compatibility(model_path: Path) -> None:
                         a.t.dims[:] = [1]
                         fixed = True
 
-        # Fix graph-level initializers that feed into the Loop
         for init in model.graph.initializer:
             if init.name in loop_inputs and list(init.dims) == []:
                 init.dims[:] = [1]
@@ -265,19 +244,11 @@ def fix_ort_compatibility(model_path: Path) -> None:
                 continue
             body = attr.g
 
-            # Fix Loop body inputs and outputs ONLY (carried state boundary).
-            # These must match [1] shapes for ORT's Loop shape inference.
             for inp in body.input:
                 fixed |= _promote_scalar_to_1d(inp.type.tensor_type.shape, inp.type.tensor_type.elem_type)
             for out in body.output:
                 fixed |= _promote_scalar_to_1d(out.type.tensor_type.shape, out.type.tensor_type.elem_type)
 
-            # Do NOT promote body.value_info, body Constants, or body
-            # initializers — these feed internal computation (If conditions,
-            # Reshape targets) and promoting them breaks autoregressive logic.
-
-            # Fix If sub-branch outputs ONLY (not internal Constants/initializers).
-            # Branch outputs must match Loop body output shapes.
             for n in body.node:
                 if n.op_type == "If":
                     for if_attr in n.attribute:
@@ -307,13 +278,11 @@ def make_inputs_dynamic(model_path: Path) -> None:
     for inp in model.graph.input:
         shape = inp.type.tensor_type.shape
         dims = list(shape.dim)
-        # Only process 4D inputs (NCHW image tensors)
         if len(dims) != 4:
             continue
 
-        # dim 0 = batch, dim 2 = height, dim 3 = width
         for idx, name in [(0, "None"), (2, "?"), (3, "?")]:
-            if not dims[idx].dim_param:  # skip already-dynamic dims
+            if not dims[idx].dim_param:
                 dims[idx].dim_param = name
                 changed = True
 
@@ -385,10 +354,8 @@ def _build_dummy_inputs(config: ModelConfig, session: ort.InferenceSession) -> d
         if config.inputs and inp.name in config.inputs:
             shape, dtype = config.inputs[inp.name]
         else:
-            # Auto-detect from model: replace dynamic dims with reasonable defaults
             shape = tuple(d if isinstance(d, int) and d > 0 else 1 for d in inp.shape)
             dtype = inp.type.replace("tensor(", "").replace(")", "")
-        # Map ORT type strings to numpy dtypes (np.float was removed in numpy 2.0)
         np_dtype = {
             "float": np.float32,
             "double": np.float64,
@@ -401,12 +368,10 @@ def _build_dummy_inputs(config: ModelConfig, session: ort.InferenceSession) -> d
 
 def validate_onnx(config: ModelConfig, model_path: Path) -> dict:
     """Validate ONNX model with checker and ORT inference."""
-    # ONNX checker
     model = onnx.load(str(model_path))
     onnx.checker.check_model(model)
     logger.info("ONNX checker: PASSED")
 
-    # ORT inference
     session = ort.InferenceSession(str(model_path), providers=["CPUExecutionProvider"])
 
     input_feed = _build_dummy_inputs(config, session)
@@ -419,7 +384,6 @@ def validate_onnx(config: ModelConfig, model_path: Path) -> dict:
 
     logger.info("ORT inference: PASSED")
 
-    # Compute SHA256
     with open(model_path, "rb") as f:
         sha256 = hashlib.sha256(f.read()).hexdigest()
 
@@ -510,7 +474,6 @@ def main():
     if args.all:
         models_to_export = MODELS
     elif args.models:
-        # Support both "SLANet_plus" and "PaddlePaddle/SLANet_plus" per entry.
         keys = [name.split("/")[-1] for name in args.models.split(",") if name.strip()]
         unknown = [key for key in keys if key not in MODELS]
         if unknown:
@@ -518,7 +481,6 @@ def main():
             sys.exit(1)
         models_to_export = {key: MODELS[key] for key in keys}
     else:
-        # Support both "SLANet_plus" and "PaddlePaddle/SLANet_plus"
         model_key = args.model.split("/")[-1] if "/" in args.model else args.model
         if model_key not in MODELS:
             logger.error("Unknown model: %s. Available: %s", model_key, list(MODELS.keys()))
@@ -541,7 +503,6 @@ def main():
         else:
             failed.append(name)
 
-    # Write manifest
     manifest_path = Path(args.manifest) if args.manifest else output_dir / "manifest.json"
     with open(manifest_path, "w") as f:
         json.dump(manifest, f, indent=2)

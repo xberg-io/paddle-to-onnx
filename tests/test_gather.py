@@ -44,7 +44,6 @@ def test_gather_7():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "gather", [7])
     obj.set_input_data(
         "input_data",
@@ -61,7 +60,6 @@ def test_gather_11():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "gather", [13])
     obj.set_input_data(
         "input_data",
@@ -78,7 +76,6 @@ def test_gather_13():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "gather", [13])
     obj.set_input_data(
         "input_data",
@@ -102,9 +99,6 @@ class Net2(paddle.nn.Layer):
         return paddle.gather(inputs, index=paddle.to_tensor([[1], [2]], dtype="int64"), axis=1)
 
 
-# Attention : GatherND don't have opset < 11 version, so we don't test it.
-
-
 @_test_only_pir
 def test_gather_11_2():
     """
@@ -113,9 +107,7 @@ def test_gather_11_2():
     """
     op = Net2()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "gather_2", [11])
-    # data: [batch_size, mat_h, mat_w], index: [idx_size, 1]
     data = paddle.to_tensor(randtool("float", -1, 1, [1, 6, 8]).astype("float32"))
     print(data.shape)
     obj.set_input_data("input_data", data)
@@ -130,9 +122,7 @@ def test_gather_13_2():
     """
     op = Net2()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "gather_2", [13])
-    # data: [batch_size, mat_h, mat_w], index: [idx_size, 1]
     data = paddle.to_tensor(randtool("float", -1, 1, [1, 6, 8]).astype("float32"))
     print(data.shape)
     obj.set_input_data("input_data", data)
@@ -162,9 +152,7 @@ def test_gather_7_3():
     """
     op = Net3()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "gather_3", [7])
-    # data: [batch_size, mat_h, mat_w], index: [idx_size, 1]
     data = paddle.to_tensor(randtool("float", -1, 1, [1, 6, 8]).astype("float32"))
     print(data.shape)
     obj.set_input_data("input_data", data)
@@ -182,9 +170,7 @@ def test_gather_11_3():
     """
     op = Net3()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "gather_3", [11])
-    # data: [batch_size, mat_h, mat_w], index: [idx_size, 1]
     data = paddle.to_tensor(randtool("float", -1, 1, [1, 6, 8]).astype("float32"))
     print(data.shape)
     obj.set_input_data("input_data", data)
@@ -202,9 +188,7 @@ def test_gather_13_3():
     """
     op = Net3()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "gather_3", [13])
-    # data: [batch_size, mat_h, mat_w], index: [idx_size, 1]
     data = paddle.to_tensor(randtool("float", -1, 1, [1, 6, 8]).astype("float32"))
     print(data.shape)
     obj.set_input_data("input_data", data)
@@ -238,9 +222,7 @@ def test_gather_11_4():
     """
     op = Net4()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "gather_4", [11])
-    # data: [batch_size, mat_h, mat_w], index: [idx_size, 1]
     data = paddle.to_tensor(randtool("float", -1, 1, [1, 6, 8]).astype("float32"))
     print(data.shape)
     obj.set_input_data("input_data", data)
@@ -255,9 +237,7 @@ def test_gather_13_4():
     """
     op = Net4()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "gather_4", [13])
-    # data: [batch_size, mat_h, mat_w], index: [idx_size, 1]
     data = paddle.to_tensor(randtool("float", -1, 1, [1, 6, 8]).astype("float32"))
     print(len(data.shape))
     obj.set_input_data("input_data", data)

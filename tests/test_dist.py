@@ -40,7 +40,6 @@ def test_dist_9():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "dist", [9])
     obj.set_input_data(
         "input_data",
@@ -57,7 +56,6 @@ def test_dist_10():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "dist", [10])
     obj.set_input_data(
         "input_data",
@@ -74,7 +72,6 @@ def test_dist_11():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "dist", [11])
     obj.set_input_data(
         "input_data",
@@ -91,7 +88,6 @@ def test_dist_12():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "dist", [12])
     obj.set_input_data(
         "input_data",
@@ -108,7 +104,6 @@ def test_dist_0():
     """
     op = Net(p=0)
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "dist", [12])
     obj.set_input_data(
         "input_data",
@@ -125,7 +120,6 @@ def test_dist_inf():
     """
     op = Net(p=float("inf"))
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "dist", [12])
     obj.set_input_data(
         "input_data",
@@ -142,7 +136,6 @@ def test_dist___inf():
     """
     op = Net(p=float("-inf"))
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "dist", [12])
     obj.set_input_data(
         "input_data",

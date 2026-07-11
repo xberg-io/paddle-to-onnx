@@ -60,7 +60,6 @@ class TestTopkv2Convert(OPConvertAutoScanTest):
         dtype = draw(st.sampled_from(["float32", "float64", "int32", "int64"]))
         k_dtype = draw(st.sampled_from(["int32", "int64"]))
         largest = draw(st.booleans())
-        # has a diff when sorted is False
         sorted = draw(st.booleans())
 
         def generator_data():

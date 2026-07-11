@@ -49,7 +49,7 @@ bool ModelExporter::IsOpsRegistered(const PaddlePirParser &pir_parser,
       unsupported_ops.insert(op_name);
     }
   }
-  // TODO(wangmingkai02) : judge op whether is experimental op
+  // ~keep TODO(wangmingkai02): detect whether unsupported ops are experimental.
   if (unsupported_ops.size() != 0) {
     P2OLogger() << "There are some ops not supported yet, including ";
     for (auto &item : unsupported_ops) {
@@ -149,7 +149,6 @@ int32_t ModelExporter::GetMinOpsetVersion(const PaddleParser &parser) {
         continue;
       }
 
-      // Skip the input and output nodes.
       if (op.type() == "feed" || op.type() == "fetch" ||
           op.type() == "conditional_block") {
         continue;
@@ -202,8 +201,6 @@ ModelExporter::GetCfBlockMinOpsetVersion(const PaddlePirParser &pir_parser,
       pir_parser.sub_blocks_ops.push_back(op);
     }
   }
-  // Must generate All sub_block's op output names must be generated here
-  // because it's may used in OPMapper.GetMinOpsetVersion function.
   pir_parser.GetSubBlockOpOutputName(pir_parser.sub_blocks_ops);
   auto max_opset = GetMinOpsetVersion(pir_parser, &block, true);
   pir_parser.sub_blocks_ops.clear();
@@ -218,7 +215,6 @@ int32_t ModelExporter::GetMinOpsetVersion(const PaddlePirParser &pir_parser,
   std::set<std::string> verbose_log;
   OnnxHelper helper(verbose_);
   std::vector<pir::Operation *> block_ops;
-  // it's  necessary to be same with global/sub_blocks_ops
   for (auto &op : block->ops()) {
     if (op->name() != "builtin.parameter") {
       block_ops.push_back(op);
@@ -280,7 +276,6 @@ int32_t ModelExporter::GetMinOpsetVersion(const PaddlePirParser &pir_parser,
 void ModelExporter::SetOpsetVersion(const PaddlePirParser &pir_parser,
                                     bool auto_upgrade_opset) {
   bool opset_is_legal = true;
-  // here
   int32_t min_opset =
       GetMinOpsetVersion(pir_parser, pir_parser.pir_program_->block(), false);
   if (min_opset < 7 || min_opset > MAX_ONNX_OPSET_VERSION) {
@@ -316,7 +311,6 @@ void ModelExporter::SetOpsetVersion(const PaddlePirParser &pir_parser,
 
 void ModelExporter::SetOpsetVersion(const PaddleParser &parser,
                                     bool auto_upgrade_opset) {
-  // Set the Opset Version of the ONNX model.
   bool opset_is_legal = true;
   int32_t min_opset = GetMinOpsetVersion(parser);
   if (min_opset < 7 || min_opset >= MAX_ONNX_OPSET_VERSION) {
@@ -438,8 +432,7 @@ void ModelExporter::ExportParameters(
     std::vector<std::shared_ptr<ONNX_NAMESPACE::NodeProto>> *parameters) {
   parameters->clear();
   for (auto &item : parser.params) {
-    // TODO(jiangjiajun) I'm not handling use_initializer now, but some day
-    // I will
+    // ~keep TODO(jiangjiajun): handle use_initializer.
     auto node = MakeConstant(item.first, item.second);
     parameters->push_back(std::move(node));
   }
@@ -468,16 +461,11 @@ ModelExporter::ExportIfBlock(const PaddlePirParser &pir_parser,
       pir_parser.sub_blocks_ops.push_back(op);
     }
   }
-  // generate sub-block op outputs names in GetMinOpSetVersion() function.
-  // pir_parser.GetSubBlockOpOutputName(pir_parser.sub_blocks_ops);
   if (!pir_parser.sub_blocks_ops.empty()) {
-    // get cf.yield op input
     pir::Operation *cf_yield_op = pir_parser.sub_blocks_ops.back();
-    // std::vector<std::string> sub_block_outpus;
     for (int32_t idx = 0; idx < cf_yield_op->num_operands(); ++idx) {
       pir::Value value = cf_yield_op->operand(idx).source();
       auto cond_info = pir_parser.GetSubBlockValueTensorInfo(value);
-      // sub_block_outpus.push_back(cond_info[0].name);
       temp_outputs.push_back(std::move(MakeValueInfo(cond_info[0])));
       if (value.defining_op() == nullptr) {
         value =
@@ -488,7 +476,6 @@ ModelExporter::ExportIfBlock(const PaddlePirParser &pir_parser,
       }
     }
   } else {
-    // sub_blocks_ops is empty
     PADDLE_ENFORCE_NE(pir_parser.sub_blocks_ops.size(), 0,
                       ::common::errors::InvalidArgument(
                           "The number of ops of a control flow sub-block "
@@ -529,17 +516,13 @@ ONNX_NAMESPACE::GraphProto ModelExporter::ExportBlock(
     }
     if (op->name() == "pd_op.if") {
       auto if_op = op->dyn_cast<paddle::dialect::IfOp>();
-      // if branch graph
       pir::Block &true_block = if_op.true_block();
       auto then_graph = ExportIfBlock(pir_parser, true_block);
-      // else branch graph
       pir::Block &false_block = if_op.false_block();
       auto else_graph = ExportIfBlock(pir_parser, false_block);
-      // get if op input mask
       auto cond_info = pir_parser.GetTensorInfo(if_op.cond());
       auto cond_name = temp_helper.AutoCast(
           cond_info[0].name, cond_info[0].dtype, P2ODataType::BOOL);
-      // get if op output
       auto num_results = if_op.num_results();
       std::vector<std::string> if_op_output_name;
       for (int i = 0; i < num_results; ++i) {
@@ -607,7 +590,6 @@ ONNX_NAMESPACE::GraphProto ModelExporter::ExportBlock(
   graph.set_name("PaddlePaddle Graph " + std::to_string(block_id));
   auto num_ops = parser.NumOfOps(block_id);
 
-  // Init ONNXHelp
   OnnxHelper *temp_helper = nullptr;
   if (helper == nullptr) {
     temp_helper = new OnnxHelper();
@@ -646,7 +628,6 @@ ONNX_NAMESPACE::GraphProto ModelExporter::ExportBlock(
                               &(temp_helper->nodes),
                               &(temp_helper->quantize_info), is_while_block);
 
-  // Process the model according to deploy_mackend_
   if (parser.is_quantized_model) {
     if (deploy_backend_ == "onnxruntime") {
       quantize_processer_ = new ORTQuantizeProcessor();
@@ -669,7 +650,6 @@ ONNX_NAMESPACE::GraphProto ModelExporter::ExportBlock(
         calibration_cache_);
     delete quantize_processer_;
     quantize_processer_ = nullptr;
-    // Update int8 weights in quantized OP to float32
     UpdateParameters(temp_helper->updated_params, parameters);
   }
 
@@ -817,7 +797,6 @@ void ModelExporter::ExportOp(const PaddleParser &parser, OnnxHelper *helper,
     auto mapper = MapperHelper::Get()->CreateMapper(op.type(), parser, helper,
                                                     block_id, op_id);
     mapper->deploy_backend = deploy_backend_;
-    // Some operators will export as custom operator
     auto iter = custom_ops.find(op.type());
     if (iter != custom_ops.end()) {
       mapper->export_as_custom_op = true;
@@ -849,9 +828,6 @@ void ModelExporter::ProcessGraphDumplicateNames(
       }
     }
   }
-  // for (const auto& tensor_name : while_tensor_names_) {
-  //   tensor_names_.erase(tensor_name);
-  // }
   /********************* Create Tensor Names *********************/
 
   /********************* Rename *********************/
@@ -871,7 +847,6 @@ void ModelExporter::ProcessGraphDumplicateNames(
   }
   std::map<std::string, std::string> renamer;
   for (auto &item : *nodes) {
-    // update node inputs
     for (size_t i = 0; i < item->input_size(); ++i) {
       if (renamer.find(item->input(i)) != renamer.end()) {
         auto updated_name = renamer[item->input(i)];
@@ -882,8 +857,6 @@ void ModelExporter::ProcessGraphDumplicateNames(
       }
     }
 
-    // if there's dumplicate name , it will generate new name and replace
-    // the dumplicate name
     for (size_t i = 0; i < item->output_size(); ++i) {
       if (tensor_names_.find(item->output(i)) != tensor_names_.end()) {
         if (is_while_block) {
@@ -972,13 +945,8 @@ void ModelExporter::SaveExternalData(::ONNX_NAMESPACE::GraphProto *graph,
   f.close();
 }
 void ModelExporter::ONNXChecker(const ONNX_NAMESPACE::ModelProto &model) {
-  // TODO(jiangjiajun)
-  // If we need to integrate with framework
-  // this check will return a information
-  // to let framework know the conversion is
-  // pass or fail
+  // ~keep TODO(jiangjiajun): define ONNX checker failure handling.
   try {
-    // ONNX_NAMESPACE::checker::check_model(*(model.get()));
     ONNX_NAMESPACE::checker::check_model(model);
   } catch (const std::exception &e) {
     P2OLogger() << "[ERROR] The exported ONNX model is invalid." << std::endl;
@@ -1001,19 +969,14 @@ std::string ModelExporter::Run(
   MapperHelper::Get()->ClearNameCounter();
   Assert(IsOpsRegistered(pir_parser, enable_experimental_op),
          "Due to the unsupported operators, the conversion is aborted.");
-  // Set ONNX Opset Version
   opset_version_ = opset_version;
   SetOpsetVersion(pir_parser, auto_upgrade_opset);
-  // Set ONNX IR Version
   SetIRVersion();
-  // Export Parser Parameters
   std::vector<std::shared_ptr<ONNX_NAMESPACE::NodeProto>> parameters;
   ExportParameters(pir_parser, &parameters);
-  // Export Parser Inputs and Outputs
   std::vector<std::shared_ptr<ONNX_NAMESPACE::ValueInfoProto>> inputs;
   std::vector<std::shared_ptr<ONNX_NAMESPACE::ValueInfoProto>> outputs;
   ExportInputOutputs(pir_parser, &inputs, &outputs);
-  // Export Blocks
   auto share_graph = ExportBlock(pir_parser, pir_parser.pir_program_->block(),
                                  parameters, &inputs, &outputs, false, false);
   *onnx_model_.mutable_graph() = share_graph;
@@ -1041,8 +1004,6 @@ std::string ModelExporter::Run(
   deploy_backend_ = deploy_backend;
   calibration_cache_ = calibration_cache;
 
-  // Clear name_counter, this use to generate unique name for intermdiate
-  // while converting all the op
   MapperHelper::Get()->ClearNameCounter();
 
   if (!IsOpsRegistered(parser, enable_experimental_op)) {
@@ -1050,17 +1011,13 @@ std::string ModelExporter::Run(
            "Due to the unsupported operators, the conversion is aborted.");
   }
 
-  // Set ONNX Opset Version
   opset_version_ = opset_version;
   SetOpsetVersion(parser, auto_upgrade_opset);
 
-  // Set ONNX IR Version
   SetIRVersion();
 
-  // Export Parser Parameters
   std::vector<std::shared_ptr<ONNX_NAMESPACE::NodeProto>> parameters;
   ExportParameters(parser, &parameters);
-  // Export Parser Inputs and Outputs
   std::vector<std::shared_ptr<ONNX_NAMESPACE::ValueInfoProto>> inputs;
   std::vector<std::shared_ptr<ONNX_NAMESPACE::ValueInfoProto>> outputs;
   ExportInputOutputs(parser, &inputs, &outputs);
@@ -1072,7 +1029,6 @@ std::string ModelExporter::Run(
     onnx_model_ = Optimize(onnx_model_);
   }
 
-  // convert fp32 model to fp16
   if (export_fp16_model) {
     P2OLogger(verbose) << "Convert FP32 ONNX model to FP16." << std::endl;
     ConvertFp32ToFp16 convert(verbose);
@@ -1081,7 +1037,6 @@ std::string ModelExporter::Run(
     convert.Convert(&onnx_model_);
   }
 
-  // save external data file for big model
   std::string external_data_file;
   if (onnx_model_.ByteSizeLong() > INT_MAX) {
     if (external_file.empty()) {
@@ -1096,7 +1051,6 @@ std::string ModelExporter::Run(
                      save_external);
   }
 
-  // check model
   if (enable_onnx_checker) {
     ONNXChecker(onnx_model_);
   }

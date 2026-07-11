@@ -111,7 +111,6 @@ def post_quant_fake(
 
         graph = IrGraph(core.Graph(_program.desc), for_test=True)
 
-        # use QuantizationTransformPass to insert fake_quant/fake_dequantize op
         major_quantizable_op_types = []
         for op_type in _weight_supported_quantizable_op_type:
             if op_type in _quantizable_op_type:
@@ -138,12 +137,9 @@ def post_quant_fake(
             )
 
         for sub_graph in graph.all_sub_graphs():
-            # Insert fake_quant/fake_dequantize op must in test graph, so
-            # set per graph's _for_test is True.
             sub_graph._for_test = True
             transform_pass.apply(sub_graph)
 
-        # use AddQuantDequantPass to insert fake_quant_dequant op
         minor_quantizable_op_types = []
         for op_type in _act_supported_quantizable_op_type:
             if op_type in _quantizable_op_type:
@@ -165,7 +161,6 @@ def post_quant_fake(
             sub_graph._for_test = True
             add_quant_dequant_pass.apply(sub_graph)
 
-        # apply QuantizationFreezePass, and obtain the final quant model
         if onnx_format:
             quant_weight_pass = QuantWeightPass(_scope, _place)
             for sub_graph in graph.all_sub_graphs():

@@ -69,23 +69,17 @@ class TestLogicopsConvert(OPConvertAutoScanTest):
 
         if len(input1_shape) > 0:
             if draw(st.booleans()):
-                # [N * N] + [N]
                 input2_shape = [input1_shape[-1]]
             elif draw(st.booleans()):
-                # [N * N] + [N * N]
                 input2_shape = input1_shape
             elif draw(st.booleans()):
-                # [N * N] + [1]
                 input2_shape = [1]
             else:
-                # [N * N] + []
                 input2_shape = []
         else:
             if draw(st.booleans()):
-                # [] + []
                 input2_shape = input1_shape
             else:
-                # [] + [N * N]
                 input2_shape = draw(st.lists(st.integers(min_value=10, max_value=20), min_size=1, max_size=4))
 
         dtype = draw(st.sampled_from(["float32", "int32", "int64", "bool"]))

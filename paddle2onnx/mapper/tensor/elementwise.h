@@ -37,9 +37,8 @@ public:
   ElementwiseMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t op_id,
                     bool c)
       : Mapper(p, helper, op_id, c) {
-    // TODO(wangmingkai): no axis in PIR
+    // ~keep TODO(wangmingkai): support axis metadata in PIR.
     axis_ = -1;
-    // GetAttr("axis", &axis_);
 
     op_mapper_["elementwise_add"] = "Add";
     op_mapper_["elementwise_sub"] = "Sub";

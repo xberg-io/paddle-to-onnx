@@ -28,8 +28,6 @@ namespace paddle2onnx {
 
 struct PADDLE2ONNX_DECL CustomOp {
   char op_name[100] = "null";
-  // if export_op_name set as "paddle2onnx_null"
-  // it will automaticly change to `op_name`
   char export_op_name[100] = "paddle2onnx_null";
 };
 
@@ -58,7 +56,6 @@ Export(const void *model_buffer, int64_t model_size, const void *params_buffer,
        bool export_fp16_model = false, char **disable_fp16_op_types = nullptr,
        int disable_fp16_op_types_count = 0);
 
-// Following are inside usage, will remove it maybe
 PADDLE2ONNX_DECL bool RemoveMultiClassNMS(const char *onnx_model,
                                           int model_size, char **out_model,
                                           int *out_model_size);
@@ -71,13 +68,6 @@ struct PADDLE2ONNX_DECL ModelTensorInfo {
   char name[100] = "";
   int64_t *shape = nullptr;
   int32_t rank = 0;
-  // 0: float32
-  // 1: double
-  // 2: uint8
-  // 3: int8
-  // 4: int32
-  // 5: int64
-  // 6: float16
   int32_t dtype = 0;
   ~ModelTensorInfo();
 };
@@ -94,9 +84,6 @@ struct PADDLE2ONNX_DECL NMSParameters {
 
 struct PADDLE2ONNX_DECL OnnxReader {
   OnnxReader(const char *model_buffer, int buffer_size);
-  // suppose the maximum number of inputs/outputs is 100
-  // suppose the longest string of inputs/outputs is 200
-  // suppose the biggest rank will be less than 10
   ModelTensorInfo inputs[100];
   ModelTensorInfo outputs[100];
   int num_inputs;
@@ -105,8 +92,6 @@ struct PADDLE2ONNX_DECL OnnxReader {
 
 struct PADDLE2ONNX_DECL PaddleReader {
   PaddleReader(const char *model_buffer, int buffer_size);
-  // suppose the maximum number of inputs/outputs is 100
-  // suppose the longest string of inputs/outputs is 200
   ModelTensorInfo inputs[100];
   ModelTensorInfo outputs[100];
   int num_inputs;

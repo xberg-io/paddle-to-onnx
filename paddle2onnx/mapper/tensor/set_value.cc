@@ -22,7 +22,8 @@ REGISTER_PIR_MAPPER(set_value_with_tensor, SetValueMapper)
 REGISTER_PIR_MAPPER(set_value_with_tensor_, SetValueMapper)
 
 int32_t SetValueMapper::GetMinOpsetVersion(bool verbose) {
-  // TODO(wangmingkai02): update set_value mapper to support following features
+  // ~keep TODO(wangmingkai02): update set_value mapper to support the following
+  // features.
   if (none_axes_.size() > 0) {
     Error() << "Attribute none_axes is not supported." << std::endl;
     return -1;
@@ -39,8 +40,6 @@ void SetValueMapper::Opset17() {
   auto input_info = GetInput("Input");
   auto output_info = GetOutput("Out");
 
-  // Special case: if axes is empty, this is a full tensor assignment
-  // Just copy the value to output (for set_value_with_tensor_ with empty axes)
   std::string op_type = OpType();
   bool is_set_value_with_tensor =
       (op_type.find("set_value_with_tensor") != std::string::npos);
@@ -52,7 +51,6 @@ void SetValueMapper::Opset17() {
 
   std::string starts = "";
   if (HasInput("StartsTensorList")) {
-    // if negtive value exists, not supported
     starts = helper_->ConcatIndices(GetInput("StartsTensorList"));
   } else {
     starts = helper_->Constant(ONNX_NAMESPACE::TensorProto::INT64, starts_);
@@ -61,7 +59,6 @@ void SetValueMapper::Opset17() {
   if (HasInput("EndsTensorList")) {
     ends = helper_->ConcatIndices(GetInput("EndsTensorList"));
   } else {
-    // if out of range value in end exists, not supported
     ends = helper_->Constant(ONNX_NAMESPACE::TensorProto::INT64, ends_);
   }
 
@@ -72,7 +69,6 @@ void SetValueMapper::Opset17() {
     steps = helper_->Constant(ONNX_NAMESPACE::TensorProto::INT64, steps_);
   }
 
-  // process negative value in starts, ends
   int32_t input_rank = input_info[0].Rank();
   for (int32_t i = 0; i < axes_.size(); ++i) {
     if (axes_[i] < 0) {
@@ -104,9 +100,7 @@ void SetValueMapper::Opset17() {
   std::string value = "";
   int64_t value_rank = input_info[0].Rank();
 
-  // Reuse op_type and is_set_value_with_tensor from earlier in function
   if (in_pir_mode && is_set_value_with_tensor) {
-    // In PIR mode, set_value_with_tensor_ has value as second input (index 1)
     auto value_info = GetInput(1);
     value = value_info[0].name;
     value_rank = value_info[0].Rank();
@@ -119,7 +113,6 @@ void SetValueMapper::Opset17() {
     value = value_info[0].name;
     value_rank = value_info[0].Rank();
   } else if (HasInput("value")) {
-    // PIR mode: set_value_with_tensor_ uses "value" as input name
     auto value_info = GetInput("value");
     value = value_info[0].name;
     value_rank = value_info[0].Rank();
@@ -139,7 +132,6 @@ void SetValueMapper::Opset17() {
   }
 
   if (axes_.size() > 1) {
-    // process end <= start
     auto end_less_or_equal_start =
         helper_->MakeNode("LessOrEqual", {ends, starts})->output(0);
     auto cast_node = helper_->MakeNode("Cast", {end_less_or_equal_start});
@@ -152,37 +144,30 @@ void SetValueMapper::Opset17() {
     AddAttribute(cond_node, "to", ONNX_NAMESPACE::TensorProto::BOOL);
     auto cond = cond_node->output(0);
 
-    // ===== if then graph begin =====
     ONNX_NAMESPACE::GraphProto then_graph;
     then_graph.set_name("If then Graph in SetValue");
 
-    // output
     auto then_output_info = std::make_shared<ONNX_NAMESPACE::ValueInfoProto>();
     then_output_info->set_name(output_info[0].name);
     then_output_info->mutable_type()->mutable_tensor_type()->set_elem_type(
         GetOnnxDtype(output_info[0].dtype));
     *(then_graph.add_output()) = *(then_output_info.get());
 
-    // nodes
     OnnxHelper if_then_helper;
     if_then_helper.MakeNode("Identity", {input_tensor}, {output_info[0].name});
     for (auto &item : if_then_helper.nodes) {
       *(then_graph.add_node()) = (*item.get());
     }
-    // ===== if then graph end =====
 
-    // ===== if else graph begin =====
     ONNX_NAMESPACE::GraphProto else_graph;
     else_graph.set_name("If else Graph in SetValue");
 
-    // output
     auto else_output_info = std::make_shared<ONNX_NAMESPACE::ValueInfoProto>();
     else_output_info->set_name(output_info[0].name);
     else_output_info->mutable_type()->mutable_tensor_type()->set_elem_type(
         GetOnnxDtype(output_info[0].dtype));
     *(else_graph.add_output()) = *(else_output_info.get());
 
-    // nodes
     OnnxHelper if_else_helper;
 
     uint32_t complete_status = (1u << input_rank) - 1;
@@ -249,10 +234,8 @@ void SetValueMapper::Opset17() {
             .MakeNode("SplitToSequence", {sorted_steps_node->output(0), ones})
             ->output(0);
 
-    // ===== sequence map graph =====
     ONNX_NAMESPACE::GraphProto graph;
     graph.set_name("SequenceMap 1 Graph in SetValue");
-    // input
     auto start_value_info = std::make_shared<ONNX_NAMESPACE::ValueInfoProto>();
     start_value_info->set_name(start_seq);
     start_value_info->mutable_type()->mutable_tensor_type()->set_elem_type(
@@ -270,7 +253,6 @@ void SetValueMapper::Opset17() {
     step_value_info->mutable_type()->mutable_tensor_type()->set_elem_type(
         ONNX_NAMESPACE::TensorProto::INT64);
     *(graph.add_input()) = *(step_value_info.get());
-    // output
     auto range_value_info = std::make_shared<ONNX_NAMESPACE::ValueInfoProto>();
     std::string range_out_name =
         MapperHelper::Get()->GenName("set_value.sequence_map.out.range");
@@ -286,7 +268,6 @@ void SetValueMapper::Opset17() {
     size_value_info->mutable_type()->mutable_tensor_type()->set_elem_type(
         ONNX_NAMESPACE::TensorProto::INT64);
     *(graph.add_output()) = *(size_value_info.get());
-    // nodes
     OnnxHelper temp_helper;
     temp_helper.MakeNode("Range",
                          {temp_helper.Squeeze(start_seq, {}),
@@ -307,15 +288,11 @@ void SetValueMapper::Opset17() {
             .MakeNode("Where",
                       {temp_less_equal_zero, temp_one, temp_scalar_size_name})
             ->output(0);
-    temp_helper.Unsqueeze(scalar_size_name, size_out_name, {0}); // wmk
-    // auto range_2d = temp_helper.Unsqueeze(range, {1});
-    // auto tile = temp_helper.MakeNode("Tile", {range_2d,
-    // repeat_seq})->output(0); temp_helper.Reshape(tile, seq_map_out_name, {});
+    temp_helper.Unsqueeze(scalar_size_name, size_out_name, {0});
     for (auto &item : temp_helper.nodes) {
       *(graph.add_node()) = (*item.get());
     }
 
-    // ===== sequence map graph =====
     auto seq_map_node_1 = if_else_helper.MakeNode(
         "SequenceMap", {start_seq, end_seq, step_seq}, 2);
     AddAttribute(seq_map_node_1, "body", graph);
@@ -324,8 +301,6 @@ void SetValueMapper::Opset17() {
         "ConcatFromSequence", {seq_map_node_1->output(1)});
     AddAttribute(concat_size_node, "axis", int64_t(0));
     auto concat_size = concat_size_node->output(0);
-    // auto prod = if_else_helper.MakeNode("ReduceProd",
-    // {concat_size})->output(0); // use default attrs
     auto zeros = if_else_helper.Constant(ONNX_NAMESPACE::TensorProto::INT64,
                                          std::vector<int64_t>(input_rank, 0));
     auto input_ranks =
@@ -356,10 +331,8 @@ void SetValueMapper::Opset17() {
         if_else_helper.MakeNode("SplitToSequence", {input_ranks, ones})
             ->output(0);
 
-    // ===== sequence map graph 2 =====
     ONNX_NAMESPACE::GraphProto graph2;
     graph2.set_name("SequenceMap 2 Graph in SetValue");
-    // input
 
     auto slice_start_1_value_info =
         std::make_shared<ONNX_NAMESPACE::ValueInfoProto>();
@@ -408,7 +381,6 @@ void SetValueMapper::Opset17() {
         ->set_elem_type(ONNX_NAMESPACE::TensorProto::INT64);
     *(graph2.add_input()) = *(concat_size_value_info.get());
 
-    // output
     auto index_value_info = std::make_shared<ONNX_NAMESPACE::ValueInfoProto>();
     std::string index_out_name =
         MapperHelper::Get()->GenName("set_value.sequence_map.out.index");
@@ -417,7 +389,6 @@ void SetValueMapper::Opset17() {
         ONNX_NAMESPACE::TensorProto::INT64);
     *(graph2.add_output()) = *(index_value_info.get());
 
-    // nodes
     OnnxHelper temp_helper2;
     auto slice_axes = temp_helper2.Constant(
         {1}, ONNX_NAMESPACE::TensorProto::INT64, static_cast<int64_t>(0));
@@ -429,8 +400,8 @@ void SetValueMapper::Opset17() {
                            .MakeNode("Slice", {concat_size, slice_start_2,
                                                slice_end_2, slice_axes})
                            ->output(0);
-    auto temp_repeat_1 = temp_helper2.MakeNode("ReduceProd", {prefix_size})
-                             ->output(0); // use default attrs
+    auto temp_repeat_1 =
+        temp_helper2.MakeNode("ReduceProd", {prefix_size})->output(0);
     auto temp_repeat_2 =
         temp_helper2.MakeNode("ReduceProd", {suffix_size})->output(0);
     auto repeat_1 = temp_helper2.Reshape(temp_repeat_1, {1});
@@ -446,7 +417,6 @@ void SetValueMapper::Opset17() {
     for (auto &item : temp_helper2.nodes) {
       *(graph2.add_node()) = (*item.get());
     }
-    // ===== sequence map graph 2 =====
 
     auto seq_map_node_2 = if_else_helper.MakeNode(
         "SequenceMap",
@@ -459,7 +429,6 @@ void SetValueMapper::Opset17() {
     AddAttribute(indices_node, "axis", int64_t(1));
     auto indices = indices_node->output(0);
 
-    // construct update
     auto flatten_value = if_else_helper.Flatten(value);
     auto update_shape = if_else_helper.Flatten(
         if_else_helper.MakeNode("ReduceProd", {concat_size})->output(0));
@@ -472,7 +441,6 @@ void SetValueMapper::Opset17() {
     for (auto &item : if_else_helper.nodes) {
       *(else_graph.add_node()) = (*item.get());
     }
-    // ===== if else graph end =====
     auto if_node = helper_->MakeNode("If", {cond}, {output_info[0].name});
     AddAttribute(if_node, "else_branch", else_graph);
     AddAttribute(if_node, "then_branch", then_graph);
@@ -491,7 +459,6 @@ void SetValueMapper::Opset17() {
     auto expand_value =
         helper_->MakeNode("Expand", {value, sliced_shape})->output(0);
 
-    // Range 的输入要求时Scalar，当axes_ > 1时就不满足了
     auto indices = helper_
                        ->MakeNode("Range", {helper_->Squeeze(starts, {}),
                                             helper_->Squeeze(ends, {}),

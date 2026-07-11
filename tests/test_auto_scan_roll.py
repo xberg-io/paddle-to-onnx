@@ -32,9 +32,7 @@ class Net(BaseNet):
         """
         axis = self.config["axis"]
         shifts = self.config["shifts"]
-        # axis = [0, -1]
-        # TODO not work
-        # shifts = [paddle.to_tensor(-2), -2]
+        # ~keep TODO: tensor shifts do not work yet.
         if self.config["is_shifts_tensor"]:
             shifts = paddle.to_tensor(shifts).astype(self.config["shift_dtype"])
         return paddle.roll(inputs, shifts=shifts, axis=axis)

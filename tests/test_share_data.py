@@ -40,7 +40,6 @@ def test_assign_9():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "share_data", [9, 10, 11, 12])
     obj.set_input_data(
         "input_data",

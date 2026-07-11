@@ -73,8 +73,6 @@ void Pool2dMapper::AdaptivePool(const std::vector<TensorInfo> &input_info,
   AddAttribute(node, "kernel_shape", kernel_size);
   std::vector<int64_t> strides = {stride_h, stride_w};
   AddAttribute(node, "strides", strides);
-  // AddAttribute(node, "kernel_shape", k_size_);
-  // AddAttribute(node, "strides", strides_);
 
   if (helper_->GetOpsetVersion() > 10) {
     AddAttribute(node, "ceil_mode", static_cast<int64_t>(ceil_mode_));
@@ -175,15 +173,7 @@ void Pool2dMapper::NoAdaptivePool(const std::vector<TensorInfo> &input_info,
   } else {
     AddAttribute(node, "pads", pads_);
   }
-  // TODO(qinzhongyu): Need double check
-  // if (OpType() != "max_pool2d_with_index" && helper_->GetOpsetVersion() >=
-  // 10) {
-  //   AddAttribute(node, "ceil_mode", static_cast<int64_t>(ceil_mode_));
-  // }
-  // if (OpType() != "max_pool2d_with_index" && pooling_type_ == "avg") {
-  //   AddAttribute(node, "count_include_pad",
-  //   static_cast<int64_t>(exclusive_));
-  // }
+  // ~keep TODO(qinzhongyu): double-check ceil_mode handling.
   if (helper_->GetOpsetVersion() >= 10) {
     AddAttribute(node, "ceil_mode", static_cast<int64_t>(ceil_mode_));
   }
@@ -193,7 +183,7 @@ void Pool2dMapper::NoAdaptivePool(const std::vector<TensorInfo> &input_info,
 }
 
 int32_t Pool2dMapper::GetMinOpsetVersion(bool verbose) {
-  // NHWC is not supported : todo support NHWC
+  // ~keep TODO: support NHWC.
   if (data_format_ == "NHWC") {
     Error() << "NHWC format is not supported." << std::endl;
     return -1;
@@ -202,12 +192,9 @@ int32_t Pool2dMapper::GetMinOpsetVersion(bool verbose) {
   auto output_info = GetOutput("Out");
   if (in_pir_mode) {
     if (convert_pir_op_name(OpType()) != "max_pool2d_with_index") {
-      // TODO(qinzhongyu): For PIR, kernel size is in inputs
+      // ~keep TODO(qinzhongyu): for PIR, kernel size is in inputs.
       auto ksize = GetInput("ksize")[0];
       Assert(IsConstantInput("ksize"), "ksize's type is not constant.");
-      // for (auto i = 0; i < ksize.shape.size(); ++ i) {
-      //   k_size_.push_back(ksize.shape[i]);
-      // }
       TryGetInputValue("ksize", &k_size_);
     } else {
       GetAttr("kernel_size", &k_size_);
@@ -275,14 +262,6 @@ void Pool2dMapper::Opset7() {
   auto input_info = GetInput("X");
   auto output_info = GetOutput("Out");
   if (in_pir_mode) {
-    /**
-// TODO: For PIR, kernel size is in inputs
-auto ksize = GetInput("ksize")[0];
-for (auto i = 0; i < ksize.shape.size(); ++ i) {
-k_size_.push_back(ksize.shape[i]);
-}
-*/
-    // k_size_ = GetInputAttrVar("ksize", "value");
     if (convert_pir_op_name(OpType()) != "max_pool2d_with_index")
       TryGetInputValue("ksize", &k_size_);
     else

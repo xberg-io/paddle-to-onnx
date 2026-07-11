@@ -59,7 +59,6 @@ class TestMaxpool2dConvert(OPConvertAutoScanTest):
         dtype = draw(st.sampled_from(["float32", "float64"]))
         data_format = draw(st.sampled_from(["NCHW"]))
 
-        # max_pool2d_with_index
         return_mask = draw(st.booleans())
         return_mask = False
         ceil_mode = draw(st.booleans())

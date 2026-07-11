@@ -34,7 +34,6 @@ opset_version_map = {
     "reduce_min": [12, 13, 18],
     "reduce_mean": [11, 13, 18],
     "reduce_sum": [13, 18],
-    # "reduce_prod": [11, 18],
     "reduce_prod": [11],
 }
 
@@ -78,10 +77,8 @@ class TestReduceAllConvert(OPConvertAutoScanTest):
             axes = []
             for i in range(lenSize):
                 axes.append(random.choice([i, i - len(input_shape)]))
-            # paddle.max/min has a bug when aixs < 0
             axes = [axis + len(input_shape) if axis < 0 else axis for i, axis in enumerate(axes)]
         keep_dim = draw(st.booleans())
-        # Must be int64, otherwise cast will be added after const and the value cannot be obtained
         axis_dtype = draw(st.sampled_from(["int64"]))
         config = {
             "op_names": ["reduce_max"],

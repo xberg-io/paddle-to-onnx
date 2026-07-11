@@ -53,9 +53,8 @@ def compare_programs(original_program, new_program):
 def save_program(program, new_model_file_path):
     place = paddle.CPUPlace()
     exe = paddle.static.Executor(place)
-    # Find feed and fetch operations
     feed, fetch = [], []
-    # TODO(wangmingkai02): need double check it
+    # ~keep TODO(wangmingkai02): double-check feed/fetch extraction.
     for op in program.global_block().ops:
         if op.name() == "pd_op.feed":
             feed.extend(op.results())
@@ -89,7 +88,7 @@ def decompose_program(model_filename):
     )
     model = paddle.jit.load(model_file_path)
     new_program = model.program().clone()
-    with decomp.prim_guard():  # pyrefly: ignore[bad-context-manager]  # untyped paddle context manager
+    with decomp.prim_guard():
         decomp.decompose_dist_program(new_program)
 
     if compare_programs(model.program(), new_program):
@@ -101,7 +100,6 @@ def decompose_program(model_filename):
 
 
 def get_old_ir_guard():
-    # For old version of PaddlePaddle, do nothing guard is returned.
     @contextmanager
     def dummy_guard():
         yield
@@ -133,7 +131,6 @@ def export(
     optimize_tool="polygraphy",
 ):
     global PADDLE2ONNX_EXPORT_TEMP_DIR
-    # check model_filename
     assert os.path.exists(model_filename), f"Model file {model_filename} does not exist."
     if not os.path.exists(params_filename):
         logging.warning(
@@ -143,7 +140,6 @@ def export(
 
     try:
         if model_filename.endswith(".pdmodel"):
-            # translate old ir program to pir program
             logging.warning(
                 "The .pdmodel file is deprecated in paddlepaddle 3.0"
                 + " and will be removed in the future."
@@ -165,9 +161,8 @@ def export(
                 if verbose:
                     logging.info("The original inference program is:\n")
                     logging.info(f"{inference_program}\n\n")
-                # pyrefly: ignore[missing-attribute]  # untyped paddle load_inference_model return
                 program = paddle.pir.translate_to_pir(inference_program.desc)
-                # TODO(wangmingkai02): Do we need to call load_parameter(program) here?
+                # ~keep TODO(wangmingkai02): verify whether load_parameter(program) is required here.
                 load_parameter(program)
                 save_program(program, new_model_file_path)
                 params_filename = new_params_file_name
@@ -190,7 +185,7 @@ def export(
         if paddle.get_flags("FLAGS_enable_pir_api")["FLAGS_enable_pir_api"] and dist_prim_all and auto_upgrade_opset:
             if verbose:
                 logging.info("Try to decompose program ...")
-            # TODO(wangmingkai02): Do we need to update params_filename here?
+            # ~keep TODO(wangmingkai02): verify whether params_filename must be updated here.
             model_filename = decompose_program(model_filename)
             if verbose:
                 logging.info("Complete the decomposition of combined operators.")
@@ -253,27 +248,6 @@ def export(
             PADDLE2ONNX_EXPORT_TEMP_DIR = None
 
     if save_file is not None:
-        # if optimize_tool == "onnxsim":
-        #     try:
-        #         logging.info(
-        #             "Try to perform optimization on the ONNX model with Onnx Simplifier."
-        #         )
-        #         import io
-        #         import onnx
-        #         from onnxsim import simplify
-        #         model_stream = io.BytesIO(onnx_model_str)
-        #         onnx_model = onnx.load_model(model_stream)
-        #         simplified_model, check = simplify(onnx_model)
-        #         if check:
-        #             onnx.save(simplified_model, save_file)
-        #         else:
-        #             logging.warning(f"Fail to simplify onnx model. Skip simplifying.")
-        #     except Exception as error:
-        #         logging.warning(
-        #             f"Fail to simplify onnx model with error: {error}. Skip simplifying."
-        #         )
-        #         with open(save_file, "wb") as f:
-        #             f.write(onnx_model_str)
         if optimize_tool == "onnxoptimizer":
             try:
                 logging.info("Try to perform optimization on the ONNX model with onnxoptimizer.")
@@ -286,7 +260,6 @@ def export(
                 onnx_model = onnx.load_model(model_stream)
                 passes = [
                     "eliminate_deadend",
-                    # "eliminate_identity", # some identity is useful in while block
                     "extract_constant_to_initializer",
                     "eliminate_unused_initializer",
                     "eliminate_duplicate_initializer",
@@ -306,9 +279,7 @@ def export(
                 import io
 
                 import onnx
-
-                # polygraphy ships no type stubs
-                from polygraphy.backend.onnx import fold_constants  # pyrefly: ignore[missing-module-attribute]
+                from polygraphy.backend.onnx import fold_constants
 
                 model_stream = io.BytesIO(onnx_model_str)
                 onnx_model = onnx.load_model(model_stream)

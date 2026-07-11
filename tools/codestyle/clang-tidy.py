@@ -86,18 +86,16 @@ def analysis_gitignore(path, filename=".gitignore"):
         lines = f.readlines()
         ignore_file_list = []
         for line in lines:
-            # Blank row
             if line == "\n" or line == "\r\n":
                 continue
 
-            # explanatory note
             line = line.replace("\n", "").strip()
             if "#" in line:
                 if not line.startswith("#"):
                     ignore_file_list.append(line[: line.index("#")].replace(" ", ""))
                 continue
 
-            # TODO(gouzil): support more gitignore rules
+            # ~keep TODO(gouzil): support more gitignore rules.
             if "*" in line:
                 continue
 
@@ -145,8 +143,6 @@ def get_tidy_invocation(
         start.append("-checks=" + checks)
     if tmpdir is not None:
         start.append("-export-fixes")
-        # Get a temporary file. We immediately close the handle so clang-tidy can
-        # overwrite it.
         (handle, name) = tempfile.mkstemp(suffix=".yaml", dir=tmpdir)
         os.close(handle)
         start.append(name)
@@ -165,26 +161,19 @@ def get_tidy_invocation(
 
 def merge_replacement_files(tmpdir, mergefile):
     """Merge all replacement files in a directory into a single file"""
-    # The fixes suggested by clang-tidy >= 4.0.0 are given under
-    # the top level key 'Diagnostics' in the output yaml files
     mergekey = "Diagnostics"
     merged = []
     for replacefile in glob.iglob(os.path.join(tmpdir, "*.yaml")):
         content = yaml.safe_load(open(replacefile))
         if not content:
-            continue  # Skip empty files.
+            continue
         merged.extend(content.get(mergekey, []))
 
     if merged:
-        # MainSourceFile: The key is required by the definition inside
-        # include/clang/Tooling/ReplacementsYaml.h, but the value
-        # is actually never used inside clang-apply-replacements,
-        # so we set it to '' here.
         output = {"MainSourceFile": "", mergekey: merged}
         with open(mergefile, "w") as out:
             yaml.safe_dump(output, out)
     else:
-        # Empty the file:
         open(mergefile, "w").close()
 
 
@@ -345,7 +334,6 @@ def main():
             print(f"Warning: could not find compilation database in {build_path}, skip clang-tidy check.")
             build_path = None
     else:
-        # Find our database
         build_path = find_compilation_database(db_path)
     if build_path is None:
         sys.exit(0)
@@ -357,7 +345,6 @@ def main():
             invocation.append("-checks=" + args.checks)
         invocation.append("-")
         if args.quiet:
-            # Even with -quiet we still want to check if we can call clang-tidy.
             with open(os.devnull, "w") as dev_null:
                 subprocess.check_call(invocation, stdout=dev_null)
         else:
@@ -366,7 +353,6 @@ def main():
         print("Unable to run clang-tidy.", file=sys.stderr)
         sys.exit(0)
 
-    # Load the database and extract all files.
     database = json.load(open(os.path.join(build_path, db_path)))
     database = skip_check_file(database, build_path)
     files = {make_absolute(entry["file"], entry["directory"]) for entry in database}
@@ -380,14 +366,11 @@ def main():
         check_clang_apply_replacements_binary(args)
         tmpdir = tempfile.mkdtemp()
 
-    # Build up a big regexy filter from all command line arguments.
     file_name_re = re.compile("|".join(args.files))
 
     return_code = 0
     try:
-        # Spin up a bunch of tidy-launching threads.
         task_queue = queue.Queue(max_task)
-        # List of files with a non-zero return code.
         failed_files = []
         lock = threading.Lock()
         for _ in range(max_task):
@@ -398,19 +381,15 @@ def main():
             t.daemon = True
             t.start()
 
-        # Fill the queue with files.
         for name in files:
             if file_name_re.search(name):
                 task_queue.put(name)
 
-        # Wait for all threads to be done.
         task_queue.join()
         if len(failed_files):
             return_code = 1
 
     except KeyboardInterrupt:
-        # This is a sad hack. Unfortunately subprocess goes
-        # bonkers with ctrl-c and we start forking merrily.
         print("\nCtrl-C detected, goodbye.")
         if tmpdir:
             shutil.rmtree(tmpdir)

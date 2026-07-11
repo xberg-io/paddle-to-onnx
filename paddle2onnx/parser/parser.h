@@ -24,17 +24,14 @@
 namespace paddle2onnx {
 class PaddleParser {
 public:
-  // recording variable name:id for each block of a program
   std::vector<std::map<std::string, int32_t>> _blocks_var_name2id;
-  // recoring set of operators for each block
   std::vector<std::vector<const paddle2onnx::framework::proto::OpDesc *>>
       _blocks_ops;
   std::shared_ptr<paddle2onnx::framework::proto::ProgramDesc> prog;
   std::map<std::string, Weight> params;
   std::vector<TensorInfo> inputs;
   std::vector<TensorInfo> outputs;
-  bool is_quantized_model = false; // If the Paddle model is a quantized model,
-  // set is_quantized_model to be true
+  bool is_quantized_model = false;
 
   bool Init(const std::string &_model, const std::string &_params = "");
   bool Init(const void *model_buffer, int64_t model_size,
@@ -97,8 +94,6 @@ public:
                         const std::string &name, std::vector<T> *res) const;
 
 private:
-  // If the model has same output name in difference operators
-  // will fail to convert
   bool IsAttrVar(const paddle2onnx::framework::proto::OpDesc &op,
                  const int64_t &attr_id) const;
   bool ExistsDumplicateTensorName() const;
@@ -115,9 +110,6 @@ private:
   bool LoadParamsFromMemoryBuffer(const std::string &buffer);
   bool LoadParamsFromMemoryBuffer(const void *params_buffer,
                                   int64_t params_size);
-  // This is a trick flag
-  // While there's a nms operator in paddle model,
-  // the shape inference of paddle is not correct
   bool _has_nms = false;
   std::vector<std::map<std::string, int64_t>> _constant_ops;
 };

@@ -61,7 +61,6 @@ class TestMaxpool1dConvert(OPConvertAutoScanTest):
     def sample_convert_config(self, draw):
         input_shape = draw(st.lists(st.integers(min_value=10, max_value=20), min_size=3, max_size=3))
 
-        # input_shape = [3, 1, 10]
         dtype = draw(st.sampled_from(["float32", "float64"]))
 
         return_mask = draw(st.booleans())
@@ -155,7 +154,6 @@ class TestMaxpool2dConvert(OPConvertAutoScanTest):
         dtype = draw(st.sampled_from(["float32", "float64"]))
         data_format = draw(st.sampled_from(["NCHW"]))
 
-        # max_pool2d_with_index
         return_mask = draw(st.booleans())
 
         ceil_mode = draw(st.booleans())
@@ -277,7 +275,7 @@ class NetMaxpool3d(BaseNet):
         return x
 
 
-## TODO max_pool3d_with_index not support yet
+# ~keep TODO: max_pool3d_with_index is not supported yet.
 class TestMaxpool3dConvert(OPConvertAutoScanTest):
     """
     api: paddle.nn.functional.max_pool3d

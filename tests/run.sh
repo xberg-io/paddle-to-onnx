@@ -24,7 +24,6 @@ ignore="test_auto_scan_multiclass_nms.py
         test_resnet_fp16.py"
 bug=0
 
-# Install Python dependencies
 export PY_CMD=$1
 $PY_CMD -m pip install pytest onnx onnxruntime hypothesis
 $PY_CMD -m pip install paddlepaddle -i https://www.paddlepaddle.org.cn/packages/nightly/cpu/
@@ -32,14 +31,13 @@ $PY_CMD -m pip install paddlepaddle -i https://www.paddlepaddle.org.cn/packages/
 export ENABLE_DEV=ON
 echo "============ failed cases =============" >>result.txt
 for file in ${cases}; do
-	echo ${file}
+	echo "${file}"
 	if [[ ${ignore} =~ ${file##*/} ]]; then
 		echo "skipping ${file##*/}"
 	else
-		$PY_CMD -m pytest ${file}
-		if [ $? -ne 0 ]; then
-			echo ${file} >>result.txt
-			bug=$(expr ${bug} + 1)
+		if ! $PY_CMD -m pytest "${file}"; then
+			echo "${file}" >>result.txt
+			bug=$((bug + 1))
 		fi
 	fi
 done

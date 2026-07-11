@@ -33,9 +33,6 @@ public:
   SplitMapper(const PaddlePirParser &p, OnnxHelper *helper, int64_t i, bool c)
       : Mapper(p, helper, i, c) {
     in_pir_mode = true;
-    // GetAttr("axis", &axis_);
-    // GetAttr("sections", &sections_);
-    // GetAttr("num", &num_);
   }
 
   int32_t GetMinOpsetVersion(bool verbose) override;

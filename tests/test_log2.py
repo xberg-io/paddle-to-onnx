@@ -39,7 +39,6 @@ def test_log2_7():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "log2", [7])
     obj.set_input_data(
         "input_data",
@@ -55,7 +54,6 @@ def test_log2_10():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "log2", [10])
     obj.set_input_data(
         "input_data",
@@ -71,7 +69,6 @@ def test_log2_11():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "log2", [11])
     obj.set_input_data(
         "input_data",
@@ -87,7 +84,6 @@ def test_log2_12():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "log2", [12])
     obj.set_input_data(
         "input_data",

@@ -27,7 +27,6 @@ if ! [[ $(python -V 2>&1 | awk '{print $2}' | awk -F '.' '{print $1$2}') -ge 36 
 fi
 
 if ! [[ $version == *"$VERSION"* ]]; then
-	# low version of pip may not have the source of clang-format whl
 	pip install --upgrade pip
 	pip install clang-format==13.0.0
 fi

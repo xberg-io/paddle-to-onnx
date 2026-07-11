@@ -52,20 +52,6 @@ def arg_parser():
         default=9,
         help="set onnx opset version to export",
     )
-    # parser.add_argument(
-    #     "--deploy_backend",
-    #     "-d",
-    #     type=str,
-    #     default="onnxruntime",
-    #     choices=["onnxruntime", "tensorrt", "rknn", "others"],
-    #     help="Quantize model deploy backend, default onnxruntime.",
-    # )
-    # parser.add_argument(
-    #     "--save_calibration_file",
-    #     type=str,
-    #     default="calibration.cache",
-    #     help="The calibration cache for TensorRT deploy, default calibration.cache.",
-    # )
     parser.add_argument(
         "--enable_auto_update_opset",
         type=ast.literal_eval,
@@ -84,30 +70,6 @@ def arg_parser():
         default=False,
         help="Whether to enable the decomposition of combined operators, default is False.",
     )
-    # parser.add_argument(
-    #     "--external_filename",
-    #     type=str,
-    #     default=None,
-    #     help="The filename of external_data when the model is bigger than 2G.",
-    # )
-    # parser.add_argument(
-    #     "--export_fp16_model",
-    #     type=ast.literal_eval,
-    #     default=False,
-    #     help="Whether export FP16 model for ORT-GPU, default False",
-    # )
-    # parser.add_argument(
-    #     "--custom_ops",
-    #     type=str,
-    #     default="{}",
-    #     help='Ops that needs to be converted to custom op, e.g --custom_ops \'{"paddle_op":"onnx_op"}\', default {}',
-    # )
-    # parser.add_argument(
-    #     "--enable_optimization",
-    #     type=ast.literal_eval,
-    #     default=True,
-    #     help="whether enable onnx optimization, default True",
-    # )
     parser.add_argument(
         "--optimize_tool",
         type=str,
@@ -154,14 +116,9 @@ def main():
     else:
         params_file = os.path.join(args.model_dir, args.params_filename)
 
-    # if args.external_filename is None:
-    #     args.external_filename = "external_data"
-
     base_path = os.path.dirname(args.save_file)
     if base_path and not os.path.exists(base_path):
         os.mkdir(base_path)
-    # external_file = os.path.join(base_path, args.external_filename)
-    # custom_ops_dict = eval(args.custom_ops)
     paddle2onnx.export(
         model_filename=model_file,
         params_filename=params_file,

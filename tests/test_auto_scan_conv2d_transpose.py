@@ -90,8 +90,6 @@ class TestConv2dTransposeConvert(OPConvertAutoScanTest):
             stride_1 = strides[0]
             stride_2 = strides[1]
 
-        # ORT have bug in SAME and Valid
-        # padding_type = draw(st.sampled_from(["str", "list", "int", "tuple"]))
         padding_type = draw(st.sampled_from(["list", "int", "tuple"]))
         padding = None
         if padding_type == "str":

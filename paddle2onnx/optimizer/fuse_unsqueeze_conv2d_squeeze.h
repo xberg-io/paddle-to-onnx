@@ -18,14 +18,6 @@
 
 #pragma once
 
-// Before:
-//   X = Tensor(N, C, H)
-//   B = Unsqueeze(X, 2)
-//   C = Conv2d(B)
-//   D = Squeeze(C, 2)
-// After:
-//   D = Conv1d(X)
-
 #include <numeric>
 
 #include "onnx/defs/tensor_util.h"
@@ -75,10 +67,8 @@ struct FuseUnsqueezeConv2dSqueeze final : public PredicateBasedPass {
     {
       std::vector<int64_t> axes;
       if (squeeze_node->hasAttribute(kaxes)) {
-        // opset 12 and below
         axes = squeeze_node->is(kaxes);
       } else {
-        // opset 13 and above
         if (squeeze_node->inputs()[1]->node()->kind() != kConstant) {
           return false;
         }
@@ -95,10 +85,8 @@ struct FuseUnsqueezeConv2dSqueeze final : public PredicateBasedPass {
     {
       std::vector<int64_t> axes;
       if (unsqueeze_node->hasAttribute(kaxes)) {
-        // opset 12 and below
         axes = unsqueeze_node->is(kaxes);
       } else {
-        // opset 13 and above
         if (unsqueeze_node->inputs()[1]->node()->kind() != kConstant) {
           return false;
         }
@@ -112,7 +100,6 @@ struct FuseUnsqueezeConv2dSqueeze final : public PredicateBasedPass {
         return false;
       }
     }
-    // update conv weight
     weight.sizes().erase(weight.sizes().begin() + 2);
     weight_node->t_(kvalue, std::move(weight));
 
@@ -153,9 +140,6 @@ struct FuseUnsqueezeConv2dSqueeze final : public PredicateBasedPass {
     conv_node->replaceInput(0, unsqueeze_node->inputs()[0]);
     unsqueeze_node->output()->replaceAllUsesWith(unsqueeze_node->inputs()[0]);
     squeeze_node->output()->replaceAllUsesWith(squeeze_node->inputs()[0]);
-    //    unsqueeze_node->destroy();
-    //    squeeze_node->destroy();
-    //    destroy_current = NodeDestroyType::DestroyZero;
     return true;
   }
 };

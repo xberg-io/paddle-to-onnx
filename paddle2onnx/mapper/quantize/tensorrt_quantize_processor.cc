@@ -15,14 +15,9 @@
 #include "paddle2onnx/mapper/quantize/tensorrt_quantize_processor.h"
 
 namespace paddle2onnx {
-// In TensorRT, all quantized op: Conv, ConvTranspose, liner(MatMul), MaxPool,
-// AvgPool, AdaptiveAvgPool, rnn(not support now)
-// According to:
-// https://github.com/NVIDIA/TensorRT/tree/main/tools/pytorch-quantization/pytorch_quantization/nn/modules
 void TensorRTQuantizeProcessor::AddQDQ() {
   BaseQuantizeProcessor::AddQDQ();
-  std::vector<std::string>
-      quantize_tensors; // save the tensor names that need add quantize ops
+  std::vector<std::string> quantize_tensors;
   std::vector<std::string> pool_types = {"MaxPool", "AvgPool",
                                          "AdaptiveAvgPool"};
   for (auto iter = nodes_->begin(); iter < nodes_->end(); iter++) {
@@ -97,7 +92,6 @@ void TensorRTQuantizeProcessor::AddQDQ() {
           << std::endl;
       continue;
     }
-    // An OP requires a separate quantize op
     for (std::string &name : quantize_tensors) {
       if (IsGraphOutput(name)) {
         continue;
@@ -159,25 +153,9 @@ void TensorRTQuantizeProcessor::ProcessQuantizeModel(
   BaseQuantizeProcessor::ProcessQuantizeModel(
       parameters, inputs, outputs, nodes, helper, parser, calibration_cache);
 
-  // When deploy_backend is TensorRT, use the follow four steps to process:
-  // For Explicit Quantization
-  // 1. broadcast quantize info
-  // 2. remove all quantize ops
-  // 3. add Q and DQ before conv and matmul.
-  // 4. use topo sort in nodes
-
-  // For Implicit Quantization
-  // 1. remove all quantize ops
-  // 2. broadcast quantize info
-  // 3. save float onnx model and alibration.cache
   QuantizeInfoBroadcast();
   RemoveAllQuantizeOps();
-  // Add qdq for Explicit Quantization
-  // AddTrtQDQ();
-  // SortNodes();
 
-  // Genarate calibration.cache for Implicit Quantization
-  // convert float to hex
   GenerateCache(calibration_cache);
 }
 } // namespace paddle2onnx

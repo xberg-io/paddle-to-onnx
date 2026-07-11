@@ -19,8 +19,6 @@
 
 #include "paddle2onnx/parser/pir_parser.h"
 #include "paddle2onnx/utils/utils.h"
-// This code is modified from
-// https://blog.csdn.net/ZJU_fish1996/article/details/86515711
 namespace paddle2onnx {
 class Mapper;
 class PaddleParser;

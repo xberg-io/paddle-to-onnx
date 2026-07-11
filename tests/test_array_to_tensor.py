@@ -36,9 +36,7 @@ class BaseNet(paddle.nn.Layer):
         output, output_index = paddle.tensor.manipulation.tensor_array_to_tensor(
             input=array, axis=self.axis, use_stack=self.use_stack
         )
-        output_index = output_index.astype(
-            "int64"
-        )  # if not cast, the dtype of output_index is int32 in static graph but int64 in dynamic graph
+        output_index = output_index.astype("int64")
         return output, output_index
 
 

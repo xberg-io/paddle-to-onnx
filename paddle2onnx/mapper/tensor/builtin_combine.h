@@ -20,7 +20,6 @@
 
 namespace paddle2onnx {
 
-// PIR builtin.combine operation
 class BuiltinCombineMapper : public Mapper {
 public:
   BuiltinCombineMapper(const PaddlePirParser &p, OnnxHelper *helper,

@@ -18,13 +18,6 @@
 
 #pragma once
 
-// Before:
-//   X = Constant() all elements equal to 1, shape is () or (1,)
-//   Y = Tensor()
-//   C = X * Y
-// After:
-//   C = Identity(Y)
-
 #include "onnx/defs/tensor_util.h"
 #include "onnxoptimizer/pass.h"
 #include <cmath>

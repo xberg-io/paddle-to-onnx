@@ -40,7 +40,6 @@ def test_shape_9():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "shape", [9])
     obj.set_input_data(
         "input_data",
@@ -57,7 +56,6 @@ def test_shape_10():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "shape", [10])
     obj.set_input_data(
         "input_data",
@@ -74,7 +72,6 @@ def test_shape_11():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "shape", [11])
     obj.set_input_data(
         "input_data",
@@ -91,7 +88,6 @@ def test_shape_12():
     """
     op = Net()
     op.eval()
-    # net, name, ver_list, delta=1e-6, rtol=1e-5
     obj = APIOnnx(op, "shape", [12])
     obj.set_input_data(
         "input_data",

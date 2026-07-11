@@ -66,7 +66,6 @@ class Net(BaseNet):
         mode = self.config["mode"]
         align_corners = self.config["align_corners"]
         data_format = self.config["data_format"]
-        # align_corners True is only set with the interpolating modes: linear | bilinear | bicubic | trilinear
         if mode == "nearest":
             align_corners = False
         return paddle.nn.functional.interpolate(
@@ -92,11 +91,6 @@ class TestInterpolateConvert(OPConvertAutoScanTest):
         dtype = draw(st.sampled_from(["float32"]))
         size_dtype = draw(st.sampled_from(["int32", "int64"]))
         scale_dtype = draw(st.sampled_from(["float32", "float64"]))
-        # mode = draw(st.sampled_from(["linear"]))
-        # mode = draw(st.sampled_from(["nearest"]))
-        # mode = draw(st.sampled_from(["bilinear"]))
-        # mode = draw(st.sampled_from(["bicubic"]))
-        # mode = draw(st.sampled_from(["trilinear"]))
         mode = draw(st.sampled_from(["linear", "nearest", "bilinear", "bicubic", "trilinear"]))
         align_corners = draw(st.booleans())
         align_mode = draw(st.integers(min_value=0, max_value=1))
@@ -104,7 +98,7 @@ class TestInterpolateConvert(OPConvertAutoScanTest):
         if data_format == "NCW":
             num = 1
             input_shape = np.random.choice(input_shape, 3)
-            input_shape[0] = 1  # there is a bug when index > 1
+            input_shape[0] = 1
         elif data_format == "NCHW":
             num = 2
             input_shape = np.random.choice(input_shape, 4)
@@ -117,10 +111,8 @@ class TestInterpolateConvert(OPConvertAutoScanTest):
         if draw(st.booleans()):
             size = None
             if draw(st.booleans()):
-                # float
                 scale_factor = draw(st.floats(min_value=1.2, max_value=2.0))
             else:
-                # list
                 is_scale_tensor = draw(st.booleans())
                 scale_factor = draw(
                     st.lists(
@@ -131,7 +123,6 @@ class TestInterpolateConvert(OPConvertAutoScanTest):
                 )
         else:
             scale_factor = None
-            # list
             is_size_tensor = draw(st.booleans())
             size = draw(st.lists(st.integers(min_value=12, max_value=30), min_size=num, max_size=num))
 
@@ -192,7 +183,6 @@ class Net1(BaseNet):
         align_mode = self.config["align_mode"]
         align_corners = self.config["align_corners"]
         data_format = self.config["data_format"]
-        # align_corners True is only set with the interpolating modes: linear | bilinear | bicubic | trilinear
         if mode == "nearest":
             align_corners = False
         return paddle.nn.functional.interpolate(
@@ -218,11 +208,6 @@ class TestInterpolateConvert1(OPConvertAutoScanTest):
         dtype = draw(st.sampled_from(["float32"]))
         size_dtype = draw(st.sampled_from(["int32", "int64"]))
         scale_dtype = draw(st.sampled_from(["float32", "float64"]))
-        # mode = draw(st.sampled_from(["linear"]))
-        # mode = draw(st.sampled_from(["nearest"]))
-        # mode = draw(st.sampled_from(["bilinear"]))
-        # mode = draw(st.sampled_from(["bicubic"]))
-        # mode = draw(st.sampled_from(["trilinear"]))
         mode = draw(st.sampled_from(["linear", "nearest", "bilinear", "bicubic", "trilinear"]))
         align_corners = draw(st.booleans())
         align_mode = draw(st.integers(min_value=0, max_value=1))
@@ -230,7 +215,7 @@ class TestInterpolateConvert1(OPConvertAutoScanTest):
         if data_format == "NCW":
             num = 1
             input_shape = np.random.choice(input_shape, 3)
-            input_shape[0] = 1  # there is a bug when index > 1
+            input_shape[0] = 1
         elif data_format == "NCHW":
             num = 2
             input_shape = np.random.choice(input_shape, 4)
@@ -243,10 +228,8 @@ class TestInterpolateConvert1(OPConvertAutoScanTest):
         if draw(st.booleans()):
             size = None
             if draw(st.booleans()):
-                # float
                 scale_factor = draw(st.floats(min_value=1.2, max_value=2.0))
             else:
-                # list
                 is_scale_tensor = draw(st.booleans())
                 scale_factor = draw(
                     st.lists(
@@ -257,7 +240,6 @@ class TestInterpolateConvert1(OPConvertAutoScanTest):
                 )
         else:
             scale_factor = None
-            # list
             is_size_tensor = draw(st.booleans())
             size = draw(st.lists(st.integers(min_value=12, max_value=30), min_size=num, max_size=num))
 

@@ -87,7 +87,6 @@ void InterpolateMapper::Opset11() {
   } else if (has_scale_tensor) {
     scale = ComputeScale();
   } else {
-    // get size or scale from attribute
     if (out_d_ > 0 || out_w_ > 0 || out_h_ > 0) {
       std::vector<int64_t> out_size;
       if (x_info[0].Rank() == 5) {
@@ -121,7 +120,6 @@ void InterpolateMapper::Opset11() {
   std::string roi = helper_->Constant(ONNX_NAMESPACE::TensorProto::FLOAT,
                                       std::vector<float>());
   if (scale == "") {
-    // has to generate a empty tensor for resize
     scale = helper_->Constant(ONNX_NAMESPACE::TensorProto::FLOAT,
                               std::vector<float>());
   }

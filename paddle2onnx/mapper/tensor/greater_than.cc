@@ -19,7 +19,6 @@ REGISTER_MAPPER(greater_than, GreaterThanMapper)
 REGISTER_PIR_MAPPER(greater_than, GreaterThanMapper)
 
 int32_t GreaterThanMapper::GetMinOpsetVersion(bool verbose) {
-  // NHWC is not supported
   auto x_info = GetInput("X");
   auto y_info = GetInput("Y");
 

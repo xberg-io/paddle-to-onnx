@@ -47,8 +47,6 @@ from pathlib import Path
 import onnx
 from huggingface_hub import HfApi, get_token
 
-# tools/ is not an installed package; make sibling modules importable when this
-# script is run directly (as the Taskfile and CI do).
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from export_hf_models import MODELS
 
@@ -189,7 +187,6 @@ def main() -> None:
                     logger.info("  %s", path.relative_to(staging))
             return
 
-        # Prefer an explicit token, then HF_TOKEN, then the cached `hf auth login` token.
         token = args.token or os.environ.get("HF_TOKEN") or get_token()
         if not token:
             logger.error("No HF token: pass --token, set HF_TOKEN, or run `hf auth login`")
