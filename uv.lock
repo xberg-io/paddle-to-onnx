@@ -724,6 +724,7 @@ dependencies = [
     { name = "onnxruntime", version = "1.27.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "paddlepaddle" },
     { name = "polygraphy" },
+    { name = "pyyaml" },
 ]
 
 [package.dev-dependencies]
@@ -747,6 +748,7 @@ requires-dist = [
     { name = "onnxruntime", specifier = ">=1.24.3" },
     { name = "paddlepaddle", specifier = ">=3.3,<4" },
     { name = "polygraphy", specifier = ">=0.49.20,<1" },
+    { name = "pyyaml", specifier = ">=6" },
 ]
 
 [package.metadata.requires-dev]

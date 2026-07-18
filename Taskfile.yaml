@@ -36,12 +36,32 @@ tasks:
       - mkdir -p "{{.EXPORT_DIR}}"
       - uv run python tools/export_hf_models.py --all --output-dir "{{.EXPORT_DIR}}"
 
+  export:v6:
+    desc: "Export the PP-OCRv6 models (medium/small/tiny det+rec) to ONNX"
+    deps: [build]
+    cmds:
+      - mkdir -p "{{.EXPORT_DIR}}"
+      - >-
+        uv run python tools/export_hf_models.py
+        --models PP-OCRv6_medium_det,PP-OCRv6_small_det,PP-OCRv6_tiny_det,PP-OCRv6_medium_rec,PP-OCRv6_small_rec,PP-OCRv6_tiny_rec
+        --output-dir "{{.EXPORT_DIR}}"
+
   export:
     desc: "Export a specific model (usage: task export -- ModelName)"
     deps: [build]
     cmds:
       - mkdir -p "{{.EXPORT_DIR}}"
       - uv run python tools/export_hf_models.py --model "{{.CLI_ARGS}}" --output-dir "{{.EXPORT_DIR}}"
+
+  upload:v6:
+    desc: "Upload exported PP-OCRv6 models to xberg-io/paddleocr-onnx-models (needs HF_TOKEN)"
+    cmds:
+      - uv run python tools/upload_hf_models.py --export-dir "{{.EXPORT_DIR}}" --generation v6
+
+  upload:
+    desc: "Upload all exported models with an upload_path to the HF repo (needs HF_TOKEN)"
+    cmds:
+      - uv run python tools/upload_hf_models.py --export-dir "{{.EXPORT_DIR}}"
 
   lint:
     desc: "Run all linters via poly"
