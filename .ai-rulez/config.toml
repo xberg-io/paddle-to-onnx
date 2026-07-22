@@ -6,12 +6,13 @@ gitignore = true
 presets = ["claude", "codex"]
 builtins = ['python', 'default-commands']
 
+compact = true
 [header]
 style = 'minimal'
 
 [[includes]]
 name = 'xberg-core'
-source = 'https://github.com/xberg-io/ai-rulez.git'
+source = 'https://github.com/xberg-io/agent-conventions.git'
 path = 'modules/core'
 merge_strategy = 'local-override'
 
