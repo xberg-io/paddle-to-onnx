@@ -46,6 +46,8 @@ tools/onnx/__pycache__*
 .gemini/
 GEMINI.md
 
+poly.local.toml
+
 # BEGIN ai-rulez (DO NOT EDIT - managed by ai-rulez)
 .ai-rulez/.generated-manifest.json
 .claude/
@@ -53,4 +55,3 @@ GEMINI.md
 AGENTS.md
 CLAUDE.md
 # END ai-rulez
-poly.local.toml
