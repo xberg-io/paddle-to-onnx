@@ -1,6 +1,27 @@
 {
   "version": "1",
   "files": [
+    ".agents/skills/agent-coordination/SKILL.md",
+    ".agents/skills/alef-workflow/SKILL.md",
+    ".agents/skills/basemind-tools/SKILL.md",
+    ".agents/skills/binding-architecture/SKILL.md",
+    ".agents/skills/code-quality-standards/SKILL.md",
+    ".agents/skills/common-task-commands/SKILL.md",
+    ".agents/skills/dependency-awareness/SKILL.md",
+    ".agents/skills/error-handling/SKILL.md",
+    ".agents/skills/feature-flag-conventions/SKILL.md",
+    ".agents/skills/incremental-approach/SKILL.md",
+    ".agents/skills/owasp-quick-reference/SKILL.md",
+    ".agents/skills/poly-lint-format/SKILL.md",
+    ".agents/skills/python-conventions/SKILL.md",
+    ".agents/skills/quick-start/SKILL.md",
+    ".agents/skills/release-workflow/SKILL.md",
+    ".agents/skills/task-runner/SKILL.md",
+    ".agents/skills/taskfile-structure/SKILL.md",
+    ".agents/skills/tdd-workflow/SKILL.md",
+    ".agents/skills/testing-conventions/SKILL.md",
+    ".agents/skills/tracing-conventions/SKILL.md",
+    ".agents/skills/xberg-brand-and-docs/SKILL.md",
     ".claude/agents/code-reviewer.md",
     ".claude/agents/docs-writer.md",
     ".claude/agents/ffi-engineer.md",
@@ -9,12 +30,16 @@
     ".claude/agents/rust-core-engineer.md",
     ".claude/agents/security-auditor.md",
     ".claude/agents/test-writer.md",
-    ".claude/plugins.json",
+    ".claude/skills/agent-coordination/SKILL.md",
     ".claude/skills/alef-workflow/SKILL.md",
     ".claude/skills/basemind-tools/SKILL.md",
     ".claude/skills/binding-architecture/SKILL.md",
+    ".claude/skills/code-quality-standards/SKILL.md",
     ".claude/skills/common-task-commands/SKILL.md",
     ".claude/skills/dependency-awareness/SKILL.md",
+    ".claude/skills/error-handling/SKILL.md",
+    ".claude/skills/feature-flag-conventions/SKILL.md",
+    ".claude/skills/incremental-approach/SKILL.md",
     ".claude/skills/iterate/SKILL.md",
     ".claude/skills/owasp-quick-reference/SKILL.md",
     ".claude/skills/parallelize/SKILL.md",
@@ -22,7 +47,11 @@
     ".claude/skills/python-conventions/SKILL.md",
     ".claude/skills/quick-start/SKILL.md",
     ".claude/skills/release-workflow/SKILL.md",
+    ".claude/skills/task-runner/SKILL.md",
     ".claude/skills/taskfile-structure/SKILL.md",
+    ".claude/skills/tdd-workflow/SKILL.md",
+    ".claude/skills/testing-conventions/SKILL.md",
+    ".claude/skills/tracing-conventions/SKILL.md",
     ".claude/skills/xberg-brand-and-docs/SKILL.md",
     ".codex/agents/code-reviewer.toml",
     ".codex/agents/docs-writer.toml",
@@ -32,22 +61,61 @@
     ".codex/agents/rust-core-engineer.toml",
     ".codex/agents/security-auditor.toml",
     ".codex/agents/test-writer.toml",
-    ".codex/commands/iterate.md",
-    ".codex/commands/parallelize.md",
-    ".codex/plugins.json",
-    ".codex/skills/alef-workflow/SKILL.md",
-    ".codex/skills/basemind-tools/SKILL.md",
-    ".codex/skills/binding-architecture/SKILL.md",
-    ".codex/skills/common-task-commands/SKILL.md",
-    ".codex/skills/dependency-awareness/SKILL.md",
-    ".codex/skills/owasp-quick-reference/SKILL.md",
-    ".codex/skills/poly-lint-format/SKILL.md",
-    ".codex/skills/python-conventions/SKILL.md",
-    ".codex/skills/quick-start/SKILL.md",
-    ".codex/skills/release-workflow/SKILL.md",
-    ".codex/skills/taskfile-structure/SKILL.md",
-    ".codex/skills/xberg-brand-and-docs/SKILL.md",
+    ".codex/config.toml",
+    ".opencode/agents/code-reviewer.md",
+    ".opencode/agents/docs-writer.md",
+    ".opencode/agents/ffi-engineer.md",
+    ".opencode/agents/performance-engineer.md",
+    ".opencode/agents/polyglot-architect.md",
+    ".opencode/agents/rust-core-engineer.md",
+    ".opencode/agents/security-auditor.md",
+    ".opencode/agents/test-writer.md",
+    ".opencode/commands/iterate.md",
+    ".opencode/commands/parallelize.md",
+    ".pi/agents/code-reviewer.md",
+    ".pi/agents/docs-writer.md",
+    ".pi/agents/ffi-engineer.md",
+    ".pi/agents/performance-engineer.md",
+    ".pi/agents/polyglot-architect.md",
+    ".pi/agents/rust-core-engineer.md",
+    ".pi/agents/security-auditor.md",
+    ".pi/agents/test-writer.md",
+    ".pi/mcp.json",
+    ".pi/prompts/iterate.md",
+    ".pi/prompts/parallelize.md",
     "AGENTS.md",
-    "CLAUDE.md"
-  ]
+    "CLAUDE.md",
+    "opencode.json"
+  ],
+  "merged": {
+    ".codex/config.toml": [],
+    ".pi/mcp.json": [],
+    "opencode.json": []
+  },
+  "servers": {
+    ".codex/config.toml": [
+      [
+        "mcp_servers",
+        "playwright"
+      ]
+    ],
+    ".mcp.json": [
+      [
+        "mcpServers",
+        "playwright"
+      ]
+    ],
+    ".pi/mcp.json": [
+      [
+        "mcpServers",
+        "playwright"
+      ]
+    ],
+    "opencode.json": [
+      [
+        "mcp",
+        "playwright"
+      ]
+    ]
+  }
 }
