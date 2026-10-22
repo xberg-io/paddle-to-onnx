@@ -61,7 +61,7 @@ Run `paddle2onnx --help` for all options.
 
 ## Changes from Upstream
 
-- Modernized tooling: `uv` for packaging, `poly` for lint/format, `pyrefly` for type checking (dropped standalone `ruff`/`mypy`)
+- Modernized tooling: `uv` for packaging, `poly` for lint/format, `pyrefly` for type checking
 - PIR-based conversion targeting PaddlePaddle 3.3+ (ONNX opset 7–25); deprecated `.pdmodel` inputs are auto-translated to PIR
 - Build fixes for current toolchains (protobuf 35, recent libc++/Xcode)
 
