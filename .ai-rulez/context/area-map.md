@@ -19,7 +19,7 @@ Internal fork of Paddle2ONNX: converts PaddlePaddle (PIR) models to ONNX through
 - `paddle2onnx/optimizer/` — ONNX graph fusion passes and fp16 conversion
 - `paddle2onnx/proto/` — protobuf schema; `patch/paddle/` — patched Paddle headers
 - `CMakeLists.txt`, `cmake/`, `setup.py`, `pyproject.toml` — native build (`task build`)
-- `tests/` — pytest op-level conversion tests (`task test`)
+- `tests/` — pytest op-level conversion tests (`task test`); match the upstream style of the file you touch (many are `OPConvertAutoScanTest` classes), not the python rule's function-based default
 - `tools/export_hf_models.py`, `tools/upload_hf_models.py` — model export and HF upload (`task export:*`, `task upload`)
 - `tools/tract_check/` — Rust loader that checks exported models resolve under tract-onnx
 - `tools/onnx/`, `tools/paddle/`, `debug/` — model inspection and pruning utilities
