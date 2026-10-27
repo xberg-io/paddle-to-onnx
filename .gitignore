@@ -53,7 +53,6 @@ poly.local.toml
 
 # BEGIN ai-rulez (DO NOT EDIT - managed by ai-rulez)
 .agents/skills/
-.ai-rulez/.generated-manifest.local.json
 .ai-rulez/local/
 .claude/agents/
 .claude/settings.json
@@ -75,6 +74,7 @@ opencode.json
 **/.ai-rulez/.generated-manifest.local.json
 plugin/.ai-rulez/.generated-manifest.json
 .agents/settings.json
+.claude/settings.json
 .claude/plugins.json
 .codex/commands/
 .codex/plugins.json
