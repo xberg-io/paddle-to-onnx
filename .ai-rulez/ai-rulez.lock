@@ -4,51 +4,41 @@
 version = 1
 ai_rulez_version = '5.7.0'
 scope = 'all'
-tree = 'sha256:84a5d09344ea1fd02d52720dcdebd3be4e8a7fec8b4e860e14e7d2b48db0ea9e'
+tree = 'sha256:d8c3208de2f7f4ecb1798e04efaa2bca7a977b2161b2257cd5ad2d14c095c651'
 
 [[include]]
 name = 'xberg-core'
 source = 'https://github.com/xberg-io/agent-conventions.git'
 path = 'modules/core'
-ref = '2011d3db223de5b1c8b35f602ec6f2d2a7b62bf8'
-commit = '2011d3db223de5b1c8b35f602ec6f2d2a7b62bf8'
-digest = 'sha256:738a1de80e3ab90182a02374f9d90bb6412d7f7d4cd13a00b5580723ec637de4'
+ref = '6e7f6a6793ea7380b916367e10a8acd13c3afbc3'
+commit = '6e7f6a6793ea7380b916367e10a8acd13c3afbc3'
+digest = 'sha256:42df462bd78de545b07626390977f9028e89794e855be45600e763904cd53de2'
+
+[[include]]
+name = 'xberg-languages'
+source = 'https://github.com/xberg-io/agent-conventions.git'
+path = 'modules/languages'
+ref = '6e7f6a6793ea7380b916367e10a8acd13c3afbc3'
+commit = '6e7f6a6793ea7380b916367e10a8acd13c3afbc3'
+digest = 'sha256:cc24d5e3c55dff0350c7161ab9e2a537811dc2035ad67b1d927bcd8de80d0626'
 
 [[served]]
 name = 'agent-coordination'
 source = 'include:xberg-core/skills/agent-coordination/SKILL.md'
-commit = '2011d3db223de5b1c8b35f602ec6f2d2a7b62bf8'
-digest = 'sha256:a4fe1a58e404decf8e6d90b8053e03c4300641544f31f01f28225dfc902657b7'
-
-[[served]]
-name = 'alef-workflow'
-source = 'include:xberg-core/skills/alef-workflow/SKILL.md'
-commit = '2011d3db223de5b1c8b35f602ec6f2d2a7b62bf8'
-digest = 'sha256:4cdae745139f7fc4f83b0b254385f54b814edad3c1d49431f9f5c16da3a27262'
+commit = '6e7f6a6793ea7380b916367e10a8acd13c3afbc3'
+digest = 'sha256:11784feced9cadc616e04e1612e2b2619cc4160c9db38888b479851247b6925d'
 
 [[served]]
 name = 'basemind-tools'
 source = 'include:xberg-core/skills/basemind-tools/SKILL.md'
-commit = '2011d3db223de5b1c8b35f602ec6f2d2a7b62bf8'
-digest = 'sha256:b75400bf3b170ff59f9c9f979ccb3e8c4a460ff7b41f30a92d20e567d0815268'
-
-[[served]]
-name = 'binding-architecture'
-source = 'include:xberg-core/skills/binding-architecture/SKILL.md'
-commit = '2011d3db223de5b1c8b35f602ec6f2d2a7b62bf8'
-digest = 'sha256:878a8638693df31052e4adf940039852299460525dd2395cf547d617b7de37ec'
+commit = '6e7f6a6793ea7380b916367e10a8acd13c3afbc3'
+digest = 'sha256:790599681098314dca5d3025405baf2da89eb3c93618cd7e0586262715e70357'
 
 [[served]]
 name = 'code-quality-standards'
 source = 'builtin://universal/code-quality/skills/code-quality-standards/SKILL.md'
 commit = ''
 digest = 'sha256:fbb459dca3be6c91a4fe1944e844728c53e8856b517c5b122b8b2aeac566f666'
-
-[[served]]
-name = 'common-task-commands'
-source = 'include:xberg-core/skills/common-task-commands/SKILL.md'
-commit = '2011d3db223de5b1c8b35f602ec6f2d2a7b62bf8'
-digest = 'sha256:383829527b247c8a2afdb87c0823428060a4515ec91f1f8706ecdee9f5b4cd4d'
 
 [[served]]
 name = 'config-placement'
@@ -71,8 +61,8 @@ digest = 'sha256:fbc7d452c7171e71341578b6c7a56fc2c87031c0ce15d35884bc3260e04ff68
 [[served]]
 name = 'feature-flag-conventions'
 source = 'include:xberg-core/skills/feature-flag-conventions/SKILL.md'
-commit = '2011d3db223de5b1c8b35f602ec6f2d2a7b62bf8'
-digest = 'sha256:46ce54cd7986b60f1ba8aeb44f9d30e73977818916df92939f39221a331c3044'
+commit = '6e7f6a6793ea7380b916367e10a8acd13c3afbc3'
+digest = 'sha256:2b0ddd4728e06d74a111ec429799c1d700af53ca23df1a78fd61a3975a69bfea'
 
 [[served]]
 name = 'incremental-approach'
@@ -101,26 +91,14 @@ digest = 'sha256:2700d984ba10baa2e16ed19b48cc8fd5f7351776f2ce03f6712394d3912f91c
 [[served]]
 name = 'poly-lint-format'
 source = 'include:xberg-core/skills/poly-lint-format/SKILL.md'
-commit = '2011d3db223de5b1c8b35f602ec6f2d2a7b62bf8'
-digest = 'sha256:8ca1487ade0fae35c823cd6bdf9b8f870299812945327378db9f73a5217b75f6'
-
-[[served]]
-name = 'python-conventions'
-source = 'include:xberg-core/skills/python-conventions/SKILL.md'
-commit = '2011d3db223de5b1c8b35f602ec6f2d2a7b62bf8'
-digest = 'sha256:99d3a30509f467f242ad60142c3a3005eced0a0d13510f2d0bc8ed312856bad2'
-
-[[served]]
-name = 'quick-start'
-source = 'include:xberg-core/skills/quick-start/SKILL.md'
-commit = '2011d3db223de5b1c8b35f602ec6f2d2a7b62bf8'
-digest = 'sha256:32105dacbfd782273d5b9292b01bf888b673fccb491f87f8ff12b7061e715512'
+commit = '6e7f6a6793ea7380b916367e10a8acd13c3afbc3'
+digest = 'sha256:3ee7e1ba6ca13289041f0a6c560d19f4f8ba74581cd9bc7f2b90cfc56bb9e0a2'
 
 [[served]]
 name = 'release-workflow'
 source = 'include:xberg-core/skills/release-workflow/SKILL.md'
-commit = '2011d3db223de5b1c8b35f602ec6f2d2a7b62bf8'
-digest = 'sha256:82dc67cca8839dab7d6e246c2471ef4fa7be8d9bd949760019d5d567ec47ea7e'
+commit = '6e7f6a6793ea7380b916367e10a8acd13c3afbc3'
+digest = 'sha256:8e396ac929b0caae4c400f4f7b2d143b280f74242327de289efb0c123b536c6c'
 
 [[served]]
 name = 'skill-authoring'
@@ -137,8 +115,8 @@ digest = 'sha256:c57056e3a74a261b3a9d47638726c7d1f64c76b255838b6aaa3e635f3ffa861
 [[served]]
 name = 'taskfile-structure'
 source = 'include:xberg-core/skills/taskfile-structure/SKILL.md'
-commit = '2011d3db223de5b1c8b35f602ec6f2d2a7b62bf8'
-digest = 'sha256:25034a5f6b849257184b1f9d1cf463acf6257c41a6935fdd473778578f3c2f1c'
+commit = '6e7f6a6793ea7380b916367e10a8acd13c3afbc3'
+digest = 'sha256:b49db0a4e8236b2dc2c45d0a77d1f219c599cd87620a47017d431efd43d0b2d2'
 
 [[served]]
 name = 'tdd-workflow'
@@ -155,16 +133,23 @@ digest = 'sha256:f406604437e2998fc756a0a5b6a08cd832b871c188f76ee5ecbfef33184e965
 [[served]]
 name = 'tracing-conventions'
 source = 'include:xberg-core/skills/tracing-conventions/SKILL.md'
-commit = '2011d3db223de5b1c8b35f602ec6f2d2a7b62bf8'
-digest = 'sha256:a7b6cdef62f40a8f901d829d946a2e95b562788278b2635a8076eb01e9e70eff'
+commit = '6e7f6a6793ea7380b916367e10a8acd13c3afbc3'
+digest = 'sha256:7af6cf039cac1e3471af9a46434deeb17ddbf300963a5cf1962e6a7da8722fae'
+
+[[served]]
+name = 'verification-harness'
+source = 'include:xberg-core/skills/verification-harness/SKILL.md'
+commit = '6e7f6a6793ea7380b916367e10a8acd13c3afbc3'
+digest = 'sha256:6effb13cf0d064d3f2861da6a5e4ba85abc8392ff642969b776df0d4fe0d3579'
 
 [[served]]
 name = 'xberg-brand-and-docs'
 source = 'include:xberg-core/skills/xberg-brand-and-docs/SKILL.md'
-commit = '2011d3db223de5b1c8b35f602ec6f2d2a7b62bf8'
-digest = 'sha256:b217c516ea63b3f7a56987a0168050d25c0b05b70c4966a8899cd5a05d8acaa3'
+commit = '6e7f6a6793ea7380b916367e10a8acd13c3afbc3'
+digest = 'sha256:ef1b56c090e2c93fecd8bfbe916f79a0bebed69afe53ec89284e7ff433f64d0f'
 
 [[item]]
-kind = 'settings'
-id = 'mcp-servers'
-digest = 'sha256:81bb42246d1c22113883a04cedb34f4d9e1ba31930ed3a2921dce10505ab1b62'
+kind = 'context'
+id = 'area-map'
+path = 'context/area-map.md'
+digest = 'sha256:1b6fb8b5258260a16a5a9107d5a2f441484df92404c054e37f64ef060f256ece'
