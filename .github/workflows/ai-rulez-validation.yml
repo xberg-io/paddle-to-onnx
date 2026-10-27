@@ -42,3 +42,9 @@ jobs:
         with:
           ai-rulez-version: "latest"
       - uses: xberg-io/actions/validate-ai-rulez@v1
+      # ~keep Budgets: the --measure-mcp ai-rulez measurement plus about 5%; re-measure on every pin bump.
+      - uses: xberg-io/agent-conventions/actions/context-exposure@v1
+        with:
+          budgets: |
+            claude=5750
+            codex=5050
