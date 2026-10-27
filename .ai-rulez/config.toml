@@ -3,9 +3,10 @@ version = "5.0"
 name = 'Paddle2ONNX'
 description = 'Convert PaddlePaddle models to ONNX format'
 gitignore = true
+# ~keep The manifest is committed so CI can detect stale generated files.
 gitignore_exclude = [".ai-rulez/.generated-manifest.json"]
-presets = ["claude", "codex", "opencode", "pi"]
-builtins = ["!git-workflow", 'python', 'default-commands']
+presets = ["claude", "codex", "opencode"]
+builtins = ["!agent-delegation", "!git-workflow", "default-commands"]
 
 compact = true
 default_layers = ["plugins"]
@@ -21,15 +22,16 @@ path = 'modules/core'
 merge_strategy = 'local-override'
 
 [mcp]
-self_server = false
-
-[[mcp_servers]]
-name = "playwright"
-command = "npx"
-args = ["-y", "@playwright/mcp@0.0.83"]
+self_server_command = ["ai-rulez", "mcp"]
+# ~keep Skill discovery only: the full server lists 67 tools (~38k tokens of schema) at every session start.
+serve_skills = true
+read_only = true
+discover_skills = "repo"
+tools = ["find_skill", "load_skill"]
 
 [lock]
 include_outputs = false
 
-[lint]
-allow_overrides = ["python-conventions"]
+[rules]
+# ~keep Glob-scoped rules stay out of AGENTS.md: rule files for Claude, path-gated skills for Codex.
+scoped_fallback = "skill"
