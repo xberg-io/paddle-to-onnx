@@ -17,7 +17,7 @@ jobs:
         python-version: ["3.13"]
     steps:
       - name: Checkout Paddle2ONNX
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 1000
 
@@ -36,7 +36,7 @@ jobs:
           args: .github/workflows/scripts/entrypoint.sh ${{ matrix.python-version }}
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -55,7 +55,7 @@ jobs:
         architecture: ["x64"]
     steps:
       - name: Checkout Paddle2ONNX
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 1000
 
@@ -73,7 +73,7 @@ jobs:
           echo "CMAKE_TOOLCHAIN_FILE=$env:VCPKG_INSTALLATION_ROOT\scripts\buildsystems\vcpkg.cmake" >> $env:GITHUB_ENV
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -101,7 +101,7 @@ jobs:
         python-version: ["3.13"]
     steps:
       - name: Checkout Paddle2ONNX
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 1000
 
@@ -117,7 +117,7 @@ jobs:
         run: brew install protobuf glog pybind11
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
 

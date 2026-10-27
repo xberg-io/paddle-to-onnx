@@ -20,12 +20,12 @@ jobs:
 
     steps:
       - name: Checkout Paddle2ONNX
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           submodules: true
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -55,7 +55,7 @@ jobs:
           export PIP_EXTRA_INDEX_URL="https://www.paddlepaddle.org.cn/packages/nightly/cpu/"
           python -m build --wheel
 
-      - uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
+      - uses: actions/upload-artifact@v7
         with:
           name: MacRelease_${{ matrix.architecture }}_py${{ matrix.python-version }}
           path: dist

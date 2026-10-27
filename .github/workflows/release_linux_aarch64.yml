@@ -17,11 +17,11 @@ jobs:
 
     steps:
       - name: Checkout Paddle2ONNX
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           submodules: true
 
-      - uses: docker/setup-qemu-action@68827325e0b33c7199eb31dd4e31fbe9023e06e3
+      - uses: docker/setup-qemu-action@v4
 
       - name: Build on manylinux_2_28_aarch64
         uses: docker://quay.io/pypa/manylinux_2_28_aarch64
@@ -29,13 +29,13 @@ jobs:
           entrypoint: bash
           args: .github/workflows/scripts/entrypoint.sh ${{ matrix.python-version }}
 
-      - uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
+      - uses: actions/upload-artifact@v7
         with:
           name: LinuxRelease_${{ matrix.architecture }}_py${{ matrix.python-version }}
           path: dist
 
       - name: Publish package
-        uses: pypa/gh-action-pypi-publish@27b31702a0e7fc50959f5ad993c78deac1bdfc29
+        uses: pypa/gh-action-pypi-publish@v1.14.3
         with:
           user: __token__
           password: ${{ secrets.PADDLE2ONNX_API_TOKEN }}
