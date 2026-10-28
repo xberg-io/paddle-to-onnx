@@ -53,6 +53,7 @@ poly.local.toml
 
 # BEGIN ai-rulez (DO NOT EDIT - managed by ai-rulez)
 .agents/skills/
+.ai-rulez/.config.local.*
 .claude/agents/
 .claude/rules/csharp.md
 .claude/rules/elixir.md
