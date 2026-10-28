@@ -14,6 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
+        # The manylinux wheel tag; setup-mise installs the mise.toml Python, so keep the two equal. ~keep
         python-version: ["3.13"]
     steps:
       - name: Checkout Paddle2ONNX
@@ -36,9 +37,9 @@ jobs:
           args: .github/workflows/scripts/entrypoint.sh ${{ matrix.python-version }}
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v7
+        uses: xberg-io/actions/setup-mise@v1
         with:
-          python-version: ${{ matrix.python-version }}
+          install-args: python
 
       - name: Install Paddle2ONNX
         run: python -m pip install dist/*.whl
@@ -51,6 +52,7 @@ jobs:
     runs-on: windows-2022
     strategy:
       matrix:
+        # A label only: setup-mise installs the mise.toml Python, so keep the two equal. ~keep
         python-version: ["3.13"]
         architecture: ["x64"]
     steps:
@@ -73,9 +75,9 @@ jobs:
           echo "CMAKE_TOOLCHAIN_FILE=$env:VCPKG_INSTALLATION_ROOT\scripts\buildsystems\vcpkg.cmake" >> $env:GITHUB_ENV
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v7
+        uses: xberg-io/actions/setup-mise@v1
         with:
-          python-version: ${{ matrix.python-version }}
+          install-args: python
 
       - name: Install Python dependencies
         run: python -m pip install -q --upgrade pip setuptools wheel build
@@ -98,6 +100,7 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
+        # A label only: setup-mise installs the mise.toml Python, so keep the two equal. ~keep
         python-version: ["3.13"]
     steps:
       - name: Checkout Paddle2ONNX
@@ -117,9 +120,9 @@ jobs:
         run: brew install protobuf glog pybind11
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v7
+        uses: xberg-io/actions/setup-mise@v1
         with:
-          python-version: ${{ matrix.python-version }}
+          install-args: python
 
       - name: Install Python dependencies
         run: python -m pip install -q --upgrade pip setuptools wheel build

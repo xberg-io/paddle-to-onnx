@@ -27,9 +27,9 @@ jobs:
           fetch-depth: 0
 
       - name: Set up Python
-        uses: actions/setup-python@v7
+        uses: xberg-io/actions/setup-mise@v1
         with:
-          python-version: "3.13"
+          install-args: python
 
       - name: Install dependencies and build paddle2onnx
         if: inputs.dry_run != true
