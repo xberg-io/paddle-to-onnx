@@ -97,7 +97,7 @@ jobs:
   build_on_macos:
     env:
       MACOSX_DEPLOYMENT_TARGET: "12.0"
-    runs-on: macos-latest
+    runs-on: macos-26
     strategy:
       matrix:
         # A label only: setup-mise installs the mise.toml Python, so keep the two equal. ~keep
