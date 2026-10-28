@@ -5,13 +5,15 @@ vars:
 
 tasks:
   setup:
-    desc: "Install dependencies and build the C++ extension"
+    desc: "Install the mise toolchain and dependencies, and build the C++ extension"
     cmds:
+      - mise install
       - uv sync
       - uv pip install -e .
-      - command -v poly >/dev/null 2>&1 || brew install goldziher/tap/poly
       - task: governance:hooks:install
     sources:
+      - mise.toml
+      - mise.lock
       - pyproject.toml
       - uv.lock
       - CMakeLists.txt
