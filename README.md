@@ -17,7 +17,7 @@ Clone the repo and build from source:
 ```bash
 git clone https://github.com/xberg-io/paddle-to-onnx
 cd paddle-to-onnx
-task setup
+mise run setup
 ```
 
 This runs `uv sync` (installs dependencies) and builds the C++ extension via CMake.
@@ -52,12 +52,12 @@ Run `paddle2onnx --help` for all options.
 
 ## Development
 
-- `task build` — build the C++ extension
-- `task test` — run pytest
-- `task lint` — run poly linter
-- `task format` — format code (poly)
-- `task typecheck` — run pyrefly type checker
-- `task export:<model>` — convert a model to ONNX (requires `tools/export_hf_models.py`)
+- `mise run build` — build the C++ extension
+- `mise run test` — run pytest
+- `mise run lint` — run poly linter
+- `mise run format` — format code (poly)
+- `mise run typecheck` — run pyrefly type checker
+- `mise run export:<model>` — convert a model to ONNX (requires `tools/export_hf_models.py`)
 
 ## Changes from Upstream
 

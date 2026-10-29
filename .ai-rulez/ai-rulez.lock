@@ -4,7 +4,7 @@
 version = 1
 ai_rulez_version = '5.9.2'
 scope = 'all'
-tree = 'sha256:a4caac0fde2e0ab9f6a37957c683696a390f16d5271a3cc4d1da916583f4726a'
+tree = 'sha256:a2a4c30e9e14cd9895b0ad3a2ebc65153f1e960acaeca8908338336784ea5b8a'
 
 [[include]]
 name = 'xberg-core'
@@ -111,12 +111,6 @@ commit = ''
 digest = 'sha256:7ab2b543dc6608f204c957fedfc55ae902d22fda9dc8a52252330ff9b1406ff1'
 
 [[served]]
-name = 'task-runner'
-source = 'builtin://universal/token-efficiency/skills/task-runner/SKILL.md'
-commit = ''
-digest = 'sha256:c57056e3a74a261b3a9d47638726c7d1f64c76b255838b6aaa3e635f3ffa8618'
-
-[[served]]
 name = 'taskfile-structure'
 source = 'include:xberg-core/skills/taskfile-structure/SKILL.md'
 commit = '157c7fc83b88b48395de6351f8ac63e4cdb50348'
@@ -150,4 +144,4 @@ digest = 'sha256:52ffa5fdd63293f4d0325b3f51a187d07eba9b69e2341da62c4603e2798dd94
 kind = 'context'
 id = 'area-map'
 path = 'context/area-map.md'
-digest = 'sha256:c83860fcc2a4452fac48b2ce6ece6aabd09f4cf0f453171c614e15fc7b6bce42'
+digest = 'sha256:39f7103cc75ca09e878868f538ff0d9bb914dab20d00e770ac7c740ce29ad672'
