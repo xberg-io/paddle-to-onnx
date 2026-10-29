@@ -52,10 +52,5 @@ run = "uv run --group test pytest tests/"
 description = "Clean build artifacts"
 run = "rm -rf .setuptools-cmake-build build dist *.egg-info"
 
-[tasks."governance:check"]
-description = "Check materialized local governance outputs against shared sources"
-run = "ai-rulez generate --check --no-local --strict-config"
-
-[tasks."governance:hooks:install"]
-description = "Provision machine preferences and install reviewed AI governance hooks"
-file = "https://raw.githubusercontent.com/xberg-io/toolchains/v1.5.0/tasks/governance/hooks-install.sh"
+[task_config]
+includes = ["mise-tasks", "mise-tasks/shared.toml"]
