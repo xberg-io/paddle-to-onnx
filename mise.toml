@@ -8,3 +8,81 @@ python = "3.13.18"
 uv = "0.13.6"
 "github:Goldziher/poly" = "0.31.2"
 "github:Goldziher/ai-rulez" = "5.9.2"
+
+[vars]
+export_dir = "/tmp/paddle-to-onnx-exports"
+
+[tasks.setup]
+description = "Install the mise toolchain and dependencies, and build the C++ extension"
+run = ["mise install", "uv sync", { task = "build" }, { task = "governance:hooks:install" }]
+sources = ["mise.toml", "mise.lock", "pyproject.toml", "uv.lock", "CMakeLists.txt", "setup.py"]
+outputs = { auto = true }
+
+[tasks.build]
+description = "Build the C++ extension (setuptools cmake build)"
+run = "uv pip install -e ."
+
+# Every export variant runs this one command; each passes its model selector as arguments.
+[tasks."export:models"]
+description = "Export the models selected by the arguments to ONNX"
+hide = true
+depends = ["build"]
+run = 'uv run python tools/export_hf_models.py --output-dir "{{vars.export_dir}}"'
+
+[tasks.export]
+description = "Export a specific model (usage: mise run export ModelName)"
+usage = 'arg "<model>" help="Model name configured in tools/export_hf_models.py"'
+run = [{ task = "export:models", args = ["--model", "{{usage.model}}"] }]
+
+[tasks."export:slanet"]
+description = "Export SLANet_plus to ONNX with ORT compatibility fix"
+run = [{ task = "export:models", args = ["--model", "SLANet_plus"] }]
+
+[tasks."export:all"]
+description = "Export all configured models to ONNX"
+run = [{ task = "export:models", args = ["--all"] }]
+
+[tasks."export:v6"]
+description = "Export the PP-OCRv6 models (medium/small/tiny det+rec) to ONNX"
+run = [
+  { task = "export:models", args = [
+    "--models",
+    "PP-OCRv6_medium_det,PP-OCRv6_small_det,PP-OCRv6_tiny_det,PP-OCRv6_medium_rec,PP-OCRv6_small_rec,PP-OCRv6_tiny_rec",
+  ] },
+]
+
+[tasks.upload]
+description = "Upload all exported models with an upload_path to the HF repo (needs HF_TOKEN)"
+run = 'uv run python tools/upload_hf_models.py --export-dir "{{vars.export_dir}}"'
+
+[tasks."upload:v6"]
+description = "Upload exported PP-OCRv6 models to xberg-io/paddleocr-onnx-models (needs HF_TOKEN)"
+run = 'uv run python tools/upload_hf_models.py --export-dir "{{vars.export_dir}}" --generation v6'
+
+[tasks.lint]
+description = "Run all linters via poly"
+run = "poly lint ."
+
+[tasks.format]
+description = "Format all code via poly"
+run = "poly fmt --fix ."
+
+[tasks.typecheck]
+description = "Run pyrefly type checker"
+run = "uv run --group dev pyrefly check paddle2onnx setup.py"
+
+[tasks.test]
+description = "Run tests"
+run = "uv run --group test pytest tests/"
+
+[tasks.clean]
+description = "Clean build artifacts"
+run = "rm -rf .setuptools-cmake-build build dist *.egg-info"
+
+[tasks."governance:check"]
+description = "Check materialized local governance outputs against shared sources"
+run = "ai-rulez generate --check --no-local --strict-config"
+
+[tasks."governance:hooks:install"]
+description = "Provision machine preferences and install reviewed AI governance hooks"
+file = "https://raw.githubusercontent.com/xberg-io/toolchains/v1.4.0/tasks/governance/hooks-install.sh"
