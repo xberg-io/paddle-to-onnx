@@ -4,7 +4,7 @@
 version = 1
 ai_rulez_version = '5.9.2'
 scope = 'all'
-tree = 'sha256:2ece8e31ca08750b84edb0922406ab925418f4302c065d16b3944a2f61995d87'
+tree = 'sha256:aec94e1ab9e28fb38cb704ffb6e36c6b1de9ee41f304f76feacbb76eb43c4082'
 
 [[include]]
 name = 'xberg-core'
@@ -150,4 +150,4 @@ digest = 'sha256:52ffa5fdd63293f4d0325b3f51a187d07eba9b69e2341da62c4603e2798dd94
 kind = 'context'
 id = 'area-map'
 path = 'context/area-map.md'
-digest = 'sha256:39f7103cc75ca09e878868f538ff0d9bb914dab20d00e770ac7c740ce29ad672'
+digest = 'sha256:5da72c6e0ea499695246ba42fe13fd64fbb00d3416314e9716a39aaab0292937'

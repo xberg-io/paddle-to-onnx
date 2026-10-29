@@ -22,42 +22,15 @@ outputs = { auto = true }
 description = "Build the C++ extension (setuptools cmake build)"
 run = "uv pip install -e ."
 
-# Every export variant runs this one command; each passes its model selector as arguments.
-[tasks."export:models"]
-description = "Export the models selected by the arguments to ONNX"
-hide = true
-depends = ["build"]
-run = 'uv run python tools/export_hf_models.py --output-dir "{{vars.export_dir}}"'
-
 [tasks.export]
 description = "Export a specific model (usage: mise run export ModelName)"
 usage = 'arg "<model>" help="Model name configured in tools/export_hf_models.py"'
-run = [{ task = "export:models", args = ["--model", "{{usage.model}}"] }]
-
-[tasks."export:slanet"]
-description = "Export SLANet_plus to ONNX with ORT compatibility fix"
-run = [{ task = "export:models", args = ["--model", "SLANet_plus"] }]
-
-[tasks."export:all"]
-description = "Export all configured models to ONNX"
-run = [{ task = "export:models", args = ["--all"] }]
-
-[tasks."export:v6"]
-description = "Export the PP-OCRv6 models (medium/small/tiny det+rec) to ONNX"
-run = [
-  { task = "export:models", args = [
-    "--models",
-    "PP-OCRv6_medium_det,PP-OCRv6_small_det,PP-OCRv6_tiny_det,PP-OCRv6_medium_rec,PP-OCRv6_small_rec,PP-OCRv6_tiny_rec",
-  ] },
-]
+depends = ["build"]
+run = 'uv run python tools/export_hf_models.py --model "{{usage.model}}" --output-dir "{{vars.export_dir}}"'
 
 [tasks.upload]
 description = "Upload all exported models with an upload_path to the HF repo (needs HF_TOKEN)"
 run = 'uv run python tools/upload_hf_models.py --export-dir "{{vars.export_dir}}"'
-
-[tasks."upload:v6"]
-description = "Upload exported PP-OCRv6 models to xberg-io/paddleocr-onnx-models (needs HF_TOKEN)"
-run = 'uv run python tools/upload_hf_models.py --export-dir "{{vars.export_dir}}" --generation v6'
 
 [tasks.lint]
 description = "Run all linters via poly"
