@@ -28,7 +28,6 @@ This will setup the dependencies, and pre-commit hooks via `poly`.
 | `mise run test`      | Run the test suite                |
 | `mise run lint`      | Run linters                       |
 | `mise run format`    | Format code                       |
-| `mise run typecheck` | Run the type checker              |
 
 ## What to keep in mind
 

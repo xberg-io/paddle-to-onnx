@@ -56,7 +56,6 @@ Run `paddle2onnx --help` for all options.
 - `mise run test` — run pytest
 - `mise run lint` — run poly linter
 - `mise run format` — format code (poly)
-- `mise run typecheck` — run pyrefly type checker
 - `mise run export <model>` — convert a model to ONNX (`tools/export_hf_models.py --all` exports every model)
 
 ## Changes from Upstream
