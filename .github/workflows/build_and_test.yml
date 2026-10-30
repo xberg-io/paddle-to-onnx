@@ -116,6 +116,7 @@ jobs:
           git fetch origin ${{ github.event.pull_request.base.ref }}
           git merge origin/${{ github.event.pull_request.base.ref }}
 
+      # protobuf, glog and pybind11 are C++ libraries the extension links, not mise tools. ~keep
       - name: Install system dependencies
         run: brew install protobuf glog pybind11
 
