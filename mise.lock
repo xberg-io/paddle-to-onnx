@@ -2,35 +2,6 @@
 
 lockfile_version = 3
 
-[[tools."github:Goldziher/ai-rulez"]]
-version = "5.9.3"
-backend = "github:Goldziher/ai-rulez"
-specifiers = ["5.9.3"]
-
-[tools."github:Goldziher/ai-rulez"."platforms.linux-arm64"]
-checksum = "sha256:2a9c9486037e879c6ccef3db419c292aa844908d9b63105325446285786a5ac5"
-url = "https://github.com/Goldziher/ai-rulez/releases/download/v5.9.3/ai-rulez_5.9.3_linux_arm64.tar.gz"
-url_api = "https://api.github.com/repos/Goldziher/ai-rulez/releases/assets/691252947"
-provenance = "github-attestations"
-
-[tools."github:Goldziher/ai-rulez"."platforms.linux-x64"]
-checksum = "sha256:04c2c470368b8c6f11c8cd5a19b298cff3be71e1966473241179159473297c6c"
-url = "https://github.com/Goldziher/ai-rulez/releases/download/v5.9.3/ai-rulez_5.9.3_linux_amd64.tar.gz"
-url_api = "https://api.github.com/repos/Goldziher/ai-rulez/releases/assets/691252949"
-provenance = "github-attestations"
-
-[tools."github:Goldziher/ai-rulez"."platforms.macos-arm64"]
-checksum = "sha256:fa48c2ffdd15b9d20f9d7041b8901c251c361ebc869ccb1c59820718d3797f00"
-url = "https://github.com/Goldziher/ai-rulez/releases/download/v5.9.3/ai-rulez_5.9.3_darwin_arm64.tar.gz"
-url_api = "https://api.github.com/repos/Goldziher/ai-rulez/releases/assets/691252948"
-provenance = "github-attestations"
-
-[tools."github:Goldziher/ai-rulez"."platforms.windows-x64"]
-checksum = "sha256:3e87923929d1e1ed59690312cee0cf37a9c86e17f156e6d0a063f3e106578376"
-url = "https://github.com/Goldziher/ai-rulez/releases/download/v5.9.3/ai-rulez_5.9.3_windows_amd64.zip"
-url_api = "https://api.github.com/repos/Goldziher/ai-rulez/releases/assets/691252945"
-provenance = "github-attestations"
-
 [[tools."github:Goldziher/poly"]]
 version = "0.31.2"
 backend = "github:Goldziher/poly"
@@ -59,6 +30,27 @@ checksum = "sha256:7b6aada1b8f55c97c8907990f73605bb4d160b9de8eb243b8a2d1eb202835
 checksum_source = "mise-versions"
 url = "https://github.com/Goldziher/poly/releases/download/v0.31.2/poly-0.31.2-x86_64-pc-windows-msvc.zip"
 url_api = "https://api.github.com/repos/Goldziher/poly/releases/assets/686266048"
+
+[[tools.node]]
+version = "26.12.1"
+backend = "core:node"
+specifiers = ["26.12.1"]
+
+[tools.node."platforms.linux-arm64"]
+checksum = "sha256:a6c01af459dd8972ab3fb08ee5da81244d26ba8c4944a62d5bbba8c597ae154f"
+url = "https://nodejs.org/dist/v26.12.1/node-v26.12.1-linux-arm64.tar.gz"
+
+[tools.node."platforms.linux-x64"]
+checksum = "sha256:0fd1eb7770598f52a21995edf6ed35fc690400fa437c2386af329519e9143132"
+url = "https://nodejs.org/dist/v26.12.1/node-v26.12.1-linux-x64.tar.gz"
+
+[tools.node."platforms.macos-arm64"]
+checksum = "sha256:1901d539912c02afa10d1cc126943a8855a7eedebe830119463470db5e6c59e8"
+url = "https://nodejs.org/dist/v26.12.1/node-v26.12.1-darwin-arm64.tar.gz"
+
+[tools.node."platforms.windows-x64"]
+checksum = "sha256:b3efd5c70cba3308ed46e7e699a9b8aac075bbc6b027fcb39c84c31acc25e2b4"
+url = "https://nodejs.org/dist/v26.12.1/node-v26.12.1-win-x64.zip"
 
 [[tools.python]]
 version = "3.13.18"
