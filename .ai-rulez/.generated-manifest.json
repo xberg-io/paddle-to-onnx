@@ -36,6 +36,8 @@
     ".agents/skills/testing-conventions/SKILL.md",
     ".agents/skills/tracing-conventions/SKILL.md",
     ".agents/skills/verification-harness/SKILL.md",
+    ".ai-rulez/context/index.md",
+    ".ai-rulez/index.md",
     ".claude/agents/code-reviewer.md",
     ".claude/agents/docs-writer.md",
     ".claude/agents/performance-engineer.md",
