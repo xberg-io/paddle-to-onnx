@@ -35,14 +35,8 @@ permissions:
   contents: read
 jobs:
   validate:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - uses: xberg-io/actions/setup-ai-rulez@v1
-      - uses: xberg-io/actions/validate-ai-rulez@v1
-      # ~keep Budgets: the --measure-mcp ai-rulez measurement plus about 5%; re-measure on every pin bump.
-      - uses: xberg-io/agent-conventions/actions/context-exposure@v1
-        with:
-          budgets: |
-            claude=5600
-            codex=6150
+    uses: xberg-io/actions/.github/workflows/reusable-ai-rulez-validation.yml@v1
+    with:
+      budgets: |
+        claude=5600
+        codex=6150
