@@ -8,7 +8,7 @@ Please begin by reading our AI section below, followed by the getting started gu
 
 ## Getting Started
 
-Make sure to have [Git](https://git-scm.com/) and [Python](https://www.python.org/) 3.10+ with [uv](https://docs.astral.sh/uv/) installed on your machine.
+Make sure to have [Git](https://git-scm.com/) and [Python](https://www.python.org/) 3.11+ with [uv](https://docs.astral.sh/uv/) installed on your machine.
 
 1. Install [mise](https://mise.jdx.dev/getting-started.html) on your machine.
 2. run:

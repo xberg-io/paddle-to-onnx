@@ -6,7 +6,7 @@ This is an internal fork of [PaddlePaddle/Paddle2ONNX](https://github.com/Paddle
 
 ## Requirements
 
-- Python 3.10+
+- Python 3.11+
 - PaddlePaddle 3.3 or later (PIR-based)
 - CMake 3.16+ (for building the C++ extension)
 

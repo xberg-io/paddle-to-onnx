@@ -10,7 +10,7 @@ Paddle2ONNX supports the conversion of PaddlePaddle model format to ONNX model f
 
 Paddle2ONNX depends on PaddlePaddle 3.3+, we recommend using Paddle2ONNX in the following environments:
 
-- Python >= 3.10
+- Python >= 3.11
 - PaddlePaddle >= 3.3
 - ONNX >= 1.20.1
 - protobuf >= 34.0

@@ -3,7 +3,7 @@
 Paddle2ONNX 的编译安装需要确保环境满足以下需求：
 
 - cmake >= 3.16.0
-- Python >= 3.10
+- Python >= 3.11
 - protobuf >= 34.0
 
 ## 1 在 Linux/Mac 下安装

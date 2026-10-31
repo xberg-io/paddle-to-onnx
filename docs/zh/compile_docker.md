@@ -61,9 +61,9 @@ export PATH=${PWD}/installed_protobuf_lib/bin:${PATH}
 ## 5 执行编译和安装
 
 ```bash
-/opt/python/cp310-cp310/bin/pip install uv
+/opt/python/cp313-cp313/bin/pip install uv
 cd /path/to/Paddle2ONNX
-/opt/python/cp310-cp310/bin/python -m uv sync
-/opt/python/cp310-cp310/bin/python -m uv run python setup.py build
-/opt/python/cp310-cp310/bin/pip install dist/*.whl
+/opt/python/cp313-cp313/bin/python -m uv sync
+/opt/python/cp313-cp313/bin/python -m uv run python setup.py build
+/opt/python/cp313-cp313/bin/pip install dist/*.whl
 ```
