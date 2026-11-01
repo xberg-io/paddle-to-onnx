@@ -1,2 +1,6 @@
-baseline = "v1.12.3"
+baseline = "v1.13.0"
 task_sets = ["governance", "governance-check"]
+
+[overrides.python]
+version = "3.13.18"
+reason = "paddlepaddle 3.3.1 ships wheels only up to cp313 and no sdist, so uv cannot resolve it on Python 3.15"
